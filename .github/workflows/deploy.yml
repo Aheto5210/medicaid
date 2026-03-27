@@ -35,9 +35,9 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
 
-      - name: Copy image to server
+      - name: Copy image and env to server
         run: |
-          scp -o StrictHostKeyChecking=no medicaid-server.tar $SSH_USER@$SSH_HOST:~/medicaid/
+          scp -o StrictHostKeyChecking=no medicaid-server.tar .env $SSH_USER@$SSH_HOST:~/medicaid/
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
