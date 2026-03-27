@@ -24,7 +24,14 @@ jobs:
           ssh $SSH_USER@$SSH_HOST << 'EOF'
             cd ~/medicaid
             git pull --ff-only origin main
+            
+            # Build and start backend (docker compose handles BE + DB)
             docker compose up -d --build
+            
+            # Build frontend
+            cd client
+            npm install
+            npm run build
           EOF
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
