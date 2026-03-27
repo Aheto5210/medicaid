@@ -37,7 +37,7 @@ jobs:
 
       - name: Copy image and env to server
         run: |
-          scp -o StrictHostKeyChecking=no medicaid-server.tar .env $SSH_USER@$SSH_HOST:~/medicaid/
+          scp -o StrictHostKeyChecking=no medicaid-server.tar .env db/schema.sql $SSH_USER@$SSH_HOST:~/medicaid/
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
@@ -56,8 +56,18 @@ jobs:
             # Pull fresh DB image
             docker pull postgres:16-alpine || true
             
-            # Start services (will use local image for server)
-            docker compose up -d --build server
+            # Start db first
+            docker compose up -d db
+            
+            # Wait for DB to be ready and create database
+            sleep 5
+            docker compose exec -T db psql -U isaacaheto -c "CREATE DATABASE medicaid;" || true
+            
+            # Apply schema
+            docker compose exec -T db psql -U isaacaheto -d medicaid < db/schema.sql || true
+            
+            # Start server
+            docker compose up -d server
             
             # Cleanup
             rm -f medicaid-server.tar
