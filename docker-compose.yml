@@ -7,7 +7,8 @@ services:
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     image: postgres:16-alpine
     environment:
@@ -18,7 +19,12 @@ services:
       - "5432:5432"
     volumes:
       - ewc-medicaid:/var/libs/postgresql/data
-
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   ewc-medicaid:
