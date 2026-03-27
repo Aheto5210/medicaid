@@ -18,7 +18,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ewc-medicaid:/var/libs/postgresql/data
+      - ewc-medicaid:/var/lib/postgresql/data
       - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
