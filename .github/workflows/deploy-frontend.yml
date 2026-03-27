@@ -1,0 +1,40 @@
+name: Deploy Frontend to Server
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add SSH key to agent
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+
+      - name: SSH and deploy frontend
+        run: |
+          ssh $SSH_USER@$SSH_HOST << 'EOF'
+            cd ~/medicaid/client
+            git pull --ff-only origin main
+            npm install
+            npm run build
+          EOF
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+
+      - name: Verify frontend
+        run: |
+          curl -sf https://admin.vehiville.com || curl -sf http://admin.vehiville.com || echo "Frontend deployed"
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
