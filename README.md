@@ -29,8 +29,9 @@ A full-stack dashboard for the EWCComm25 annual Medicaid program. It supports st
   - `JWT_ACCESS_SECRET`
   - `JWT_REFRESH_SECRET`
   - `CORS_ORIGIN=https://your-frontend-domain.com`
-- Build the `client` with `VITE_API_URL` pointing to the deployed backend, for example:
+- Add a repository secret named `VITE_API_URL` for GitHub Actions so the `client` can build against the deployed backend, for example:
   - `VITE_API_URL=https://api.your-domain.com`
+- The frontend build is produced in GitHub Actions and synced to `~/medicaid/client/dist` on the server.
 - The frontend, future desktop app, and any admin clients should all talk to the same hosted API.
 
 ## Scripts (suggested)
