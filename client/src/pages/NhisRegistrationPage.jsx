@@ -1,0 +1,505 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { apiFetch, getStoredTokens } from '../api.js';
+import { NHIS_SITUATION_CASE_OPTIONS } from '../constants/options.js';
+import { normalizePermissions } from '../utils/permissions.js';
+import ToastStack from '../components/common/ToastStack.jsx';
+import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
+import NhisTable from '../components/nhis/NhisTable.jsx';
+import NhisDetailsModal from '../components/nhis/NhisDetailsModal.jsx';
+
+export default function NhisRegistrationPage({
+  records,
+  onRefresh,
+  programYear,
+  yearOptions,
+  onYearChange,
+  onNew,
+  permissions
+}) {
+  const [filters, setFilters] = useState({
+    name: '',
+    situation: ''
+  });
+  const [importing, setImporting] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [toasts, setToasts] = useState([]);
+  const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [recordDetails, setRecordDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+  const [detailsError, setDetailsError] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedRecordIds, setSelectedRecordIds] = useState([]);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [editForm, setEditForm] = useState({
+    fullName: '',
+    situationCase: '',
+    amount: '',
+    programYear
+  });
+
+  const fileInputRef = useRef(null);
+  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const resolvedPermissions = normalizePermissions(permissions);
+  const canEdit = resolvedPermissions.nhisRegistration.edit;
+  const canDelete = resolvedPermissions.nhisRegistration.delete;
+  const canImport = resolvedPermissions.nhisRegistration.import;
+  const canExport = resolvedPermissions.nhisRegistration.export;
+  const canCreate = resolvedPermissions.nhisRegistration.create;
+
+  function showToast(text, type = 'success') {
+    const id = `${Date.now()}-${Math.random()}`;
+    setToasts((prev) => [...prev, { id, text, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 2800);
+  }
+
+  function hydrateEditForm(record) {
+    setEditForm({
+      fullName: record.full_name || '',
+      situationCase: record.situation_case || '',
+      amount: record.amount ?? '',
+      programYear: record.program_year || programYear
+    });
+  }
+
+  async function fetchRecordDetails(recordId, options = {}) {
+    const { showLoading = true } = options;
+
+    if (showLoading) {
+      setLoadingDetails(true);
+    }
+    setDetailsError(null);
+
+    const res = await apiFetch(`/api/nhis/${recordId}`);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      const message = data.message || 'Unable to load NHIS record details.';
+      setDetailsError(message);
+      showToast(message, 'error');
+      if (showLoading) {
+        setLoadingDetails(false);
+      }
+      return null;
+    }
+
+    const data = await res.json();
+    setRecordDetails(data);
+    hydrateEditForm(data);
+
+    if (showLoading) {
+      setLoadingDetails(false);
+    }
+
+    return data;
+  }
+
+  async function openRecordDetails(recordId) {
+    setSelectedRecordId(recordId);
+    setEditing(false);
+    await fetchRecordDetails(recordId);
+  }
+
+  function closeRecordDetails() {
+    setSelectedRecordId(null);
+    setRecordDetails(null);
+    setLoadingDetails(false);
+    setDetailsError(null);
+    setEditing(false);
+    setShowDeleteConfirm(false);
+  }
+
+  async function handleSaveDetails(event) {
+    event.preventDefault();
+    if (!recordDetails) return;
+    if (!canEdit) {
+      showToast('You do not have permission to edit records.', 'error');
+      return;
+    }
+
+    setSaving(true);
+    setDetailsError(null);
+
+    const payload = {
+      fullName: editForm.fullName,
+      situationCase: editForm.situationCase || null,
+      amount: editForm.amount,
+      programYear: editForm.programYear ? Number(editForm.programYear) : null
+    };
+
+    const res = await apiFetch(`/api/nhis/${recordDetails.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      const message = data.message || 'Failed to save changes.';
+      setDetailsError(message);
+      showToast(message, 'error');
+      setSaving(false);
+      return;
+    }
+
+    await fetchRecordDetails(recordDetails.id, { showLoading: false });
+    setSaving(false);
+    setEditing(false);
+    showToast('Information updated.');
+    await onRefresh();
+  }
+
+  async function confirmDeleteRecord() {
+    if (!recordDetails) return;
+    if (!canDelete) {
+      showToast('You do not have permission to delete records.', 'error');
+      return;
+    }
+
+    setDeleting(true);
+    setDetailsError(null);
+
+    const res = await apiFetch(`/api/nhis/${recordDetails.id}`, {
+      method: 'DELETE'
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      const message = data.message || 'Failed to delete record.';
+      setDetailsError(message);
+      showToast(message, 'error');
+      setDeleting(false);
+      return;
+    }
+
+    setDeleting(false);
+    setShowDeleteConfirm(false);
+    setSelectedRecordIds((prev) => prev.filter((id) => id !== recordDetails.id));
+    closeRecordDetails();
+    showToast('NHIS record deleted successfully.');
+    await onRefresh();
+  }
+
+  function updateFilter(key, value) {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  }
+
+  const filteredRecords = useMemo(() => {
+    return records.filter((record) => {
+      const name = String(record.full_name || '').toLowerCase();
+      const situation = String(record.situation_case || '').toLowerCase();
+
+      const nameMatch = !filters.name || name.includes(filters.name.toLowerCase().trim());
+      const situationMatch = !filters.situation || situation.includes(filters.situation.toLowerCase().trim());
+
+      return nameMatch && situationMatch;
+    });
+  }, [records, filters]);
+
+  useEffect(() => {
+    const visibleIds = new Set(filteredRecords.map((record) => record.id));
+    setSelectedRecordIds((prev) => prev.filter((id) => visibleIds.has(id)));
+  }, [filteredRecords]);
+
+  function toggleSelectRecord(recordId) {
+    if (!canDelete) return;
+
+    setSelectedRecordIds((prev) => (
+      prev.includes(recordId)
+        ? prev.filter((id) => id !== recordId)
+        : [...prev, recordId]
+    ));
+  }
+
+  function toggleSelectAllRecords(event) {
+    if (!canDelete) return;
+
+    const visibleIds = filteredRecords.map((record) => record.id);
+    setSelectedRecordIds(event.target.checked ? visibleIds : []);
+  }
+
+  async function confirmBulkDeleteRecords() {
+    if (!canDelete || !selectedRecordIds.length) {
+      setShowBulkDeleteConfirm(false);
+      return;
+    }
+
+    const idsToDelete = [...selectedRecordIds];
+    let deletedCount = 0;
+    const failedIds = [];
+
+    setBulkDeleting(true);
+
+    for (const recordId of idsToDelete) {
+      const res = await apiFetch(`/api/nhis/${recordId}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        deletedCount += 1;
+      } else {
+        failedIds.push(recordId);
+      }
+    }
+
+    setBulkDeleting(false);
+    setShowBulkDeleteConfirm(false);
+    setSelectedRecordIds(failedIds);
+
+    if (deletedCount > 0) {
+      showToast(`Deleted ${deletedCount} NHIS record${deletedCount === 1 ? '' : 's'}.`);
+      await onRefresh();
+    }
+
+    if (failedIds.length > 0) {
+      showToast(
+        `Failed to delete ${failedIds.length} NHIS record${failedIds.length === 1 ? '' : 's'}.`,
+        'error'
+      );
+    }
+  }
+
+  async function downloadBlob(path, filename, successText) {
+    const res = await apiFetch(path);
+    if (!res.ok) {
+      showToast('Download failed. Please try again.', 'error');
+      return;
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+
+    if (successText) {
+      showToast(successText);
+    }
+  }
+
+  async function handleTemplateDownload() {
+    await downloadBlob('/api/nhis/template', 'ewccomm25-nhis-template.xlsx', 'Template downloaded.');
+  }
+
+  async function handleExport() {
+    if (!canExport) {
+      showToast('You do not have permission to export records.', 'error');
+      return;
+    }
+
+    setExporting(true);
+
+    const params = new URLSearchParams();
+    if (filters.name) params.set('name', filters.name);
+    if (filters.situation) params.set('situation', filters.situation);
+    if (programYear) params.set('year', programYear);
+
+    const query = params.toString() ? `?${params.toString()}` : '';
+    await downloadBlob('/api/nhis/export' + query, 'ewccomm25-nhis-registrations.xlsx', 'Export downloaded.');
+
+    setExporting(false);
+  }
+
+  async function handleImport(event) {
+    if (!canImport) {
+      showToast('You do not have permission to import records.', 'error');
+      event.target.value = '';
+      return;
+    }
+
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setImporting(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    if (programYear) {
+      formData.append('year', programYear);
+    }
+
+    const { accessToken } = getStoredTokens();
+    const res = await fetch(`${apiBase}/api/nhis/import`, {
+      method: 'POST',
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+      body: formData
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      showToast(data.message || 'Import failed. Please check the sheet format.', 'error');
+      setImporting(false);
+      event.target.value = '';
+      return;
+    }
+
+    const data = await res.json().catch(() => ({}));
+    const duplicateText = data.duplicates ? `, duplicates ${data.duplicates}` : '';
+    showToast(`Imported ${data.inserted || 0} rows${data.skipped ? `, skipped ${data.skipped}` : ''}${duplicateText}.`);
+    setImporting(false);
+    event.target.value = '';
+    await onRefresh();
+  }
+
+  return (
+    <section className="page">
+      <div className="panel">
+        <div className="panel-header">
+          <div className="panel-header-lead">
+            {canCreate && (
+              <button className="primary header-new-button" onClick={() => onNew?.()}>
+                New NHIS Registration
+              </button>
+            )}
+          </div>
+          <div className="panel-actions">
+            <button className="ghost" onClick={handleTemplateDownload}>Download Template</button>
+            {canDelete && selectedRecordIds.length > 0 && (
+              <button
+                className="danger"
+                onClick={() => setShowBulkDeleteConfirm(true)}
+                disabled={bulkDeleting}
+              >
+                {bulkDeleting
+                  ? 'Deleting...'
+                  : `Delete Selected (${selectedRecordIds.length})`}
+              </button>
+            )}
+            {canImport && (
+              <>
+                <button
+                  className="ghost"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={importing}
+                >
+                  {importing ? 'Importing...' : 'Import Sheet'}
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".xlsx,.xls,.csv"
+                  onChange={handleImport}
+                  style={{ display: 'none' }}
+                />
+              </>
+            )}
+            {canExport && (
+              <button className="ghost" onClick={handleExport} disabled={exporting}>
+                {exporting ? 'Exporting...' : 'Export'}
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="filter-grid">
+          <label>
+            Year
+            <select
+              value={programYear}
+              onChange={(event) => onYearChange(Number(event.target.value))}
+            >
+              {yearOptions.map((year) => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Name
+            <input
+              value={filters.name}
+              onChange={(event) => updateFilter('name', event.target.value)}
+              placeholder="Filter by name"
+            />
+          </label>
+          <label>
+            Situation/Case
+            <select
+              value={filters.situation}
+              onChange={(event) => updateFilter('situation', event.target.value)}
+            >
+              <option value="">All situations/cases</option>
+              {NHIS_SITUATION_CASE_OPTIONS.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <NhisTable
+          records={filteredRecords}
+          onView={openRecordDetails}
+          canDelete={canDelete}
+          selectedIds={selectedRecordIds}
+          onToggleSelect={toggleSelectRecord}
+          onToggleSelectAll={toggleSelectAllRecords}
+        />
+      </div>
+
+      <ToastStack
+        toasts={toasts}
+        onDismiss={(id) => setToasts((prev) => prev.filter((toast) => toast.id !== id))}
+      />
+
+      {selectedRecordId && (
+        <NhisDetailsModal
+          record={recordDetails}
+          loading={loadingDetails}
+          error={detailsError}
+          editing={editing}
+          form={editForm}
+          yearOptions={yearOptions}
+          onFormChange={(key, value) => setEditForm((prev) => ({ ...prev, [key]: value }))}
+          onStartEdit={() => {
+            if (!canEdit) return;
+            if (recordDetails) hydrateEditForm(recordDetails);
+            setEditing(true);
+          }}
+          onCancelEdit={() => {
+            if (recordDetails) hydrateEditForm(recordDetails);
+            setEditing(false);
+            setDetailsError(null);
+          }}
+          onSave={handleSaveDetails}
+          onDelete={() => {
+            if (!canDelete) return;
+            setShowDeleteConfirm(true);
+          }}
+          onClose={closeRecordDetails}
+          saving={saving}
+          deleting={deleting}
+          canEdit={canEdit}
+          canDelete={canDelete}
+        />
+      )}
+
+      {showDeleteConfirm && recordDetails && canDelete && (
+        <ConfirmDialog
+          title="Delete NHIS Record"
+          message={`Delete ${recordDetails.full_name || ''} permanently?`}
+          confirmLabel={deleting ? 'Deleting...' : 'Delete'}
+          onCancel={() => setShowDeleteConfirm(false)}
+          onConfirm={confirmDeleteRecord}
+          danger
+          busy={deleting}
+        />
+      )}
+
+      {showBulkDeleteConfirm && canDelete && (
+        <ConfirmDialog
+          title="Delete Selected NHIS Records"
+          message={`Delete ${selectedRecordIds.length} selected NHIS record${selectedRecordIds.length === 1 ? '' : 's'} permanently?`}
+          confirmLabel={bulkDeleting ? 'Deleting...' : 'Delete Selected'}
+          onCancel={() => setShowBulkDeleteConfirm(false)}
+          onConfirm={confirmBulkDeleteRecords}
+          danger
+          busy={bulkDeleting}
+        />
+      )}
+    </section>
+  );
+}
