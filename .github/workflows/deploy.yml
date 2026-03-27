@@ -25,7 +25,7 @@ jobs:
 
       - name: Save server image
         run: |
-          docker save medicaid-server:latest -o /tmp/medicaid-server.tar
+          docker save medicaid-server:latest -o medicaid-server.tar
 
       - name: Add SSH key to agent
         run: |
@@ -35,22 +35,32 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
 
+      - name: Copy image to server
+        run: |
+          scp -o StrictHostKeyChecking=no medicaid-server.tar $SSH_USER@$SSH_HOST:~/medicaid/
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+
       - name: SSH and deploy
         run: |
           ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
             cd ~/medicaid
             
             # Load the image
-            docker load -i /tmp/medicaid-server.tar || true
+            docker load -i medicaid-server.tar || true
             
             # Stop and remove old container (keep db data)
-            docker-compose down || true
+            docker compose down || true
             
             # Pull fresh DB image
             docker pull postgres:16-alpine || true
             
             # Start services (will use local image for server)
-            docker-compose up -d --build server
+            docker compose up -d --build server
+            
+            # Cleanup
+            rm -f medicaid-server.tar
           EOF
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -58,7 +68,7 @@ jobs:
 
       - name: Verify deployment
         run: |
-          sleep 5
+          sleep 10
           curl -sf http://$SSH_HOST:4045/health || echo "Health check failed"
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
