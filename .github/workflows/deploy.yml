@@ -1,0 +1,64 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build server image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          push: false
+          load: true
+          tags: medicaid-server:latest
+
+      - name: Save server image
+        run: |
+          docker save medicaid-server:latest -o /tmp/medicaid-server.tar
+
+      - name: Add SSH key to agent
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+
+      - name: SSH and deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+            cd ~/medicaid
+            
+            # Load the image
+            docker load -i /tmp/medicaid-server.tar || true
+            
+            # Stop and remove old container (keep db data)
+            docker-compose down || true
+            
+            # Pull fresh DB image
+            docker pull postgres:16-alpine || true
+            
+            # Start services (will use local image for server)
+            docker-compose up -d --build server
+          EOF
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+
+      - name: Verify deployment
+        run: |
+          sleep 5
+          curl -sf http://$SSH_HOST:4045/health || echo "Health check failed"
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
