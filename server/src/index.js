@@ -2,23 +2,19 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
 
+import config from './config.js';
 import authRoutes from './routes/auth.js';
 import peopleRoutes from './routes/people.js';
 import nhisRoutes from './routes/nhis.js';
 import analyticsRoutes from './routes/analytics.js';
 import usersRoutes from './routes/users.js';
 
-dotenv.config();
-
 const app = express();
+const corsOrigins = config.corsOrigins;
 
-const corsOrigins = (process.env.CORS_ORIGIN || '')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
+app.disable('x-powered-by');
+app.set('trust proxy', config.trustProxy);
 app.use(helmet());
 app.use(cors({
   origin(origin, callback) {
@@ -36,7 +32,13 @@ app.use(cors({
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    environment: config.nodeEnv,
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/people', peopleRoutes);
@@ -49,7 +51,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Server error' });
 });
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`API listening on ${port}`);
+app.listen(config.port, () => {
+  console.log(`API listening on ${config.port}`);
 });

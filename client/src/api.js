@@ -1,27 +1,55 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+import { buildApiUrl } from './config.js';
+
+function getStorage() {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage;
+}
 
 export function getStoredTokens() {
+  const storage = getStorage();
   return {
-    accessToken: localStorage.getItem('accessToken'),
-    refreshToken: localStorage.getItem('refreshToken')
+    accessToken: storage?.getItem('accessToken') || null,
+    refreshToken: storage?.getItem('refreshToken') || null
   };
 }
 
 export function setTokens(accessToken, refreshToken) {
-  if (accessToken) localStorage.setItem('accessToken', accessToken);
-  if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+  const storage = getStorage();
+  if (!storage) return;
+  if (accessToken) storage.setItem('accessToken', accessToken);
+  if (refreshToken) storage.setItem('refreshToken', refreshToken);
 }
 
 export function clearTokens() {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
+  const storage = getStorage();
+  if (!storage) return;
+  storage.removeItem('accessToken');
+  storage.removeItem('refreshToken');
+}
+
+function buildHeaders(options = {}, accessToken) {
+  const headers = { ...(options.headers || {}) };
+  const hasFormDataBody = options.body instanceof FormData;
+  const hasContentType = Object.keys(headers).some(
+    (key) => key.toLowerCase() === 'content-type'
+  );
+
+  if (!hasFormDataBody && options.body !== undefined && !hasContentType) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  return headers;
 }
 
 async function tryRefresh() {
   const { refreshToken } = getStoredTokens();
   if (!refreshToken) return null;
 
-  const res = await fetch(`${API_URL}/api/auth/refresh`, {
+  const res = await fetch(buildApiUrl('/api/auth/refresh'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken })
@@ -35,16 +63,9 @@ async function tryRefresh() {
 
 export async function apiFetch(path, options = {}) {
   const { accessToken } = getStoredTokens();
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(options.headers || {})
-  };
+  const headers = buildHeaders(options, accessToken);
 
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(buildApiUrl(path), {
     ...options,
     headers
   });
@@ -55,12 +76,20 @@ export async function apiFetch(path, options = {}) {
   if (!newAccessToken) return res;
 
   const retryHeaders = {
-    ...headers,
+    ...buildHeaders(options, newAccessToken),
     Authorization: `Bearer ${newAccessToken}`
   };
 
-  return fetch(`${API_URL}${path}`, {
+  return fetch(buildApiUrl(path), {
     ...options,
     headers: retryHeaders
+  });
+}
+
+export function apiUpload(path, formData, options = {}) {
+  return apiFetch(path, {
+    ...options,
+    method: options.method || 'POST',
+    body: formData
   });
 }

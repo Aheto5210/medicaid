@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { apiFetch, getStoredTokens } from '../api.js';
+import { apiFetch, apiUpload } from '../api.js';
 import { GENDER_OPTIONS, MAIN_REASON_OPTIONS } from '../constants/options.js';
 import { splitFullName } from '../utils/people.js';
 import { normalizePermissions } from '../utils/permissions.js';
@@ -51,7 +51,6 @@ export default function PeoplePage({
   });
 
   const fileInputRef = useRef(null);
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   const resolvedPermissions = normalizePermissions(permissions);
   const canEdit = resolvedPermissions.generalRegistration.edit;
   const canDelete = resolvedPermissions.generalRegistration.delete;
@@ -352,12 +351,7 @@ export default function PeoplePage({
       formData.append('year', programYear);
     }
 
-    const { accessToken } = getStoredTokens();
-    const res = await fetch(`${apiBase}/api/people/import`, {
-      method: 'POST',
-      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-      body: formData
-    });
+    const res = await apiUpload('/api/people/import', formData);
 
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));

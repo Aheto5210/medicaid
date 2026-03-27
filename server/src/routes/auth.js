@@ -7,6 +7,7 @@ import {
   verifyRefreshToken,
   hashToken
 } from '../utils/tokens.js';
+import config from '../config.js';
 import { requireAuth } from '../middleware/auth.js';
 import { normalizePermissions } from '../utils/permissions.js';
 import { DEFAULT_ROLE, normalizeRoleValue } from '../utils/roles.js';
@@ -25,7 +26,7 @@ function durationToInterval(duration) {
 async function issueTokens(user, meta = {}) {
   const accessToken = signAccessToken(user);
   const refreshToken = signRefreshToken(user);
-  const refreshInterval = durationToInterval(process.env.REFRESH_TOKEN_EXPIRES_IN || '30d');
+  const refreshInterval = durationToInterval(config.refreshTokenExpiresIn);
 
   await query(
     `INSERT INTO refresh_tokens (user_id, token_hash, expires_at, created_ip, user_agent)

@@ -1,7 +1,5 @@
-import dotenv from 'dotenv';
 import { Client } from 'pg';
-
-dotenv.config();
+import config from '../src/config.js';
 
 const sql = `
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -37,13 +35,12 @@ EXECUTE FUNCTION set_updated_at();
 `;
 
 async function run() {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    console.error('DATABASE_URL is missing. Set it in server/.env.');
-    process.exit(1);
-  }
-
-  const client = new Client({ connectionString });
+  const client = new Client({
+    connectionString: config.databaseUrl,
+    ssl: config.databaseSsl
+      ? { rejectUnauthorized: config.databaseSslRejectUnauthorized }
+      : undefined
+  });
   try {
     await client.connect();
     await client.query(sql);

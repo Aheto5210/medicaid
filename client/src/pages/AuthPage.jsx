@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BrandLogo from '../components/common/BrandLogo.jsx';
+import { apiFetch } from '../api.js';
 
 export default function AuthPage({
   onSuccess,
@@ -18,9 +19,8 @@ export default function AuthPage({
     const payload = { email: form.email, password: form.password };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}${endpoint}`, {
+      const res = await apiFetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
@@ -33,7 +33,7 @@ export default function AuthPage({
       const data = await res.json();
       onSuccess(data);
     } catch (err) {
-      setError('Network error. Check that the server is running and API URL is correct.');
+      setError('Network error. Check that the backend is running and VITE_API_URL is correct.');
     } finally {
       setLoading(false);
     }
