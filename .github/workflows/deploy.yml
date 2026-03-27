@@ -25,20 +25,28 @@ jobs:
             cd ~/medicaid
             git pull --ff-only origin main
             
-            # Build and start backend (docker compose handles BE + DB)
-            docker compose up -d --build
-            
-            # Build frontend
+            # Build frontend first
             cd client
             npm install
             npm run build
+            cd ..
+            
+            # Then build and start backend (docker compose handles BE + DB)
+            docker compose up -d --build
           EOF
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
 
-      - name: Verify deployment
+      - name: Verify backend
         run: |
           curl -sf http://$SSH_HOST:8078/health
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      - name: Verify frontend dist exists
+        run: |
+          ssh $SSH_USER@$SSH_HOST "ls -la ~/medicaid/client/dist/index.html"
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
