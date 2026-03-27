@@ -32,6 +32,6 @@ jobs:
 
       - name: Verify deployment
         run: |
-          curl -sf http://$SSH_HOST:4045/health
+          curl -sf http://$SSH_HOST:8078/health
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}

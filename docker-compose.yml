@@ -2,7 +2,7 @@ services:
   server:
     build: ./server
     ports:
-      - "4045:4000"
+      - "8078:4000"
     env_file: ./server/.env
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
