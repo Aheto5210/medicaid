@@ -4,6 +4,11 @@
   "private": true,
   "scripts": {
     "dev:client": "npm --prefix client run dev",
-    "dev:server": "npm --prefix server run dev"
+    "dev:server": "npm --prefix server run dev",
+    "desktop:dev": "npm --prefix client run desktop:dev",
+    "desktop:build": "npm --prefix client run desktop:build",
+    "desktop:build:mac": "npm --prefix client run desktop:build:mac",
+    "desktop:build:mac:universal": "npm --prefix client run desktop:build:mac:universal",
+    "desktop:build:windows": "npm --prefix client run desktop:build:windows"
   }
 }
