@@ -51,6 +51,10 @@ export default function AuthPage({
             Email
             <input
               type="email"
+              inputMode="email"
+              autoComplete="email"
+              autoCapitalize="none"
+              spellCheck={false}
               required
               value={form.email}
               onChange={(event) => setForm({ ...form, email: event.target.value })}
@@ -60,13 +64,14 @@ export default function AuthPage({
             Password
             <input
               type="password"
+              autoComplete="current-password"
               required
               value={form.password}
               onChange={(event) => setForm({ ...form, password: event.target.value })}
             />
           </label>
           {error && <div className="error">{error}</div>}
-          <button className="primary" type="submit" disabled={loading}>
+          <button className="primary auth-submit" type="submit" disabled={loading}>
             {loading ? 'Please wait...' : 'Sign In'}
           </button>
         </form>

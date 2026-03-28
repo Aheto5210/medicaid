@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch, apiUpload } from '../api.js';
 import { NHIS_SITUATION_CASE_OPTIONS } from '../constants/options.js';
+import { deleteNhisMutation, updateNhisMutation } from '../utils/offlineData.js';
 import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
@@ -49,6 +50,28 @@ export default function NhisRegistrationPage({
   const canExport = resolvedPermissions.nhisRegistration.export;
   const canCreate = resolvedPermissions.nhisRegistration.create;
 
+  function formatCurrency(amount) {
+    const value = Number(amount || 0);
+    return new Intl.NumberFormat('en-GH', {
+      style: 'currency',
+      currency: 'GHS',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
+  }
+
+  function buildRecordDetailFromRow(record) {
+    if (!record) return null;
+    return {
+      ...record,
+      full_name: record.full_name || '',
+      situation_case: record.situation_case || '',
+      amount: record.amount ?? '',
+      program_year: record.program_year || programYear,
+      registration_date: record.registration_date || new Date().toISOString()
+    };
+  }
+
   function showToast(text, type = 'success') {
     const id = `${Date.now()}-${Math.random()}`;
     setToasts((prev) => [...prev, { id, text, type }]);
@@ -67,34 +90,68 @@ export default function NhisRegistrationPage({
   }
 
   async function fetchRecordDetails(recordId, options = {}) {
-    const { showLoading = true } = options;
+    const { showLoading = true, fallbackRecord = null } = options;
+    const localFallback = buildRecordDetailFromRow(
+      fallbackRecord || records.find((item) => item.id === recordId)
+    );
 
     if (showLoading) {
       setLoadingDetails(true);
     }
     setDetailsError(null);
 
-    const res = await apiFetch(`/api/nhis/${recordId}`);
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      const message = data.message || 'Unable to load NHIS record details.';
-      setDetailsError(message);
-      showToast(message, 'error');
+    if (String(recordId).startsWith('local-nhis:') && localFallback) {
+      setRecordDetails(localFallback);
+      hydrateEditForm(localFallback);
       if (showLoading) {
         setLoadingDetails(false);
       }
-      return null;
+      return localFallback;
     }
 
-    const data = await res.json();
-    setRecordDetails(data);
-    hydrateEditForm(data);
+    try {
+      const res = await apiFetch(`/api/nhis/${recordId}`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const message = data.message || 'Unable to load NHIS record details.';
 
-    if (showLoading) {
-      setLoadingDetails(false);
+        if (localFallback) {
+          setRecordDetails(localFallback);
+          hydrateEditForm(localFallback);
+        } else {
+          setDetailsError(message);
+          showToast(message, 'error');
+        }
+
+        if (showLoading) {
+          setLoadingDetails(false);
+        }
+        return localFallback;
+      }
+
+      const data = await res.json();
+      setRecordDetails(data);
+      hydrateEditForm(data);
+
+      if (showLoading) {
+        setLoadingDetails(false);
+      }
+
+      return data;
+    } catch {
+      if (localFallback) {
+        setRecordDetails(localFallback);
+        hydrateEditForm(localFallback);
+      } else {
+        setDetailsError('Unable to load NHIS record details.');
+      }
+
+      if (showLoading) {
+        setLoadingDetails(false);
+      }
+
+      return localFallback;
     }
-
-    return data;
   }
 
   async function openRecordDetails(recordId) {
@@ -130,13 +187,10 @@ export default function NhisRegistrationPage({
       programYear: editForm.programYear ? Number(editForm.programYear) : null
     };
 
-    const res = await apiFetch(`/api/nhis/${recordDetails.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(payload)
-    });
+    const result = await updateNhisMutation(recordDetails.id, payload, recordDetails);
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+    if (!result.ok) {
+      const data = await result.response?.json().catch(() => ({}));
       const message = data.message || 'Failed to save changes.';
       setDetailsError(message);
       showToast(message, 'error');
@@ -144,7 +198,16 @@ export default function NhisRegistrationPage({
       return;
     }
 
-    await fetchRecordDetails(recordDetails.id, { showLoading: false });
+    const optimisticDetails = buildRecordDetailFromRow({
+      ...recordDetails,
+      full_name: payload.fullName,
+      situation_case: payload.situationCase,
+      amount: payload.amount,
+      program_year: payload.programYear
+    });
+
+    setRecordDetails(optimisticDetails);
+    hydrateEditForm(optimisticDetails);
     setSaving(false);
     setEditing(false);
     showToast('Information updated.');
@@ -161,12 +224,10 @@ export default function NhisRegistrationPage({
     setDeleting(true);
     setDetailsError(null);
 
-    const res = await apiFetch(`/api/nhis/${recordDetails.id}`, {
-      method: 'DELETE'
-    });
+    const result = await deleteNhisMutation(recordDetails.id);
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+    if (!result.ok) {
+      const data = await result.response?.json().catch(() => ({}));
       const message = data.message || 'Failed to delete record.';
       setDetailsError(message);
       showToast(message, 'error');
@@ -197,6 +258,14 @@ export default function NhisRegistrationPage({
       return nameMatch && situationMatch;
     });
   }, [records, filters]);
+
+  const totalAmount = useMemo(
+    () => filteredRecords.reduce((sum, record) => {
+      const amount = Number(record.amount);
+      return Number.isFinite(amount) ? sum + amount : sum;
+    }, 0),
+    [filteredRecords]
+  );
 
   useEffect(() => {
     const visibleIds = new Set(filteredRecords.map((record) => record.id));
@@ -233,11 +302,9 @@ export default function NhisRegistrationPage({
     setBulkDeleting(true);
 
     for (const recordId of idsToDelete) {
-      const res = await apiFetch(`/api/nhis/${recordId}`, {
-        method: 'DELETE'
-      });
+      const result = await deleteNhisMutation(recordId);
 
-      if (res.ok) {
+      if (result.ok) {
         deletedCount += 1;
       } else {
         failedIds.push(recordId);
@@ -350,6 +417,9 @@ export default function NhisRegistrationPage({
                 New NHIS Registration
               </button>
             )}
+            <div className="page-total-pill" title="Total amount for the current NHIS view">
+              {formatCurrency(totalAmount)}
+            </div>
           </div>
           <div className="panel-actions">
             <button className="ghost" onClick={handleTemplateDownload}>Download Template</button>

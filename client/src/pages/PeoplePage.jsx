@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch, apiUpload } from '../api.js';
 import { GENDER_OPTIONS, MAIN_REASON_OPTIONS } from '../constants/options.js';
+import { deletePersonMutation, updatePersonMutation } from '../utils/offlineData.js';
 import { splitFullName } from '../utils/people.js';
 import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
@@ -58,6 +59,25 @@ export default function PeoplePage({
   const canExport = resolvedPermissions.generalRegistration.export;
   const canCreate = resolvedPermissions.generalRegistration.create;
 
+  function buildPersonDetailFromRow(person) {
+    if (!person) return null;
+    return {
+      ...person,
+      first_name: person.first_name || '',
+      last_name: person.last_name || '',
+      age: person.age ?? '',
+      gender: person.gender || '',
+      phone: person.phone || '',
+      occupation: person.occupation || '',
+      registration_source: person.registration_source || '',
+      reason_for_coming: person.reason_for_coming || '',
+      address_line1: person.address_line1 || '',
+      email: person.email || '',
+      program_year: person.program_year || programYear,
+      registration_date: person.registration_date || new Date().toISOString()
+    };
+  }
+
   function showToast(text, type = 'success') {
     const id = `${Date.now()}-${Math.random()}`;
     setToasts((prev) => [...prev, { id, text, type }]);
@@ -82,34 +102,68 @@ export default function PeoplePage({
   }
 
   async function fetchPersonDetails(personId, options = {}) {
-    const { showLoading = true } = options;
+    const { showLoading = true, fallbackPerson = null } = options;
+    const localFallback = buildPersonDetailFromRow(
+      fallbackPerson || people.find((item) => item.id === personId)
+    );
 
     if (showLoading) {
       setLoadingDetails(true);
     }
     setDetailsError(null);
 
-    const res = await apiFetch(`/api/people/${personId}`);
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      const message = data.message || 'Unable to load person details.';
-      setDetailsError(message);
-      showToast(message, 'error');
+    if (String(personId).startsWith('local-person:') && localFallback) {
+      setPersonDetails(localFallback);
+      hydrateEditForm(localFallback);
       if (showLoading) {
         setLoadingDetails(false);
       }
-      return null;
+      return localFallback;
     }
 
-    const data = await res.json();
-    setPersonDetails(data);
-    hydrateEditForm(data);
+    try {
+      const res = await apiFetch(`/api/people/${personId}`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const message = data.message || 'Unable to load person details.';
 
-    if (showLoading) {
-      setLoadingDetails(false);
+        if (localFallback) {
+          setPersonDetails(localFallback);
+          hydrateEditForm(localFallback);
+        } else {
+          setDetailsError(message);
+          showToast(message, 'error');
+        }
+
+        if (showLoading) {
+          setLoadingDetails(false);
+        }
+        return localFallback;
+      }
+
+      const data = await res.json();
+      setPersonDetails(data);
+      hydrateEditForm(data);
+
+      if (showLoading) {
+        setLoadingDetails(false);
+      }
+
+      return data;
+    } catch {
+      if (localFallback) {
+        setPersonDetails(localFallback);
+        hydrateEditForm(localFallback);
+      } else {
+        setDetailsError('Unable to load person details.');
+      }
+
+      if (showLoading) {
+        setLoadingDetails(false);
+      }
+
+      return localFallback;
     }
-
-    return data;
   }
 
   async function openPersonDetails(personId) {
@@ -153,13 +207,10 @@ export default function PeoplePage({
       programYear: editForm.programYear ? Number(editForm.programYear) : null
     };
 
-    const res = await apiFetch(`/api/people/${personDetails.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(payload)
-    });
+    const result = await updatePersonMutation(personDetails.id, payload, personDetails);
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+    if (!result.ok) {
+      const data = await result.response?.json().catch(() => ({}));
       const message = data.message || 'Failed to save changes.';
       setDetailsError(message);
       showToast(message, 'error');
@@ -167,7 +218,23 @@ export default function PeoplePage({
       return;
     }
 
-    await fetchPersonDetails(personDetails.id, { showLoading: false });
+    const optimisticDetails = buildPersonDetailFromRow({
+      ...personDetails,
+      first_name: firstName,
+      last_name: lastName,
+      age: payload.age,
+      gender: payload.gender,
+      phone: payload.phone,
+      email: payload.email,
+      occupation: payload.occupation,
+      registration_source: payload.registrationSource,
+      reason_for_coming: payload.reasonForComing,
+      address_line1: payload.addressLine1,
+      program_year: payload.programYear
+    });
+
+    setPersonDetails(optimisticDetails);
+    hydrateEditForm(optimisticDetails);
     setSaving(false);
     setEditing(false);
     showToast('Information updated.');
@@ -184,12 +251,10 @@ export default function PeoplePage({
     setDeleting(true);
     setDetailsError(null);
 
-    const res = await apiFetch(`/api/people/${personDetails.id}`, {
-      method: 'DELETE'
-    });
+    const result = await deletePersonMutation(personDetails.id);
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+    if (!result.ok) {
+      const data = await result.response?.json().catch(() => ({}));
       const message = data.message || 'Failed to delete person.';
       setDetailsError(message);
       showToast(message, 'error');
@@ -260,11 +325,9 @@ export default function PeoplePage({
     setBulkDeleting(true);
 
     for (const personId of idsToDelete) {
-      const res = await apiFetch(`/api/people/${personId}`, {
-        method: 'DELETE'
-      });
+      const result = await deletePersonMutation(personId);
 
-      if (res.ok) {
+      if (result.ok) {
         deletedCount += 1;
       } else {
         failedIds.push(personId);

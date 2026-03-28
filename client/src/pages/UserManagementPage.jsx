@@ -306,28 +306,6 @@ export default function UserManagementPage({ user }) {
 
   return (
     <section className="page">
-      <div className="panel">
-        <div className="panel-header">
-          <h2>User Management</h2>
-          <span className="badge">Admin</span>
-        </div>
-
-        <div className="settings-grid">
-          <div>
-            <div className="label">Signed in as</div>
-            <div className="value">{user.full_name} ({user.email})</div>
-          </div>
-          <div>
-            <div className="label">Role</div>
-            <div className="value">{getRoleLabel(user.role)}</div>
-          </div>
-          <div>
-            <div className="label">Program</div>
-            <div className="value">MEDICAID</div>
-          </div>
-        </div>
-      </div>
-
       {message && <div className={message.type === 'error' ? 'error' : 'notice'}>{message.text}</div>}
 
       {!isAdmin && (

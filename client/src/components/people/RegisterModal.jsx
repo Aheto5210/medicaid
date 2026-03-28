@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { apiFetch } from '../../api.js';
 import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS } from '../../constants/options.js';
+import { createPersonMutation } from '../../utils/offlineData.js';
 import { splitFullName } from '../../utils/people.js';
 
 export default function RegisterModal({ programYear, onClose, onSaved }) {
@@ -41,17 +41,14 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
       onboardingStatus: form.onboardingStatus
     };
 
-    const res = await apiFetch('/api/people', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
+    const result = await createPersonMutation(payload);
 
-    if (res.ok) {
+    if (result.ok) {
       await onSaved();
       return;
     }
 
-    const data = await res.json().catch(() => ({}));
+    const data = await result.response?.json().catch(() => ({}));
     setError(data.message || 'Failed to save');
     setSaving(false);
   }

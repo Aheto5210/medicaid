@@ -95,7 +95,7 @@ export default function DashboardPage({ summary, recentPeople }) {
             <h2>Age Range</h2>
             <span className="badge">Standard Ranges</span>
           </div>
-          <LocationBarChart items={ageRangeItems} />
+          <LocationBarChart items={ageRangeItems} compact />
         </div>
 
         <div className="panel dashboard-reveal" style={revealStyle(370)}>

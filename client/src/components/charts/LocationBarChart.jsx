@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function LocationBarChart({ items }) {
+export default function LocationBarChart({ items, compact = false }) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
@@ -13,7 +13,7 @@ export default function LocationBarChart({ items }) {
   const focusedIndex = hoveredIndex ?? activeIndex;
 
   return (
-    <div className="location-bar-chart">
+    <div className={`location-bar-chart ${compact ? 'compact' : ''}`}>
       {items.map((item, index) => (
         <button
           key={item.label}

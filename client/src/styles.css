@@ -31,6 +31,10 @@
   --shadow: 0 20px 50px rgba(30, 42, 47, 0.08);
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 [data-theme='dark'] {
   --bg: #0d1418;
   --bg-start: #1b252b;
@@ -72,6 +76,7 @@ body {
   font-family: var(--font-apple);
   color: var(--text);
   background: radial-gradient(circle at top, var(--bg-start) 0%, var(--bg) 45%, var(--bg-end) 100%);
+  overflow-x: hidden;
 }
 
 h1, h2, h3 {
@@ -81,8 +86,19 @@ h1, h2, h3 {
   margin: 0;
 }
 
-button, input, select {
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button, input, select, textarea {
   font-family: inherit;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px;
 }
 
 .app-shell {
@@ -168,13 +184,23 @@ button, input, select {
 }
 
 .user-card {
-  display: flex;
-  align-items: center;
+  display: grid;
   gap: 12px;
   padding: 12px;
   background: var(--panel);
   border-radius: 14px;
   box-shadow: var(--shadow);
+}
+
+.user-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.user-meta {
+  min-width: 0;
 }
 
 .avatar {
@@ -196,15 +222,33 @@ button, input, select {
 
 .user-name {
   font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-role {
   font-size: 12px;
   color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-logout-button {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
 }
 
 .main {
   padding: 28px 36px 40px;
+  min-width: 0;
+}
+
+.dashboard-main {
+  background: var(--bg);
+  border-radius: 24px 0 0 24px;
 }
 
 .topbar {
@@ -219,6 +263,11 @@ button, input, select {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.topbar-title h1,
+.panel-header h2 {
+  white-space: nowrap;
 }
 
 .topbar-logo {
@@ -236,11 +285,25 @@ button, input, select {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.search {
+  flex: 1 1 280px;
+  min-width: min(100%, 280px);
+}
+
+.year-select {
+  flex: 0 0 auto;
 }
 
 .icon-button {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   display: inline-flex;
   align-items: center;
@@ -261,25 +324,31 @@ button, input, select {
 .search input {
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   min-width: 220px;
   background: var(--input-bg);
   color: var(--text);
+  min-height: 48px;
+  width: 100%;
 }
 
 .year-select select {
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   background: var(--input-bg);
   color: var(--text);
+  min-height: 48px;
 }
 
 button {
   border: none;
   border-radius: 12px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-weight: 600;
+  font-size: 15px;
+  min-height: 44px;
+  white-space: nowrap;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -431,6 +500,7 @@ button:hover {
   border-radius: 18px;
   padding: 18px;
   box-shadow: var(--shadow);
+  min-width: 0;
 }
 
 .panel-header {
@@ -438,22 +508,34 @@ button:hover {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
 }
 
 .panel-header-lead {
   display: flex;
   align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
 }
 
 .panel-actions {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  flex: 0 0 auto;
 }
 
 .header-new-button {
   min-width: 220px;
   padding: 11px 22px;
+  white-space: nowrap;
 }
 
 .badge {
@@ -462,6 +544,21 @@ button:hover {
   background: var(--panel-alt);
   color: var(--muted);
   font-size: 12px;
+  white-space: nowrap;
+}
+
+.page-total-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text);
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .location-grid {
@@ -473,6 +570,10 @@ button:hover {
 .location-bar-chart {
   display: grid;
   gap: 14px;
+}
+
+.location-bar-chart.compact {
+  gap: 8px;
 }
 
 .location-bar-row {
@@ -489,6 +590,11 @@ button:hover {
   cursor: pointer;
   border-radius: 10px;
   transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+}
+
+.location-bar-chart.compact .location-bar-row {
+  padding: 4px 6px;
+  gap: 10px;
 }
 
 .location-bar-row:hover {
@@ -531,6 +637,10 @@ button:hover {
   background-color: var(--location-track);
 }
 
+.location-bar-chart.compact .location-bar-track {
+  height: 15px;
+}
+
 .location-bar-track span {
   display: block;
   height: 100%;
@@ -551,6 +661,11 @@ button:hover {
   white-space: nowrap;
 }
 
+.location-bar-chart.compact .location-bar-label,
+.location-bar-chart.compact .location-bar-value {
+  font-size: 11px;
+}
+
 .location-bar-count {
   color: var(--text);
 }
@@ -566,6 +681,11 @@ button:hover {
 .location-bar-percent.visible {
   opacity: 1;
   transform: translateX(0);
+}
+
+.dashboard-animate .panel,
+.dashboard-animate .stat-card {
+  box-shadow: 0 10px 22px rgba(30, 42, 47, 0.05);
 }
 
 .breakdown-list {
@@ -912,6 +1032,7 @@ button:hover {
   display: grid;
   gap: 8px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-row {
@@ -1000,6 +1121,29 @@ button:hover {
   gap: 16px;
 }
 
+.settings-report {
+  display: grid;
+  gap: 14px;
+}
+
+.settings-report-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.settings-report-year {
+  flex: 0 0 auto;
+}
+
+.settings-report-note {
+  max-width: 760px;
+  line-height: 1.5;
+}
+
 .user-form-layout {
   display: grid;
   grid-template-columns: minmax(280px, 1fr) minmax(360px, 1.2fr);
@@ -1023,18 +1167,18 @@ button:hover {
 
 .permissions-matrix {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .permission-module {
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--surface-soft);
-  padding: 10px 12px;
+  padding: 12px 14px;
   display: grid;
   grid-template-columns: minmax(170px, 240px) 1fr;
-  gap: 12px;
-  align-items: start;
+  gap: 14px;
+  align-items: center;
 }
 
 .permission-module-info h4 {
@@ -1051,14 +1195,14 @@ button:hover {
 .permission-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
-  align-items: center;
+  gap: 10px 12px;
+  align-items: stretch;
 }
 
 .permission-actions.action-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(90px, 1fr));
-  gap: 6px 10px;
+  grid-template-columns: repeat(3, minmax(108px, 1fr));
+  gap: 8px 10px;
 }
 
 .permissions-note {
@@ -1129,7 +1273,23 @@ button:hover {
 
 .checkbox-row.compact {
   font-size: 12px;
-  gap: 6px;
+  gap: 8px;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  white-space: nowrap;
+}
+
+.checkbox-row.compact span {
+  font-weight: 600;
+}
+
+.checkbox-row.compact input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
 }
 
 .form label.checkbox-row {
@@ -1215,6 +1375,8 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .form {
@@ -1225,8 +1387,9 @@ button:hover {
 
 .filter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
   gap: 12px;
+  align-items: end;
   margin-bottom: 12px;
 }
 
@@ -1235,15 +1398,19 @@ button:hover {
   gap: 6px;
   font-size: 12px;
   color: var(--muted);
+  min-width: 0;
 }
 
 .filter-grid input,
 .filter-grid select {
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 12px 14px;
   background: var(--input-bg);
   color: var(--text);
+  min-height: 48px;
+  width: 100%;
+  min-width: 0;
 }
 
 .notice {
@@ -1291,7 +1458,7 @@ button:hover {
 .form label {
   display: grid;
   gap: 8px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -1299,11 +1466,12 @@ button:hover {
 .form select {
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   width: 100%;
   min-width: 0;
   background: var(--input-bg);
   color: var(--text);
+  min-height: 48px;
 }
 
 .field-grid {
@@ -1381,17 +1549,17 @@ button:hover {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 24px 18px;
 }
 
 .auth-card {
-  width: min(420px, 90vw);
+  width: min(460px, 100%);
   background: var(--panel);
-  padding: 28px;
+  padding: 32px;
   border-radius: 22px;
   box-shadow: var(--shadow);
   display: grid;
-  gap: 16px;
+  gap: 20px;
 }
 
 .auth-toggle {
@@ -1440,6 +1608,25 @@ button:hover {
   font-size: 12px;
   color: var(--muted);
   text-align: center;
+}
+
+.auth .form {
+  gap: 16px;
+}
+
+.auth .form input,
+.auth .form select {
+  min-height: 54px;
+  padding: 14px 16px;
+  border-radius: 14px;
+}
+
+.auth-submit {
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 18px;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 @keyframes fadeIn {
@@ -1552,6 +1739,8 @@ button:hover {
     max-height: none;
     overflow-x: auto;
     overflow-y: hidden;
+    padding: 16px 18px;
+    gap: 14px;
   }
 
   .sidebar-logo {
@@ -1572,21 +1761,52 @@ button:hover {
   }
 
   .sidebar-footer {
-    display: none;
+    display: block;
+    margin-top: 0;
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+
+  .user-card {
+    min-width: 210px;
   }
 
   .topbar {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .main {
+    padding: 22px 18px 32px;
+  }
+
+  .topbar-actions {
+    width: auto;
+  }
+
+  .search {
+    flex: 0 0 280px;
+    min-width: 280px;
+  }
+
+  .search input {
+    min-width: 0;
   }
 
   .panel-header-lead {
-    width: 100%;
+    width: auto;
+  }
+
+  .panel-actions {
+    width: auto;
   }
 
   .header-new-button {
-    min-width: 0;
-    width: 100%;
+    min-width: 220px;
+    width: auto;
   }
 
   .user-form-layout {
@@ -1641,5 +1861,129 @@ button:hover {
     right: 12px;
     bottom: 12px;
     width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 18px 14px 24px;
+  }
+
+  .page,
+  .grid {
+    gap: 16px;
+  }
+
+  .cards,
+  .overview-groups,
+  .group-cards,
+  .location-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-title h1 {
+    font-size: clamp(1.9rem, 8vw, 2.6rem);
+  }
+
+  .panel,
+  .stat-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .panel-header {
+    align-items: center;
+  }
+
+  .panel-actions > * {
+    flex: 0 0 auto;
+  }
+
+  .modal-backdrop {
+    padding: 12px;
+  }
+
+  .modal {
+    padding: 16px;
+    max-height: calc(100vh - 24px);
+    border-radius: 18px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+
+  .field-grid,
+  .details-grid,
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .sidebar {
+    padding: 14px 12px;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    padding: 10px 12px;
+  }
+
+  .main {
+    padding: 14px 12px 22px;
+  }
+
+  .topbar {
+    margin-bottom: 18px;
+    gap: 14px;
+  }
+
+  .topbar-actions {
+    gap: 10px;
+  }
+
+  .year-select {
+    flex: 0 0 auto;
+    min-width: auto;
+  }
+
+  .topbar-actions .theme-toggle {
+    flex: 0 0 44px;
+  }
+
+  .topbar-actions button.ghost:not(.theme-toggle),
+  .topbar-actions button.primary {
+    flex: 0 0 auto;
+  }
+
+  .panel,
+  .stat-card {
+    padding: 14px;
+  }
+
+  .table-row {
+    min-width: 660px;
+  }
+
+  .table-row.nhis-row {
+    min-width: 700px;
+  }
+
+  .auth {
+    padding: 14px;
+  }
+
+  .auth-card {
+    padding: 22px 18px;
+    border-radius: 20px;
+  }
+
+  .auth-logo {
+    width: min(138px, 42vw);
   }
 }

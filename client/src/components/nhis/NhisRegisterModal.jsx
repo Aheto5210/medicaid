@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { apiFetch } from '../../api.js';
 import { NHIS_SITUATION_CASE_OPTIONS } from '../../constants/options.js';
+import { createNhisMutation } from '../../utils/offlineData.js';
 
 export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
   const [form, setForm] = useState({
@@ -24,17 +24,14 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
       programYear: form.programYear
     };
 
-    const res = await apiFetch('/api/nhis', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
+    const result = await createNhisMutation(payload);
 
-    if (res.ok) {
+    if (result.ok) {
       await onSaved();
       return;
     }
 
-    const data = await res.json().catch(() => ({}));
+    const data = await result.response?.json().catch(() => ({}));
     setError(data.message || 'Failed to save');
     setSaving(false);
   }

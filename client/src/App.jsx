@@ -9,10 +9,26 @@ import NhisRegistrationPage from './pages/NhisRegistrationPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import UserManagementPage from './pages/UserManagementPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
+import ConfirmDialog from './components/common/ConfirmDialog.jsx';
 import RegisterModal from './components/people/RegisterModal.jsx';
 import NhisRegisterModal from './components/nhis/NhisRegisterModal.jsx';
 import { hasModulePermission, moduleKeyFromView, normalizePermissions } from './utils/permissions.js';
-import { THEME_MODE, applyTheme, getStoredThemeMode, persistThemeMode, subscribeToSystemThemeChange } from './utils/theme.js';
+import { THEME_MODE, applyTheme, persistThemeMode, subscribeToSystemThemeChange } from './utils/theme.js';
+import {
+  OFFLINE_SYNC_EVENT,
+  applyNhisOfflineMutations,
+  applyPeopleOfflineMutations,
+  getCachedValue,
+  mapPersonSummaryFromList,
+  removeCachedValue,
+  setCachedValue,
+  startOfflineSyncProcessor,
+  subscribePendingMutations
+} from './utils/offlineData.js';
+
+const CACHE_KEY = {
+  user: 'auth:user'
+};
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -21,15 +37,17 @@ export default function App() {
   const [nhisRecords, setNhisRecords] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pendingMutations, setPendingMutations] = useState([]);
   const [registerContext, setRegisterContext] = useState(null);
   const [peopleSearch, setPeopleSearch] = useState('');
   const [nhisSearch, setNhisSearch] = useState('');
 
   const currentYear = new Date().getFullYear();
   const [programYear, setProgramYear] = useState(currentYear);
-  const [themeMode, setThemeMode] = useState(() => getStoredThemeMode());
-  const [resolvedTheme, setResolvedTheme] = useState(() => applyTheme(getStoredThemeMode()));
+  const [themeMode] = useState(THEME_MODE.SYSTEM);
+  const [resolvedTheme, setResolvedTheme] = useState(() => applyTheme(THEME_MODE.SYSTEM));
   const [overviewViewKey, setOverviewViewKey] = useState(0);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const yearOptions = useMemo(
     () => Array.from({ length: 5 }, (_, index) => currentYear - index),
@@ -66,19 +84,86 @@ export default function App() {
     [availableNavItems, view]
   );
 
+  const effectivePeople = useMemo(
+    () => applyPeopleOfflineMutations(people, pendingMutations, {
+      programYear,
+      search: peopleSearch
+    }),
+    [people, pendingMutations, peopleSearch, programYear]
+  );
+  const effectiveNhisRecords = useMemo(
+    () => applyNhisOfflineMutations(nhisRecords, pendingMutations, {
+      programYear,
+      search: nhisSearch
+    }),
+    [nhisRecords, pendingMutations, nhisSearch, programYear]
+  );
+  const effectiveSummary = useMemo(() => {
+    if (peopleSearch.trim()) return summary;
+    if (!canViewGeneralRegistration) return summary;
+
+    const derived = mapPersonSummaryFromList(effectivePeople);
+    if (!summary) return derived;
+
+    return {
+      ...summary,
+      totals: {
+        ...summary.totals,
+        ...derived.totals
+      },
+      gender: derived.gender,
+      reasons: derived.reasons,
+      ageRanges: derived.ageRanges
+    };
+  }, [summary, effectivePeople, peopleSearch, canViewGeneralRegistration]);
+
   useEffect(() => {
-    const { accessToken } = getStoredTokens();
-    if (!accessToken) {
-      setLoading(false);
-      return;
+    let active = true;
+
+    async function bootstrapSession() {
+      const { accessToken } = getStoredTokens();
+      if (!accessToken) {
+        if (active) setLoading(false);
+        return;
+      }
+
+      const cachedUser = await getCachedValue(CACHE_KEY.user);
+      if (active && cachedUser) {
+        setUser(cachedUser);
+        setLoading(false);
+      }
+
+      try {
+        const res = await apiFetch('/api/auth/me');
+        if (!res.ok) {
+          if (active && !cachedUser) {
+            setLoading(false);
+          }
+          return;
+        }
+
+        const data = await res.json();
+        if (!active) return;
+
+        setUser(data);
+        await setCachedValue(CACHE_KEY.user, data);
+      } catch {
+        if (active && !cachedUser) {
+          setLoading(false);
+        }
+        return;
+      }
+
+      if (active) {
+        setLoading(false);
+      }
     }
 
-    apiFetch('/api/auth/me')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data) setUser(data);
-      })
-      .finally(() => setLoading(false));
+    bootstrapSession();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -95,6 +180,35 @@ export default function App() {
       setResolvedTheme(updatedTheme);
     });
   }, [themeMode]);
+
+  useEffect(() => {
+    const stopProcessor = startOfflineSyncProcessor();
+    const unsubscribe = subscribePendingMutations(setPendingMutations);
+
+    function handleSyncComplete(event) {
+      const scope = event.detail?.scope;
+      if (scope === 'people') {
+        void Promise.all([
+          loadPeople(peopleSearch, programYear),
+          loadSummary(programYear),
+          loadNhis(nhisSearch, programYear)
+        ]);
+        return;
+      }
+
+      if (scope === 'nhis') {
+        void loadNhis(nhisSearch, programYear);
+      }
+    }
+
+    window.addEventListener(OFFLINE_SYNC_EVENT, handleSyncComplete);
+
+    return () => {
+      stopProcessor();
+      unsubscribe();
+      window.removeEventListener(OFFLINE_SYNC_EVENT, handleSyncComplete);
+    };
+  }, [peopleSearch, nhisSearch, programYear]);
 
   useEffect(() => {
     if (!user) return;
@@ -123,10 +237,20 @@ export default function App() {
   }, [availableNavItems, view]);
 
   async function loadSummary(year = programYear) {
-    const res = await apiFetch(`/api/analytics/summary?year=${year}`);
-    if (res.ok) {
-      const data = await res.json();
-      setSummary(data);
+    const cacheKey = `summary:${year}`;
+
+    try {
+      const res = await apiFetch(`/api/analytics/summary?year=${year}`);
+      if (res.ok) {
+        const data = await res.json();
+        setSummary(data);
+        await setCachedValue(cacheKey, data);
+      }
+    } catch {
+      const cached = await getCachedValue(cacheKey);
+      if (cached) {
+        setSummary(cached);
+      }
     }
   }
 
@@ -136,11 +260,21 @@ export default function App() {
     params.set('year', year);
 
     const queryString = params.toString() ? `?${params.toString()}` : '';
-    const res = await apiFetch(`/api/people${queryString}`);
+    const cacheKey = `people:${year}:${query.trim().toLowerCase()}`;
 
-    if (res.ok) {
-      const data = await res.json();
-      setPeople(data);
+    try {
+      const res = await apiFetch(`/api/people${queryString}`);
+
+      if (res.ok) {
+        const data = await res.json();
+        setPeople(data);
+        await setCachedValue(cacheKey, data);
+      }
+    } catch {
+      const cached = await getCachedValue(cacheKey);
+      if (cached) {
+        setPeople(cached);
+      }
     }
   }
 
@@ -150,29 +284,34 @@ export default function App() {
     params.set('year', year);
 
     const queryString = params.toString() ? `?${params.toString()}` : '';
-    const res = await apiFetch(`/api/nhis${queryString}`);
+    const cacheKey = `nhis:${year}:${searchValue.trim().toLowerCase()}`;
 
-    if (res.ok) {
-      const data = await res.json();
-      setNhisRecords(data);
+    try {
+      const res = await apiFetch(`/api/nhis${queryString}`);
+
+      if (res.ok) {
+        const data = await res.json();
+        setNhisRecords(data);
+        await setCachedValue(cacheKey, data);
+      }
+    } catch {
+      const cached = await getCachedValue(cacheKey);
+      if (cached) {
+        setNhisRecords(cached);
+      }
     }
   }
 
   async function handleLogin(result) {
     setTokens(result.accessToken, result.refreshToken);
     setUser(result.user);
+    await setCachedValue(CACHE_KEY.user, result.user);
   }
 
   function handleLogout() {
     clearTokens();
     setUser(null);
-  }
-
-  function handleTopbarThemeToggle() {
-    setThemeMode((currentMode) => {
-      const activeTheme = currentMode === THEME_MODE.SYSTEM ? resolvedTheme : currentMode;
-      return activeTheme === THEME_MODE.DARK ? THEME_MODE.LIGHT : THEME_MODE.DARK;
-    });
+    void removeCachedValue(CACHE_KEY.user);
   }
 
   async function refreshOverviewData() {
@@ -191,7 +330,7 @@ export default function App() {
     }
   }
 
-  const recentPeople = useMemo(() => people.slice(0, 5), [people]);
+  const effectiveRecentPeople = useMemo(() => effectivePeople.slice(0, 5), [effectivePeople]);
 
   if (loading) {
     return <div className="app-shell">Loading...</div>;
@@ -213,10 +352,11 @@ export default function App() {
         items={availableNavItems}
         active={view}
         onChange={handleViewChange}
+        onLogout={() => setShowLogoutConfirm(true)}
         theme={resolvedTheme}
       />
 
-      <main className="main">
+      <main className={`main ${view === 'overview' ? 'dashboard-main' : ''}`}>
         <Topbar
           title={viewLabel}
           search={view === 'nhis' ? nhisSearch : peopleSearch}
@@ -229,31 +369,20 @@ export default function App() {
             setPeopleSearch(value);
             await loadPeople(value, programYear);
           }}
-          programYear={programYear}
-          yearOptions={yearOptions}
-          onYearChange={(value) => {
-            setProgramYear(value);
-          }}
           showSearch={(view === 'people' && canViewGeneralRegistration) || (view === 'nhis' && canViewNhisRegistration)}
-          showYear={view === 'overview' || view === 'people' || view === 'nhis'}
-          showNew={false}
-          onNew={() => setRegisterContext(view === 'nhis' ? 'nhis' : 'people')}
-          onLogout={handleLogout}
-          resolvedTheme={resolvedTheme}
-          onThemeToggle={handleTopbarThemeToggle}
         />
 
         {view === 'overview' && canViewOverview && (
           <DashboardPage
             key={overviewViewKey}
-            summary={summary}
-            recentPeople={recentPeople}
+            summary={effectiveSummary}
+            recentPeople={effectiveRecentPeople}
           />
         )}
 
         {view === 'people' && canViewGeneralRegistration && (
           <PeoplePage
-            people={people}
+            people={effectivePeople}
             programYear={programYear}
             yearOptions={yearOptions}
             onYearChange={setProgramYear}
@@ -265,7 +394,7 @@ export default function App() {
 
         {view === 'nhis' && canViewNhisRegistration && (
           <NhisRegistrationPage
-            records={nhisRecords}
+            records={effectiveNhisRecords}
             programYear={programYear}
             yearOptions={yearOptions}
             onYearChange={setProgramYear}
@@ -278,9 +407,10 @@ export default function App() {
         {view === 'settings' && canViewSettings && (
           <SettingsPage
             user={resolvedUser}
-            themeMode={themeMode}
             resolvedTheme={resolvedTheme}
-            onThemeModeChange={setThemeMode}
+            canExportAnalytics={canViewOverview}
+            defaultReportYear={programYear}
+            yearOptions={yearOptions}
           />
         )}
 
@@ -316,6 +446,20 @@ export default function App() {
           onSaved={async () => {
             await loadNhis(nhisSearch, programYear);
             setRegisterContext(null);
+          }}
+        />
+      )}
+
+      {showLogoutConfirm && (
+        <ConfirmDialog
+          title="Log out"
+          message="Are you sure you want to log out of MEDICAID on this device?"
+          cancelLabel="Stay here"
+          confirmLabel="Log out"
+          onCancel={() => setShowLogoutConfirm(false)}
+          onConfirm={() => {
+            setShowLogoutConfirm(false);
+            handleLogout();
           }}
         />
       )}
