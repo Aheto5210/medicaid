@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getRoleLabel } from '../../utils/roles.js';
 import BrandLogo from '../common/BrandLogo.jsx';
 
@@ -9,10 +9,43 @@ export default function Sidebar({
   onChange,
   onLogout,
   theme = 'light',
-  showLogo = true
+  showLogo = true,
+  isOpen = false,
+  onClose
 }) {
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        onClose?.();
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  function handleItemSelect(nextView) {
+    onChange(nextView);
+    onClose?.();
+  }
+
+  function handleLogoutClick() {
+    onClose?.();
+    onLogout?.();
+  }
+
   return (
-    <aside className="sidebar">
+    <>
+      <button
+        className={`sidebar-backdrop ${isOpen ? 'visible' : ''}`}
+        type="button"
+        aria-label="Close menu"
+        onClick={() => onClose?.()}
+      />
+
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       {showLogo && (
         <div className="brand">
           <BrandLogo theme={theme} className="brand-logo sidebar-logo" />
@@ -24,7 +57,7 @@ export default function Sidebar({
           <button
             key={item.key}
             className={`nav-item ${active === item.key ? 'active' : ''}`}
-            onClick={() => onChange(item.key)}
+            onClick={() => handleItemSelect(item.key)}
           >
             {item.label}
           </button>
@@ -40,11 +73,12 @@ export default function Sidebar({
               <div className="user-role">{getRoleLabel(user.role)}</div>
             </div>
           </div>
-          <button className="ghost user-logout-button" type="button" onClick={onLogout}>
+          <button className="ghost user-logout-button" type="button" onClick={handleLogoutClick}>
             Log out
           </button>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

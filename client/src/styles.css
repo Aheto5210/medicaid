@@ -122,6 +122,10 @@ textarea {
   overflow-y: auto;
 }
 
+.sidebar-backdrop {
+  display: none;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -309,6 +313,20 @@ textarea {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+.menu-toggle svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .theme-toggle svg {
@@ -1728,47 +1746,55 @@ button:hover {
     grid-template-columns: 1fr;
   }
 
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: 0;
+    padding: 0;
+    background: var(--overlay);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+    z-index: 28;
+  }
+
+  .sidebar-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .sidebar {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 10;
-    flex-direction: row;
-    align-items: center;
-    align-self: stretch;
-    height: auto;
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 16px 18px;
-    gap: 14px;
+    left: 0;
+    bottom: 0;
+    z-index: 30;
+    width: min(320px, 84vw);
+    height: 100vh;
+    max-height: 100vh;
+    padding: 22px 18px 24px;
+    gap: 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
   }
 
   .sidebar-logo {
-    width: 72px;
-  }
-
-  .topbar-logo {
-    width: 38px;
-  }
-
-  .auth-logo {
-    width: min(126px, 48vw);
-  }
-
-  .nav {
-    display: flex;
-    gap: 8px;
+    width: 84px;
   }
 
   .sidebar-footer {
-    display: block;
-    margin-top: 0;
-    margin-left: auto;
-    flex: 0 0 auto;
+    margin-top: auto;
+    margin-left: 0;
   }
 
   .user-card {
-    min-width: 210px;
+    min-width: 0;
   }
 
   .topbar {
@@ -1790,6 +1816,10 @@ button:hover {
   .search {
     flex: 0 0 280px;
     min-width: 280px;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
   }
 
   .search input {
@@ -1926,11 +1956,11 @@ button:hover {
 
 @media (max-width: 560px) {
   .sidebar {
-    padding: 14px 12px;
+    width: min(300px, 88vw);
+    padding: 18px 14px 20px;
   }
 
   .nav-item {
-    white-space: nowrap;
     padding: 10px 12px;
   }
 

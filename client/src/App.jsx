@@ -33,6 +33,7 @@ const CACHE_KEY = {
 export default function App() {
   const [user, setUser] = useState(null);
   const [view, setView] = useState('overview');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [people, setPeople] = useState([]);
   const [nhisRecords, setNhisRecords] = useState([]);
   const [summary, setSummary] = useState(null);
@@ -116,6 +117,23 @@ export default function App() {
       ageRanges: derived.ageRanges
     };
   }, [summary, effectivePeople, peopleSearch, canViewGeneralRegistration]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    if (mobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = previousOverflow || '';
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileSidebarOpen]);
 
   useEffect(() => {
     let active = true;
@@ -323,6 +341,7 @@ export default function App() {
 
   async function handleViewChange(nextView) {
     setView(nextView);
+    setMobileSidebarOpen(false);
 
     if (nextView === 'overview' && canViewOverview) {
       setOverviewViewKey((prev) => prev + 1);
@@ -354,6 +373,8 @@ export default function App() {
         onChange={handleViewChange}
         onLogout={() => setShowLogoutConfirm(true)}
         theme={resolvedTheme}
+        isOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
       />
 
       <main className={`main ${view === 'overview' ? 'dashboard-main' : ''}`}>
@@ -370,6 +391,8 @@ export default function App() {
             await loadPeople(value, programYear);
           }}
           showSearch={(view === 'people' && canViewGeneralRegistration) || (view === 'nhis' && canViewNhisRegistration)}
+          showMenuToggle
+          onMenuToggle={() => setMobileSidebarOpen((current) => !current)}
         />
 
         {view === 'overview' && canViewOverview && (
