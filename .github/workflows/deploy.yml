@@ -37,23 +37,25 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
 
-      - name: Sync frontend build
-        run: |
-          ssh -o StrictHostKeyChecking=accept-new "$SSH_USER@$SSH_HOST" "mkdir -p ~/medicaid/client/dist"
-          rsync -az --delete -e "ssh -o StrictHostKeyChecking=accept-new" client/dist/ "$SSH_USER@$SSH_HOST:~/medicaid/client/dist/"
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-
       - name: SSH and deploy backend
         run: |
           ssh -o StrictHostKeyChecking=accept-new "$SSH_USER@$SSH_HOST" << 'EOF'
             cd ~/medicaid
-            git pull --ff-only origin main
+            git fetch --prune origin main
+            git reset --hard origin/main
+            git clean -fd
 
             # Start backend services (docker compose handles BE + DB)
             docker compose up -d --build
           EOF
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+
+      - name: Sync frontend build
+        run: |
+          ssh -o StrictHostKeyChecking=accept-new "$SSH_USER@$SSH_HOST" "mkdir -p ~/medicaid/client/dist"
+          rsync -az --delete -e "ssh -o StrictHostKeyChecking=accept-new" client/dist/ "$SSH_USER@$SSH_HOST:~/medicaid/client/dist/"
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
