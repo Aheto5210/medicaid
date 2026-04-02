@@ -101,6 +101,8 @@ export default function NhisDetailsModal({
                   options={[{ label: 'Select situation/case', value: '' }, ...situationCaseOptions]}
                   value={form.situationCase}
                   onChange={(nextValue) => onFormChange('situationCase', nextValue)}
+                  searchable
+                  panelMinWidth={420}
                 />
               </label>
               <label>
@@ -119,6 +121,7 @@ export default function NhisDetailsModal({
                   options={yearOptions.map((year) => ({ label: String(year), value: year }))}
                   value={form.programYear}
                   onChange={(nextValue) => onFormChange('programYear', Number(nextValue))}
+                  searchable
                 />
               </label>
             </div>

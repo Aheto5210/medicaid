@@ -25,8 +25,10 @@ export default function CustomDropdown({
   onChange,
   placeholder = 'Select option',
   allowCustom = false,
+  searchable = false,
   emptyMessage = 'No options found.',
-  disabled = false
+  disabled = false,
+  panelMinWidth = 0
 }) {
   const rootRef = useRef(null);
   const inputRef = useRef(null);
@@ -38,6 +40,7 @@ export default function CustomDropdown({
   const selectedOption = normalizedOptions.find((option) => matchesOption(option.value, value)) || null;
   const [open, setOpen] = useState(false);
   const [panelStyle, setPanelStyle] = useState(null);
+  const usesTextInput = allowCustom || searchable;
   const [query, setQuery] = useState(() => (
     allowCustom
       ? String(value ?? '')
@@ -79,10 +82,10 @@ export default function CustomDropdown({
   }, []);
 
   useEffect(() => {
-    if (open && allowCustom) {
+    if (open && usesTextInput) {
       inputRef.current?.focus();
     }
-  }, [allowCustom, open]);
+  }, [open, usesTextInput]);
 
   useLayoutEffect(() => {
     if (!open) {
@@ -104,6 +107,7 @@ export default function CustomDropdown({
       const viewportPadding = 12;
       const gap = 8;
       const preferredMaxHeight = 240;
+      const requestedMinWidth = Math.max(Number(panelMinWidth) || 0, rect.width);
       const availableBelow = window.innerHeight - rect.bottom - viewportPadding;
       const availableAbove = rect.top - viewportPadding;
       const shouldOpenUp = availableBelow < 180 && availableAbove > availableBelow;
@@ -111,7 +115,10 @@ export default function CustomDropdown({
         Math.min(shouldOpenUp ? availableAbove - gap : availableBelow - gap, preferredMaxHeight),
         120
       );
-      const width = Math.min(rect.width, window.innerWidth - (viewportPadding * 2));
+      const width = Math.min(
+        requestedMinWidth,
+        window.innerWidth - (viewportPadding * 2)
+      );
       const left = Math.min(
         Math.max(rect.left, viewportPadding),
         window.innerWidth - width - viewportPadding
@@ -136,20 +143,55 @@ export default function CustomDropdown({
       window.removeEventListener('resize', updatePanelPosition);
       window.removeEventListener('scroll', updatePanelPosition, true);
     };
-  }, [allowCustom, open]);
+  }, [open, panelMinWidth]);
 
   const filteredOptions = useMemo(() => {
+    if (!usesTextInput) {
+      return normalizedOptions;
+    }
+
     const searchTerm = String(query || '').trim().toLowerCase();
+    const selectedLabel = String(selectedOption?.label || '').trim().toLowerCase();
+
     if (!searchTerm) {
       return normalizedOptions;
     }
 
+    if (searchable && !allowCustom && searchTerm === selectedLabel) {
+      return normalizedOptions;
+    }
+
     return normalizedOptions.filter((option) => option.label.toLowerCase().includes(searchTerm));
-  }, [normalizedOptions, query]);
+  }, [allowCustom, normalizedOptions, query, searchable, selectedOption, usesTextInput]);
 
   function handleSelect(nextValue) {
     onChange?.(nextValue);
     setOpen(false);
+  }
+
+  function handleInputChange(nextValue) {
+    setQuery(nextValue);
+
+    if (allowCustom) {
+      onChange?.(nextValue);
+    } else if (!nextValue && normalizedOptions.some((option) => matchesOption(option.value, ''))) {
+      onChange?.('');
+    }
+
+    setOpen(true);
+  }
+
+  function handleInputKeyDown(event) {
+    if (event.key === 'Enter' && open) {
+      const trimmedQuery = String(query || '').trim().toLowerCase();
+      const exactMatch = filteredOptions.find((option) => option.label.toLowerCase() === trimmedQuery);
+      const autoSelectOption = exactMatch || (filteredOptions.length === 1 ? filteredOptions[0] : null);
+
+      if (autoSelectOption) {
+        event.preventDefault();
+        handleSelect(autoSelectOption.value);
+      }
+    }
   }
 
   const panelContent = open && !disabled ? (
@@ -189,21 +231,17 @@ export default function CustomDropdown({
 
   return (
     <div
-      className={`custom-dropdown${open ? ' is-open' : ''}${disabled ? ' is-disabled' : ''}${allowCustom ? ' is-searchable' : ''}`}
+      className={`custom-dropdown${open ? ' is-open' : ''}${disabled ? ' is-disabled' : ''}${usesTextInput ? ' is-searchable' : ''}`}
       ref={rootRef}
     >
-      {allowCustom ? (
+      {usesTextInput ? (
         <div className="custom-dropdown-input-shell">
           <input
             ref={inputRef}
             value={query}
             onFocus={() => !disabled && setOpen(true)}
-            onChange={(event) => {
-              const nextValue = event.target.value;
-              setQuery(nextValue);
-              onChange?.(nextValue);
-              setOpen(true);
-            }}
+            onChange={(event) => handleInputChange(event.target.value)}
+            onKeyDown={handleInputKeyDown}
             placeholder={placeholder}
             disabled={disabled}
           />

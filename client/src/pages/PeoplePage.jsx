@@ -501,6 +501,7 @@ export default function PeoplePage({
               options={yearOptions.map((year) => ({ label: String(year), value: year }))}
               value={programYear}
               onChange={(nextValue) => onYearChange(Number(nextValue))}
+              searchable
             />
           </label>
           <label>
@@ -517,6 +518,7 @@ export default function PeoplePage({
               options={[{ label: 'All', value: '' }, ...GENDER_OPTIONS]}
               value={filters.sex}
               onChange={(nextValue) => updateFilter('sex', nextValue)}
+              searchable
             />
           </label>
           <label>
@@ -535,6 +537,7 @@ export default function PeoplePage({
               options={[{ label: 'All', value: '' }, ...MAIN_REASON_OPTIONS]}
               value={filters.reason}
               onChange={(nextValue) => updateFilter('reason', nextValue)}
+              searchable
             />
           </label>
         </div>

@@ -17,7 +17,7 @@ function buildInitialForm(programYear) {
     surname: '',
     otherNames: '',
     age: '',
-    gender: 'Female',
+    gender: '',
     phone: '',
     occupation: '',
     registrationSource: '',
@@ -34,7 +34,6 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
   const {
     value: form,
     setValue: setForm,
-    restored: draftRestored,
     clearDraft
   } = usePersistedDraft({
     cacheKey: PEOPLE_DRAFT_KEY,
@@ -92,12 +91,6 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
         </div>
 
         <form onSubmit={handleSubmit} className="form">
-          {draftRestored && (
-            <div className="notice">
-              Draft restored. Unsaved entries on this device will keep auto-saving until you submit.
-            </div>
-          )}
-
           <div className="field-grid">
             <label>
               Surname

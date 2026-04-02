@@ -1724,12 +1724,19 @@ button:hover {
   background: transparent;
   color: var(--text);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   text-align: left;
   cursor: pointer;
   font-size: 13px;
+}
+
+.custom-dropdown-option span {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.35;
 }
 
 .custom-dropdown-option:hover,

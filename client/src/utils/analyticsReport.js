@@ -1,3 +1,5 @@
+import { MAIN_REASON_OPTIONS } from '../constants/options.js';
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -18,6 +20,33 @@ function formatPercent(value) {
 }
 
 const VISUAL_COLORS = ['#0b8f81', '#4f827c', '#7aa39e', '#a7c1bc', '#c7d7d3', '#dfe8e5'];
+
+function buildMainUnitItems(summary = {}) {
+  const totals = new Map();
+
+  (summary.reasons || []).forEach((item) => {
+    const label = String(item?.label || '').trim();
+    if (!label) return;
+
+    totals.set(label, Number(item?.value || 0));
+  });
+
+  const normalizedDefaultItems = MAIN_REASON_OPTIONS.map((label) => ({
+    label,
+    value: Number(totals.get(label) || 0)
+  }));
+
+  const extraItems = [...totals.entries()]
+    .filter(([label]) => !MAIN_REASON_OPTIONS.includes(label))
+    .map(([label, value]) => ({ label, value: Number(value || 0) }))
+    .sort((a, b) => {
+      const valueDiff = Number(b.value || 0) - Number(a.value || 0);
+      if (valueDiff !== 0) return valueDiff;
+      return String(a.label || '').localeCompare(String(b.label || ''));
+    });
+
+  return [...normalizedDefaultItems, ...extraItems];
+}
 
 function normalizeChartItems(items = [], { sortByValue = true } = {}) {
   const totals = new Map();
@@ -355,7 +384,7 @@ function buildSummaryCards(summary = {}) {
 }
 
 function buildUnitsSnapshot(summary = {}) {
-  const units = normalizeChartItems(summary.reasons || [], { sortByValue: true });
+  const units = buildMainUnitItems(summary);
 
   if (!units.length) {
     return '';
@@ -424,10 +453,7 @@ function buildSectionGroup(title, content) {
 }
 
 function buildReasonSummary(summary = {}) {
-  const reasons = (summary.reasons || []).map((item) => ({
-    ...item,
-    value: Number(item.value || 0)
-  }));
+  const reasons = buildMainUnitItems(summary);
   const total = reasons.reduce((sum, item) => sum + item.value, 0) || 1;
 
   return buildTable(

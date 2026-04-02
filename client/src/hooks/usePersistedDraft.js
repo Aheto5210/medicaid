@@ -11,6 +11,11 @@ export default function usePersistedDraft({
   const [hydrated, setHydrated] = useState(false);
   const [restored, setRestored] = useState(false);
   const persistenceDisabledRef = useRef(false);
+  const restoreValueRef = useRef(restoreValue);
+
+  useEffect(() => {
+    restoreValueRef.current = restoreValue;
+  }, [restoreValue]);
 
   useEffect(() => {
     let active = true;
@@ -24,8 +29,8 @@ export default function usePersistedDraft({
 
         if (cachedValue && typeof cachedValue === 'object') {
           setValue(
-            typeof restoreValue === 'function'
-              ? restoreValue(cachedValue, initialValue)
+            typeof restoreValueRef.current === 'function'
+              ? restoreValueRef.current(cachedValue, initialValue)
               : { ...initialValue, ...cachedValue }
           );
           setRestored(true);
@@ -49,7 +54,7 @@ export default function usePersistedDraft({
     return () => {
       active = false;
     };
-  }, [cacheKey, initialValue, restoreValue]);
+  }, [cacheKey, initialValue]);
 
   useEffect(() => {
     if (!hydrated || persistenceDisabledRef.current) {

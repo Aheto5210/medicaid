@@ -482,6 +482,7 @@ export default function NhisRegistrationPage({
               options={yearOptions.map((year) => ({ label: String(year), value: year }))}
               value={programYear}
               onChange={(nextValue) => onYearChange(Number(nextValue))}
+              searchable
             />
           </label>
           <label>
@@ -498,6 +499,8 @@ export default function NhisRegistrationPage({
               options={[{ label: 'All situations/cases', value: '' }, ...NHIS_SITUATION_CASE_OPTIONS]}
               value={filters.situation}
               onChange={(nextValue) => updateFilter('situation', nextValue)}
+              searchable
+              panelMinWidth={420}
             />
           </label>
         </div>

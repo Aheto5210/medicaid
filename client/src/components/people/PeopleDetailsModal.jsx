@@ -159,6 +159,7 @@ export default function PeopleDetailsModal({
                   options={yearOptions.map((year) => ({ label: String(year), value: year }))}
                   value={form.programYear}
                   onChange={(nextValue) => onFormChange('programYear', Number(nextValue))}
+                  searchable
                 />
               </label>
             </div>

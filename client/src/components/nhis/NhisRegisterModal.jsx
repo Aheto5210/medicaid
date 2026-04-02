@@ -22,7 +22,6 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
   const {
     value: form,
     setValue: setForm,
-    restored: draftRestored,
     clearDraft
   } = usePersistedDraft({
     cacheKey: NHIS_DRAFT_KEY,
@@ -70,12 +69,6 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
         </div>
 
         <form onSubmit={handleSubmit} className="form">
-          {draftRestored && (
-            <div className="notice">
-              Draft restored. Unsaved entries on this device will keep auto-saving until you submit.
-            </div>
-          )}
-
           <div className="field-grid">
             <label>
               Surname
@@ -102,6 +95,8 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
                 value={form.situationCase}
                 onChange={(nextValue) => setForm((prev) => ({ ...prev, situationCase: nextValue }))}
                 placeholder="Select situation/case"
+                searchable
+                panelMinWidth={420}
               />
             </label>
             <label>
