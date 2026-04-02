@@ -499,6 +499,7 @@ export default function App() {
           showMenuToggle
           onMenuToggle={() => setMobileSidebarOpen((current) => !current)}
           extraActions={overviewTopbarActions}
+          stackTitleOnMobile={view === 'overview'}
         />
 
         {view === 'overview' && canViewOverview && (

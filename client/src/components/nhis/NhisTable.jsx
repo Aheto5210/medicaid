@@ -66,21 +66,21 @@ export default function NhisTable({
 
         return (
           <div key={record.id} className="table-row nhis-row">
-            <span className="row-select-cell">
+            <span className={`row-select-cell table-cell table-cell-select${canDelete ? '' : ' is-empty'}`} data-label="Select">
               {canDelete && (
-              <input
-                type="checkbox"
-                aria-label={`Select ${buildNhisDisplayName(record) || 'record'}`}
-                checked={selectedSet.has(record.id)}
-                onChange={() => onToggleSelect?.(record.id)}
-              />
-            )}
-          </span>
-            <span>{buildNhisDisplayName(record) || '--'}</span>
-            <span>{showNameOnly ? '' : (record.situation_case || '')}</span>
-            <span>{showNameOnly ? '' : formatCurrency(record.amount)}</span>
-            <span>{showNameOnly ? '' : formatReadableDate(record.registration_date)}</span>
-            <span>
+                <input
+                  type="checkbox"
+                  aria-label={`Select ${buildNhisDisplayName(record) || 'record'}`}
+                  checked={selectedSet.has(record.id)}
+                  onChange={() => onToggleSelect?.(record.id)}
+                />
+              )}
+            </span>
+            <span className="table-cell table-cell-name" data-label="Name">{buildNhisDisplayName(record) || '--'}</span>
+            <span className="table-cell" data-label="Situation/Case">{showNameOnly ? '' : (record.situation_case || '') || '--'}</span>
+            <span className="table-cell" data-label="Amount (GHS)">{showNameOnly ? '' : formatCurrency(record.amount) || '--'}</span>
+            <span className="table-cell" data-label="Date">{showNameOnly ? '' : formatReadableDate(record.registration_date) || '--'}</span>
+            <span className="table-cell table-cell-actions" data-label="Actions">
               <button className="ghost table-action" onClick={() => onView(record.id)}>
                 View
               </button>

@@ -7,10 +7,11 @@ export default function Topbar({
   showSearch = true,
   showMenuToggle = false,
   onMenuToggle,
-  extraActions = null
+  extraActions = null,
+  stackTitleOnMobile = false
 }) {
   return (
-    <div className="topbar">
+    <div className={`topbar${stackTitleOnMobile ? ' topbar-stack-title-mobile' : ''}`}>
       <div className="topbar-title">
         {showMenuToggle && (
           <button

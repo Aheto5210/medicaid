@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '../api.js';
+import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
+import { downloadFile } from '../utils/downloads.js';
 import {
   clonePermissionsForRole,
   normalizePermissions
@@ -21,6 +23,70 @@ function buildDefaultUserForm(role = DEFAULT_ROLE) {
     isActive: true,
     permissions: clonePermissionsForRole(safeRole)
   };
+}
+
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric'
+});
+
+function formatDate(value) {
+  if (!value) return 'Not recorded';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'Not recorded';
+  return dateFormatter.format(parsed);
+}
+
+function hasUserRecords(userItem) {
+  return Number(userItem?.general_registration_count) > 0 || Number(userItem?.nhis_registration_count) > 0;
+}
+
+function MenuDotsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="5" r="1.75" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.75" fill="currentColor" />
+      <circle cx="12" cy="19" r="1.75" fill="currentColor" />
+    </svg>
+  );
+}
+
+function StatCard({ label, value, muted }) {
+  return (
+    <div className={`user-summary-card ${muted ? 'muted-stat' : ''}`}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function RecordsSection({ title, count, emptyMessage, children }) {
+  return (
+    <section className="user-records-section">
+      <div className="user-records-section-head">
+        <h4>{title}</h4>
+        <span className="badge">{count}</span>
+      </div>
+      {count ? <div className="user-records-list">{children}</div> : <div className="empty">{emptyMessage}</div>}
+    </section>
+  );
+}
+
+function UserRecordCard({ title, meta = [], aside, accent = 'general' }) {
+  return (
+    <article className={`user-record-card ${accent}`}>
+      <div className="user-record-card-top">
+        <strong>{title}</strong>
+        {aside ? <span className="badge">{aside}</span> : null}
+      </div>
+      <div className="user-record-card-meta">
+        {meta.filter(Boolean).map((item, index) => (
+          <span key={`${item}-${index}`}>{item}</span>
+        ))}
+      </div>
+    </article>
+  );
 }
 
 function PermissionsEditor({ value, onChange }) {
@@ -184,15 +250,69 @@ export default function UserManagementPage({ user, onCurrentUserUpdated }) {
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loadingError, setLoadingError] = useState(null);
   const [message, setMessage] = useState(null);
+  const [activeMenuUserId, setActiveMenuUserId] = useState(null);
   const [editingUserId, setEditingUserId] = useState(null);
+  const [recordsViewerUserId, setRecordsViewerUserId] = useState(null);
+  const [recordsByUserId, setRecordsByUserId] = useState({});
+  const [loadingRecordsUserId, setLoadingRecordsUserId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deletingUserId, setDeletingUserId] = useState(null);
+  const [exportingUserId, setExportingUserId] = useState(null);
 
   const [createForm, setCreateForm] = useState(buildDefaultUserForm());
   const [editForm, setEditForm] = useState(buildDefaultUserForm());
+
+  const summary = useMemo(() => {
+    const activeUsers = users.filter((userItem) => userItem.is_active).length;
+    const generalRecords = users.reduce(
+      (sum, userItem) => sum + (Number(userItem.general_registration_count) || 0),
+      0
+    );
+    const nhisRecords = users.reduce(
+      (sum, userItem) => sum + (Number(userItem.nhis_registration_count) || 0),
+      0
+    );
+
+    return {
+      totalUsers: users.length,
+      activeUsers,
+      generalRecords,
+      nhisRecords
+    };
+  }, [users]);
+
+  const activeRecords = recordsViewerUserId ? recordsByUserId[recordsViewerUserId] : null;
+  const recordsViewerUser = recordsViewerUserId
+    ? users.find((userItem) => userItem.id === recordsViewerUserId) || null
+    : null;
 
   useEffect(() => {
     if (!isAdmin) return;
     loadUsers();
   }, [isAdmin]);
+
+  useEffect(() => {
+    if (!activeMenuUserId) return undefined;
+
+    function handlePointerDown(event) {
+      if (event.target.closest('.user-menu-shell')) return;
+      setActiveMenuUserId(null);
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setActiveMenuUserId(null);
+      }
+    }
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeMenuUserId]);
 
   async function loadUsers() {
     setLoadingUsers(true);
@@ -209,6 +329,30 @@ export default function UserManagementPage({ user, onCurrentUserUpdated }) {
     const data = await res.json();
     setUsers(data);
     setLoadingUsers(false);
+  }
+
+  async function loadUserRecords(userId) {
+    if (recordsByUserId[userId]) {
+      return recordsByUserId[userId];
+    }
+
+    setLoadingRecordsUserId(userId);
+
+    const res = await apiFetch(`/api/users/${userId}/records`);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setLoadingRecordsUserId(null);
+      setMessage({ type: 'error', text: data.message || 'Failed to load user records.' });
+      return null;
+    }
+
+    const data = await res.json();
+    setRecordsByUserId((prev) => ({
+      ...prev,
+      [userId]: data
+    }));
+    setLoadingRecordsUserId(null);
+    return data;
   }
 
   function setCreatePermission(moduleKey, action, value) {
@@ -261,6 +405,7 @@ export default function UserManagementPage({ user, onCurrentUserUpdated }) {
   function startEdit(userItem) {
     const role = normalizeRoleValue(userItem.role) || DEFAULT_ROLE;
 
+    setActiveMenuUserId(null);
     setEditingUserId(userItem.id);
     setMessage(null);
     setEditForm({
@@ -310,6 +455,59 @@ export default function UserManagementPage({ user, onCurrentUserUpdated }) {
     setMessage({ type: 'success', text: 'User updated successfully.' });
   }
 
+  async function openUserRecords(userItem) {
+    setActiveMenuUserId(null);
+    setRecordsViewerUserId(userItem.id);
+    await loadUserRecords(userItem.id);
+  }
+
+  async function confirmDeleteUser() {
+    if (!deleteTarget) return;
+
+    setDeletingUserId(deleteTarget.id);
+    setMessage(null);
+
+    const res = await apiFetch(`/api/users/${deleteTarget.id}`, {
+      method: 'DELETE'
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      setDeletingUserId(null);
+      setDeleteTarget(null);
+      setMessage({ type: 'error', text: data.message || 'Failed to delete user.' });
+      return;
+    }
+
+    if (editingUserId === deleteTarget.id) {
+      setEditingUserId(null);
+    }
+
+    setDeletingUserId(null);
+    setDeleteTarget(null);
+    await loadUsers();
+    setMessage({ type: 'success', text: data.message || 'User deleted successfully.' });
+  }
+
+  async function handleExportUserRecords(userItem) {
+    setExportingUserId(userItem.id);
+    setActiveMenuUserId(null);
+    setMessage(null);
+
+    try {
+      const result = await downloadFile(`/api/users/${userItem.id}/export`, `${userItem.full_name}-records.xlsx`);
+
+      if (!result.cancelled) {
+        setMessage({ type: 'success', text: 'User records export downloaded.' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message || 'Failed to export user records.' });
+    } finally {
+      setExportingUserId(null);
+    }
+  }
+
   return (
     <section className="page">
       {message && <div className={message.type === 'error' ? 'error' : 'notice'}>{message.text}</div>}
@@ -322,6 +520,19 @@ export default function UserManagementPage({ user, onCurrentUserUpdated }) {
 
       {isAdmin && (
         <>
+          <div className="panel">
+            <div className="panel-header">
+              <h2>User Overview</h2>
+              <span className="badge">Admin tools</span>
+            </div>
+            <div className="user-summary-grid">
+              <StatCard label="Total Users" value={summary.totalUsers} />
+              <StatCard label="Active Users" value={summary.activeUsers} />
+              <StatCard label="General Records" value={summary.generalRecords} />
+              <StatCard label="NHIS Records" value={summary.nhisRecords} />
+            </div>
+          </div>
+
           <div className="panel">
             <div className="panel-header">
               <h2>Create User</h2>
@@ -415,21 +626,76 @@ export default function UserManagementPage({ user, onCurrentUserUpdated }) {
               <div className="users-list">
                 {users.map((userItem) => (
                   <div key={userItem.id} className="user-row">
-                    <div className="user-row-head">
-                      <div>
+                    <div className="user-row-head compact-user-row">
+                      <div className="user-row-primary">
                         <strong>{userItem.full_name}</strong>
                         <div className="label">{userItem.email}</div>
                       </div>
-                      <div className="user-row-meta">
+                      <div className="user-row-tail">
                         <span className="badge">{getRoleLabel(userItem.role)}</span>
                         <span className={`badge ${userItem.is_active ? '' : 'inactive-badge'}`}>
                           {userItem.is_active ? 'Active' : 'Disabled'}
                         </span>
-                        {editingUserId !== userItem.id && (
-                          <button className="ghost" onClick={() => startEdit(userItem)}>Edit Access</button>
-                        )}
+                        <div className="user-menu-shell">
+                          <button
+                            className="ghost icon-button user-menu-trigger"
+                            type="button"
+                            aria-label={`Open actions for ${userItem.full_name}`}
+                            aria-expanded={activeMenuUserId === userItem.id}
+                            onClick={() => setActiveMenuUserId((prev) => (prev === userItem.id ? null : userItem.id))}
+                          >
+                            <MenuDotsIcon />
+                          </button>
+
+                          {activeMenuUserId === userItem.id && (
+                            <div className="user-action-menu">
+                              <button className="user-action-menu-item" type="button" onClick={() => startEdit(userItem)}>
+                                Edit Access
+                              </button>
+                              <button
+                                className="user-action-menu-item"
+                                type="button"
+                                disabled={!hasUserRecords(userItem)}
+                                onClick={() => openUserRecords(userItem)}
+                              >
+                                View Records
+                              </button>
+                              <button
+                                className="user-action-menu-item"
+                                type="button"
+                                disabled={!hasUserRecords(userItem) || exportingUserId === userItem.id}
+                              onClick={() => handleExportUserRecords(userItem)}
+                            >
+                              {exportingUserId === userItem.id ? 'Exporting...' : 'Export Records'}
+                            </button>
+                              <button
+                                className="user-action-menu-item user-action-menu-item-danger"
+                                type="button"
+                                disabled={!userItem.can_delete || deletingUserId === userItem.id}
+                                title={userItem.delete_restriction_reason || 'Delete this account'}
+                                onClick={() => {
+                                  setActiveMenuUserId(null);
+                                  setDeleteTarget(userItem);
+                                }}
+                              >
+                                {deletingUserId === userItem.id ? 'Deleting...' : 'Delete User'}
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
+
+                    {(Number(userItem.general_registration_count) > 0 || Number(userItem.nhis_registration_count) > 0) && (
+                      <div className="user-row-badges">
+                        {Number(userItem.general_registration_count) > 0 && (
+                          <span className="badge subtle-badge">General {userItem.general_registration_count}</span>
+                        )}
+                        {Number(userItem.nhis_registration_count) > 0 && (
+                          <span className="badge subtle-badge">NHIS {userItem.nhis_registration_count}</span>
+                        )}
+                      </div>
+                    )}
 
                     {editingUserId === userItem.id && (
                       <form className="form" onSubmit={handleUpdateUser}>
@@ -513,6 +779,83 @@ export default function UserManagementPage({ user, onCurrentUserUpdated }) {
             )}
           </div>
         </>
+      )}
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Delete User"
+          message={`Delete ${deleteTarget.full_name}'s account? This only works when the account has no saved records tied to it.`}
+          confirmLabel="Delete User"
+          danger
+          busy={deletingUserId === deleteTarget.id}
+          onCancel={() => {
+            if (deletingUserId === deleteTarget.id) return;
+            setDeleteTarget(null);
+          }}
+          onConfirm={confirmDeleteUser}
+        />
+      )}
+
+      {recordsViewerUserId && (
+        <div className="modal-backdrop" onClick={() => setRecordsViewerUserId(null)}>
+          <div className="modal details-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <h2>{recordsViewerUser?.full_name || 'User Records'}</h2>
+                <p className="permissions-note">{recordsViewerUser?.email || ''}</p>
+              </div>
+              <button className="ghost" type="button" onClick={() => setRecordsViewerUserId(null)}>
+                Close
+              </button>
+            </div>
+
+            {loadingRecordsUserId === recordsViewerUserId && <div className="empty">Loading records...</div>}
+
+            {loadingRecordsUserId !== recordsViewerUserId && activeRecords && (
+              <div className="user-records-grid">
+                <RecordsSection
+                  title="General Registration"
+                  count={activeRecords.summary?.general_registration_count || 0}
+                  emptyMessage="No General Registration records saved by this user yet."
+                >
+                  {activeRecords.general_registrations.map((record) => (
+                    <UserRecordCard
+                      key={record.id}
+                      title={record.full_name}
+                      accent="general"
+                      aside={record.program_year ? `Year ${record.program_year}` : null}
+                      meta={[
+                        formatDate(record.registration_date),
+                        record.gender || 'Gender not set',
+                        record.location || 'Location not set',
+                        record.reason_for_coming || 'Reason not set'
+                      ]}
+                    />
+                  ))}
+                </RecordsSection>
+
+                <RecordsSection
+                  title="NHIS Registration"
+                  count={activeRecords.summary?.nhis_registration_count || 0}
+                  emptyMessage="No NHIS registrations saved by this user yet."
+                >
+                  {activeRecords.nhis_registrations.map((record) => (
+                    <UserRecordCard
+                      key={record.id}
+                      title={record.full_name}
+                      accent="nhis"
+                      aside={record.program_year ? `Year ${record.program_year}` : null}
+                      meta={[
+                        formatDate(record.registration_date),
+                        record.situation_case || 'Situation not set'
+                      ]}
+                    />
+                  ))}
+                </RecordsSection>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </section>
   );

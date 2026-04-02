@@ -37,7 +37,7 @@ export default function PeopleTable({
       </div>
       {people.map((person) => (
         <div key={person.id} className="table-row">
-          <span className="row-select-cell">
+          <span className={`row-select-cell table-cell table-cell-select${canDelete ? '' : ' is-empty'}`} data-label="Select">
             {canDelete && (
               <input
                 type="checkbox"
@@ -47,11 +47,11 @@ export default function PeopleTable({
               />
             )}
           </span>
-          <span>{buildPersonDisplayName(person) || '--'}</span>
-          <span>{person.gender || '--'}</span>
-          <span>{person.address_line1 || [person.city, person.region].filter(Boolean).join(', ') || '--'}</span>
-          <span>{person.reason_for_coming || '--'}</span>
-          <span>
+          <span className="table-cell table-cell-name" data-label="Name">{buildPersonDisplayName(person) || '--'}</span>
+          <span className="table-cell" data-label="Sex">{person.gender || '--'}</span>
+          <span className="table-cell" data-label="Location">{person.address_line1 || [person.city, person.region].filter(Boolean).join(', ') || '--'}</span>
+          <span className="table-cell" data-label="Main Reason">{person.reason_for_coming || '--'}</span>
+          <span className="table-cell table-cell-actions" data-label="Actions">
             <button className="ghost table-action" onClick={() => onView(person.id)}>
               View
             </button>

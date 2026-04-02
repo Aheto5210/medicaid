@@ -436,8 +436,33 @@ export default function NhisRegistrationPage({
               {formatCurrency(totalAmount)}
             </div>
           </div>
-          <div className="panel-actions">
-            <button className="ghost" onClick={handleTemplateDownload}>Download Template</button>
+          <div className="panel-actions record-panel-actions">
+            <div className="record-file-actions">
+              <button className="ghost" onClick={handleTemplateDownload}>Download Template</button>
+              {canImport && (
+                <>
+                  <button
+                    className="ghost"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={importing}
+                  >
+                    {importing ? 'Importing...' : 'Import Sheet'}
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".xlsx,.xls,.csv"
+                    onChange={handleImport}
+                    style={{ display: 'none' }}
+                  />
+                </>
+              )}
+              {canExport && (
+                <button className="ghost" onClick={handleExport} disabled={exporting}>
+                  {exporting ? 'Exporting...' : 'Export'}
+                </button>
+              )}
+            </div>
             {canDelete && selectedRecordIds.length > 0 && (
               <button
                 className="danger"
@@ -447,29 +472,6 @@ export default function NhisRegistrationPage({
                 {bulkDeleting
                   ? 'Deleting...'
                   : `Delete Selected (${selectedRecordIds.length})`}
-              </button>
-            )}
-            {canImport && (
-              <>
-                <button
-                  className="ghost"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={importing}
-                >
-                  {importing ? 'Importing...' : 'Import Sheet'}
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".xlsx,.xls,.csv"
-                  onChange={handleImport}
-                  style={{ display: 'none' }}
-                />
-              </>
-            )}
-            {canExport && (
-              <button className="ghost" onClick={handleExport} disabled={exporting}>
-                {exporting ? 'Exporting...' : 'Export'}
               </button>
             )}
           </div>
