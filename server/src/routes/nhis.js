@@ -1,8 +1,16 @@
 import express from 'express';
 import multer from 'multer';
 import * as xlsx from 'xlsx';
-import { query } from '../db.js';
+import { query, withTransaction } from '../db.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
+import {
+  acquireTransactionLock,
+  buildStaleRecordMessage,
+  getIdempotentResponse,
+  normalizeClientRequestId,
+  normalizeExpectedUpdatedAt,
+  storeIdempotentResponse
+} from '../utils/concurrency.js';
 import { titleCaseText } from '../utils/text.js';
 
 const router = express.Router();
@@ -102,7 +110,7 @@ async function findDuplicateNhisRecord({ fullName, amount }, options = {}) {
   }
 
   sql += ' LIMIT 1';
-  const result = await query(sql, params);
+  const result = await (options.executor || { query }).query(sql, params);
   return result.rows[0] || null;
 }
 
@@ -483,6 +491,7 @@ router.post('/', requirePermission('nhisRegistration', 'create'), asyncHandler(a
   const fullName = titleCaseText(payload.fullName);
   const amount = parseAmount(payload.amount);
   const programYear = parseProgramYear(payload.programYear);
+  const clientRequestId = normalizeClientRequestId(payload.clientRequestId);
   const hasAmountInput = !(
     payload.amount === undefined
     || payload.amount === null
@@ -497,28 +506,58 @@ router.post('/', requirePermission('nhisRegistration', 'create'), asyncHandler(a
     return res.status(400).json({ message: 'Amount must be a valid number.' });
   }
 
-  const duplicate = await findDuplicateNhisRecord({ fullName, amount });
-  if (duplicate) {
+  const createScope = 'nhis:create';
+  const duplicateKey = buildNhisDuplicateKey({ fullName, amount });
+  const outcome = await withTransaction(async (client) => {
+    if (clientRequestId) {
+      await acquireTransactionLock(client, `${createScope}:request:${clientRequestId}`);
+      const existingResponse = await getIdempotentResponse(client, createScope, clientRequestId);
+      if (existingResponse) {
+        return { replay: existingResponse };
+      }
+    }
+
+    await acquireTransactionLock(client, `${createScope}:dedupe:${duplicateKey}`);
+
+    const duplicate = await findDuplicateNhisRecord({ fullName, amount }, { executor: client });
+    if (duplicate) {
+      return { duplicate: true };
+    }
+
+    const result = await client.query(
+      `INSERT INTO nhis_registrations (
+        full_name, situation_case, amount, program_year, created_by, updated_by
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, full_name, situation_case, amount::double precision AS amount,
+                program_year, registration_date, created_at, updated_at`,
+      [
+        fullName,
+        titleCaseText(payload.situationCase),
+        amount,
+        programYear,
+        req.user.id,
+        req.user.id
+      ]
+    );
+
+    const createdRecord = result.rows[0];
+    if (clientRequestId) {
+      await storeIdempotentResponse(client, createScope, clientRequestId, 201, createdRecord);
+    }
+
+    return { created: createdRecord };
+  });
+
+  if (outcome.replay) {
+    return res.status(outcome.replay.status).json(outcome.replay.body);
+  }
+
+  if (outcome.duplicate) {
     return res.status(409).json({ message: NHIS_DUPLICATE_MESSAGE });
   }
 
-  const result = await query(
-    `INSERT INTO nhis_registrations (
-      full_name, situation_case, amount, program_year, created_by, updated_by
-    )
-    VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING id, full_name, situation_case, amount::double precision AS amount, program_year, registration_date`,
-    [
-      fullName,
-      titleCaseText(payload.situationCase),
-      amount,
-      programYear,
-      req.user.id,
-      req.user.id
-    ]
-  );
-
-  return res.status(201).json(result.rows[0]);
+  return res.status(201).json(outcome.created);
 }));
 
 router.get('/:id', requirePermission('nhisRegistration', 'view'), asyncHandler(async (req, res) => {
@@ -541,19 +580,17 @@ router.get('/:id', requirePermission('nhisRegistration', 'view'), asyncHandler(a
 router.patch('/:id', requirePermission('nhisRegistration', 'edit'), asyncHandler(async (req, res) => {
   const { id } = req.params;
   const payload = req.body || {};
-  const currentRecord = await query(
-    'SELECT id, full_name, amount::double precision AS amount FROM nhis_registrations WHERE id = $1',
-    [id]
-  );
-  if (!currentRecord.rows.length) {
-    return res.status(404).json({ message: 'NHIS record not found.' });
-  }
-  const current = currentRecord.rows[0];
-
   const updates = [];
   const values = [];
   let fullNameInput = null;
   let amountInput = null;
+  const expectedUpdatedAt = payload.expectedUpdatedAt === undefined
+    ? null
+    : normalizeExpectedUpdatedAt(payload.expectedUpdatedAt);
+
+  if (payload.expectedUpdatedAt !== undefined && !expectedUpdatedAt) {
+    return res.status(400).json({ message: 'expectedUpdatedAt must be a valid timestamp.' });
+  }
 
   if (payload.fullName !== undefined) {
     const fullName = titleCaseText(payload.fullName);
@@ -599,33 +636,75 @@ router.patch('/:id', requirePermission('nhisRegistration', 'edit'), asyncHandler
     return res.status(400).json({ message: 'No valid fields provided for update.' });
   }
 
-  if (payload.fullName !== undefined || payload.amount !== undefined) {
-    const duplicate = await findDuplicateNhisRecord({
-      fullName: fullNameInput ?? current.full_name,
-      amount: payload.amount !== undefined ? amountInput : current.amount
-    }, { excludeId: id });
-    if (duplicate) {
-      return res.status(409).json({ message: NHIS_DUPLICATE_MESSAGE });
+  const outcome = await withTransaction(async (client) => {
+    const currentRecord = await client.query(
+      `SELECT id, full_name, amount::double precision AS amount, updated_at
+       FROM nhis_registrations
+       WHERE id = $1
+       FOR UPDATE`,
+      [id]
+    );
+
+    if (!currentRecord.rows.length) {
+      return { missing: true };
     }
-  }
 
-  values.push(req.user.id);
-  updates.push(`updated_by = $${values.length}`);
-  values.push(id);
+    const current = currentRecord.rows[0];
+    const currentUpdatedAt = new Date(current.updated_at).toISOString();
 
-  const result = await query(
-    `UPDATE nhis_registrations
-     SET ${updates.join(', ')}
-     WHERE id = $${values.length}
-     RETURNING id, full_name, situation_case, amount::double precision AS amount, program_year, registration_date`,
-    values
-  );
+    if (expectedUpdatedAt && currentUpdatedAt !== expectedUpdatedAt) {
+      return {
+        stale: true,
+        message: buildStaleRecordMessage('NHIS record')
+      };
+    }
 
-  if (!result.rows.length) {
+    if (payload.fullName !== undefined || payload.amount !== undefined) {
+      const nextDuplicateKey = buildNhisDuplicateKey({
+        fullName: fullNameInput ?? current.full_name,
+        amount: payload.amount !== undefined ? amountInput : current.amount
+      });
+
+      await acquireTransactionLock(client, `nhis:update:dedupe:${nextDuplicateKey}`);
+
+      const duplicate = await findDuplicateNhisRecord({
+        fullName: fullNameInput ?? current.full_name,
+        amount: payload.amount !== undefined ? amountInput : current.amount
+      }, { excludeId: id, executor: client });
+      if (duplicate) {
+        return { duplicate: true };
+      }
+    }
+
+    values.push(req.user.id);
+    updates.push(`updated_by = $${values.length}`);
+    values.push(id);
+
+    const result = await client.query(
+      `UPDATE nhis_registrations
+       SET ${updates.join(', ')}
+       WHERE id = $${values.length}
+       RETURNING id, full_name, situation_case, amount::double precision AS amount,
+                 program_year, registration_date, created_at, updated_at`,
+      values
+    );
+
+    return { updated: result.rows[0] };
+  });
+
+  if (outcome.missing) {
     return res.status(404).json({ message: 'NHIS record not found.' });
   }
 
-  return res.json(result.rows[0]);
+  if (outcome.stale) {
+    return res.status(409).json({ code: 'stale_record', message: outcome.message });
+  }
+
+  if (outcome.duplicate) {
+    return res.status(409).json({ message: NHIS_DUPLICATE_MESSAGE });
+  }
+
+  return res.json(outcome.updated);
 }));
 
 router.delete('/:id', requirePermission('nhisRegistration', 'delete'), asyncHandler(async (req, res) => {

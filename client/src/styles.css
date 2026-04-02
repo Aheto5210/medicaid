@@ -274,6 +274,18 @@ textarea {
   white-space: nowrap;
 }
 
+.dashboard-main .topbar-title h1 {
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-main .panel-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
 .topbar-logo {
   width: 46px;
   height: auto;

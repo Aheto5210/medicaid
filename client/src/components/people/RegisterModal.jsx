@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS, OCCUPATION_SUGGESTIONS } from '../../constants/options.js';
 import { createPersonMutation } from '../../utils/offlineData.js';
+import usePersistedDraft from '../../hooks/usePersistedDraft.js';
 
-export default function RegisterModal({ programYear, onClose, onSaved }) {
-  const [form, setForm] = useState({
+const PEOPLE_DRAFT_KEY = 'draft:general-registration:create';
+
+function buildInitialForm(programYear) {
+  return {
     surname: '',
     otherNames: '',
     age: '',
@@ -16,6 +19,25 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
     email: '',
     programYear,
     onboardingStatus: 'registered'
+  };
+}
+
+export default function RegisterModal({ programYear, onClose, onSaved }) {
+  const initialForm = useMemo(() => buildInitialForm(programYear), [programYear]);
+  const {
+    value: form,
+    setValue: setForm,
+    restored: draftRestored,
+    clearDraft
+  } = usePersistedDraft({
+    cacheKey: PEOPLE_DRAFT_KEY,
+    initialValue: initialForm,
+    restoreValue: (cachedValue, fallbackValue) => ({
+      ...fallbackValue,
+      ...cachedValue,
+      programYear: fallbackValue.programYear,
+      onboardingStatus: fallbackValue.onboardingStatus
+    })
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -44,6 +66,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
     const result = await createPersonMutation(payload);
 
     if (result.ok) {
+      await clearDraft();
       await onSaved();
       return;
     }
@@ -62,13 +85,19 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
         </div>
 
         <form onSubmit={handleSubmit} className="form">
+          {draftRestored && (
+            <div className="notice">
+              Draft restored. Unsaved entries on this device will keep auto-saving until you submit.
+            </div>
+          )}
+
           <div className="field-grid">
             <label>
               Surname
               <input
                 required
                 value={form.surname}
-                onChange={(event) => setForm({ ...form, surname: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, surname: event.target.value }))}
                 placeholder="Surname"
               />
             </label>
@@ -77,7 +106,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
               <input
                 required
                 value={form.otherNames}
-                onChange={(event) => setForm({ ...form, otherNames: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, otherNames: event.target.value }))}
                 placeholder="Other names"
               />
             </label>
@@ -87,14 +116,14 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
                 type="number"
                 min="0"
                 value={form.age}
-                onChange={(event) => setForm({ ...form, age: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, age: event.target.value }))}
               />
             </label>
             <label>
               Sex
               <select
                 value={form.gender}
-                onChange={(event) => setForm({ ...form, gender: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, gender: event.target.value }))}
               >
                 {GENDER_OPTIONS.map((gender) => (
                   <option key={gender} value={gender}>{gender}</option>
@@ -105,7 +134,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
               Phone No.
               <input
                 value={form.phone}
-                onChange={(event) => setForm({ ...form, phone: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))}
               />
             </label>
             <label>
@@ -113,7 +142,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
               <input
                 list="occupation-suggestions"
                 value={form.occupation}
-                onChange={(event) => setForm({ ...form, occupation: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, occupation: event.target.value }))}
                 placeholder="Type or choose occupation"
               />
               <datalist id="occupation-suggestions">
@@ -126,7 +155,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
               How did you hear about MEDICAID?
               <select
                 value={form.registrationSource}
-                onChange={(event) => setForm({ ...form, registrationSource: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, registrationSource: event.target.value }))}
               >
                 <option value="">Select option</option>
                 {HEARD_ABOUT_OPTIONS.map((option) => (
@@ -138,7 +167,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
               Main Reason for Coming
               <select
                 value={form.reasonForComing}
-                onChange={(event) => setForm({ ...form, reasonForComing: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, reasonForComing: event.target.value }))}
               >
                 <option value="">Select option</option>
                 {MAIN_REASON_OPTIONS.map((reason) => (
@@ -150,7 +179,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
               House No./Address
               <input
                 value={form.addressLine1}
-                onChange={(event) => setForm({ ...form, addressLine1: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, addressLine1: event.target.value }))}
               />
             </label>
             <label>
@@ -158,7 +187,7 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
               <input
                 type="email"
                 value={form.email}
-                onChange={(event) => setForm({ ...form, email: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
               />
             </label>
           </div>

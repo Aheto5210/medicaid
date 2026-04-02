@@ -86,6 +86,15 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
   user_agent text
 );
 
+CREATE TABLE IF NOT EXISTS request_idempotency (
+  scope text NOT NULL,
+  client_request_id text NOT NULL,
+  response_status integer NOT NULL,
+  response_body jsonb NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (scope, client_request_id)
+);
+
 ALTER TABLE people
   ADD COLUMN IF NOT EXISTS program_year integer;
 

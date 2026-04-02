@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { NHIS_SITUATION_CASE_OPTIONS } from '../../constants/options.js';
 import { createNhisMutation } from '../../utils/offlineData.js';
 import { buildFullName } from '../../utils/people.js';
+import usePersistedDraft from '../../hooks/usePersistedDraft.js';
 
-export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
-  const [form, setForm] = useState({
+const NHIS_DRAFT_KEY = 'draft:nhis-registration:create';
+
+function buildInitialForm(programYear) {
+  return {
     surname: '',
     otherNames: '',
     situationCase: '',
     amount: '',
     programYear
+  };
+}
+
+export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
+  const initialForm = useMemo(() => buildInitialForm(programYear), [programYear]);
+  const {
+    value: form,
+    setValue: setForm,
+    restored: draftRestored,
+    clearDraft
+  } = usePersistedDraft({
+    cacheKey: NHIS_DRAFT_KEY,
+    initialValue: initialForm,
+    restoreValue: (cachedValue, fallbackValue) => ({
+      ...fallbackValue,
+      ...cachedValue,
+      programYear: fallbackValue.programYear
+    })
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -29,6 +50,7 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
     const result = await createNhisMutation(payload);
 
     if (result.ok) {
+      await clearDraft();
       await onSaved();
       return;
     }
@@ -47,13 +69,19 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
         </div>
 
         <form onSubmit={handleSubmit} className="form">
+          {draftRestored && (
+            <div className="notice">
+              Draft restored. Unsaved entries on this device will keep auto-saving until you submit.
+            </div>
+          )}
+
           <div className="field-grid">
             <label>
               Surname
               <input
                 required
                 value={form.surname}
-                onChange={(event) => setForm({ ...form, surname: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, surname: event.target.value }))}
                 placeholder="Surname"
               />
             </label>
@@ -62,7 +90,7 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
               <input
                 required
                 value={form.otherNames}
-                onChange={(event) => setForm({ ...form, otherNames: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, otherNames: event.target.value }))}
                 placeholder="Other names"
               />
             </label>
@@ -70,7 +98,7 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
               Situation/Case
               <select
                 value={form.situationCase}
-                onChange={(event) => setForm({ ...form, situationCase: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, situationCase: event.target.value }))}
               >
                 <option value="">Select situation/case</option>
                 {NHIS_SITUATION_CASE_OPTIONS.map((option) => (
@@ -85,7 +113,7 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
                 step="0.01"
                 min="0"
                 value={form.amount}
-                onChange={(event) => setForm({ ...form, amount: event.target.value })}
+                onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))}
               />
             </label>
           </div>

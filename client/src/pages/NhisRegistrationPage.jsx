@@ -189,7 +189,8 @@ export default function NhisRegistrationPage({
       fullName: buildFullName(editForm.otherNames, editForm.surname),
       situationCase: editForm.situationCase || null,
       amount: editForm.amount,
-      programYear: editForm.programYear ? Number(editForm.programYear) : null
+      programYear: editForm.programYear ? Number(editForm.programYear) : null,
+      expectedUpdatedAt: recordDetails.updated_at || undefined
     };
 
     const result = await updateNhisMutation(recordDetails.id, payload, recordDetails);
@@ -197,21 +198,31 @@ export default function NhisRegistrationPage({
     if (!result.ok) {
       const data = await result.response?.json().catch(() => ({}));
       const message = data.message || 'Failed to save changes.';
+      if (data.code === 'stale_record') {
+        await fetchRecordDetails(recordDetails.id, { showLoading: false });
+        setEditing(false);
+        setSaving(false);
+        showToast(message, 'error');
+        return;
+      }
+
       setDetailsError(message);
       showToast(message, 'error');
       setSaving(false);
       return;
     }
 
-    const optimisticDetails = buildRecordDetailFromRow({
-      ...recordDetails,
-      full_name: payload.fullName,
-      surname: editForm.surname,
-      other_names: editForm.otherNames,
-      situation_case: payload.situationCase,
-      amount: payload.amount,
-      program_year: payload.programYear
-    });
+    const optimisticDetails = result.queued
+      ? buildRecordDetailFromRow({
+        ...recordDetails,
+        full_name: payload.fullName,
+        surname: editForm.surname,
+        other_names: editForm.otherNames,
+        situation_case: payload.situationCase,
+        amount: payload.amount,
+        program_year: payload.programYear
+      })
+      : buildRecordDetailFromRow(await result.response.json());
 
     setRecordDetails(optimisticDetails);
     hydrateEditForm(optimisticDetails);

@@ -207,7 +207,8 @@ export default function PeoplePage({
       registrationSource: editForm.registrationSource || null,
       reasonForComing: editForm.reasonForComing || null,
       addressLine1: editForm.addressLine1 || null,
-      programYear: editForm.programYear ? Number(editForm.programYear) : null
+      programYear: editForm.programYear ? Number(editForm.programYear) : null,
+      expectedUpdatedAt: personDetails.updated_at || undefined
     };
 
     const result = await updatePersonMutation(personDetails.id, payload, personDetails);
@@ -215,27 +216,37 @@ export default function PeoplePage({
     if (!result.ok) {
       const data = await result.response?.json().catch(() => ({}));
       const message = data.message || 'Failed to save changes.';
+      if (data.code === 'stale_record') {
+        await fetchPersonDetails(personDetails.id, { showLoading: false });
+        setEditing(false);
+        setSaving(false);
+        showToast(message, 'error');
+        return;
+      }
+
       setDetailsError(message);
       showToast(message, 'error');
       setSaving(false);
       return;
     }
 
-    const optimisticDetails = buildPersonDetailFromRow({
-      ...personDetails,
-      first_name: payload.firstName,
-      last_name: payload.lastName,
-      other_names: payload.otherNames,
-      age: payload.age,
-      gender: payload.gender,
-      phone: payload.phone,
-      email: payload.email,
-      occupation: payload.occupation,
-      registration_source: payload.registrationSource,
-      reason_for_coming: payload.reasonForComing,
-      address_line1: payload.addressLine1,
-      program_year: payload.programYear
-    });
+    const optimisticDetails = result.queued
+      ? buildPersonDetailFromRow({
+        ...personDetails,
+        first_name: payload.firstName,
+        last_name: payload.lastName,
+        other_names: payload.otherNames,
+        age: payload.age,
+        gender: payload.gender,
+        phone: payload.phone,
+        email: payload.email,
+        occupation: payload.occupation,
+        registration_source: payload.registrationSource,
+        reason_for_coming: payload.reasonForComing,
+        address_line1: payload.addressLine1,
+        program_year: payload.programYear
+      })
+      : buildPersonDetailFromRow(await result.response.json());
 
     setPersonDetails(optimisticDetails);
     hydrateEditForm(optimisticDetails);

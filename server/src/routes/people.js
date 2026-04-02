@@ -1,8 +1,16 @@
 import express from 'express';
 import multer from 'multer';
 import * as xlsx from 'xlsx';
-import { query } from '../db.js';
+import { query, withTransaction } from '../db.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
+import {
+  acquireTransactionLock,
+  buildStaleRecordMessage,
+  getIdempotentResponse,
+  normalizeClientRequestId,
+  normalizeExpectedUpdatedAt,
+  storeIdempotentResponse
+} from '../utils/concurrency.js';
 import { cleanedText, lowerCaseText, titleCaseText } from '../utils/text.js';
 
 const router = express.Router();
@@ -129,7 +137,11 @@ function buildDuplicateKey({ firstName, lastName, age, gender, addressLine1 }) {
   ].join('|');
 }
 
-async function findDuplicatePerson({ firstName, lastName, age, gender, addressLine1 }, options = {}) {
+function getExecutor(executor) {
+  return executor || { query };
+}
+
+async function findDuplicatePerson({ firstName, lastName, age, gender, addressLine1 }, options = {}, executor) {
   if (!firstName || !lastName) return null;
   const { excludeId = null } = options;
   const params = [firstName, lastName, age ?? null, gender ?? null, addressLine1 ?? null];
@@ -149,7 +161,7 @@ async function findDuplicatePerson({ firstName, lastName, age, gender, addressLi
   }
 
   sql += ' LIMIT 1';
-  const result = await query(sql, params);
+  const result = await getExecutor(executor).query(sql, params);
   return result.rows[0] || null;
 }
 
@@ -165,7 +177,7 @@ function isNhisReason(value) {
   return String(value || '').trim().toLowerCase() === NHIS_REASON;
 }
 
-async function findDuplicateNhisRecord({ fullName, amount }, options = {}) {
+async function findDuplicateNhisRecord({ fullName, amount }, options = {}, executor) {
   if (!fullName) return null;
 
   const { excludeId = null } = options;
@@ -184,18 +196,31 @@ async function findDuplicateNhisRecord({ fullName, amount }, options = {}) {
   }
 
   sql += ' LIMIT 1';
-  const result = await query(sql, params);
+  const result = await getExecutor(executor).query(sql, params);
   return result.rows[0] || null;
 }
 
-async function ensureNhisRegistrationFromPerson({ firstName, lastName, amount = null, programYear, userId }) {
+async function ensureNhisRegistrationFromPerson({ firstName, lastName, amount = null, programYear, userId }, executor) {
+  if (!executor) {
+    return withTransaction((client) => ensureNhisRegistrationFromPerson(
+      { firstName, lastName, amount, programYear, userId },
+      client
+    ));
+  }
+
   const fullName = titleCaseText(`${firstName || ''} ${lastName || ''}`);
   if (!fullName) return false;
 
-  const duplicate = await findDuplicateNhisRecord({ fullName, amount });
+  const dbExecutor = getExecutor(executor);
+  await acquireTransactionLock(
+    dbExecutor,
+    `nhis:dedupe:${String(fullName || '').trim().toLowerCase()}|${normalizeNhisAmount(amount) ?? ''}`
+  );
+
+  const duplicate = await findDuplicateNhisRecord({ fullName, amount }, {}, dbExecutor);
   if (duplicate) return false;
 
-  await query(
+  await dbExecutor.query(
     `INSERT INTO nhis_registrations (
       full_name, situation_case, amount, program_year, created_by, updated_by
     )
@@ -683,61 +708,109 @@ router.post('/', requirePermission('generalRegistration', 'create'), async (req,
   }
 
   const programYear = payload.programYear || new Date().getFullYear();
+  const clientRequestId = normalizeClientRequestId(payload.clientRequestId);
+  const createScope = 'people:create';
+  const duplicateKey = buildDuplicateKey({
+    firstName,
+    lastName,
+    age,
+    gender,
+    addressLine1
+  });
 
-  const result = await query(
-    `INSERT INTO people (
-      first_name, last_name, other_names, dob, age, gender, phone, email,
-      address_line1, address_line2, city, region, country, nationality,
-      id_type, id_number, emergency_name, emergency_phone, registration_source,
-      occupation, reason_for_coming, program_year, onboarding_status, notes, created_by, updated_by
-    )
-    VALUES (
-      $1,$2,$3,$4,$5,$6,$7,$8,
-      $9,$10,$11,$12,$13,$14,
-      $15,$16,$17,$18,$19,
-      $20,$21,$22,$23,$24,$25,$26
-    )
-    RETURNING id, first_name, last_name, onboarding_status, registration_date, program_year`,
-    [
+  const outcome = await withTransaction(async (client) => {
+    if (clientRequestId) {
+      await acquireTransactionLock(client, `${createScope}:request:${clientRequestId}`);
+      const existingResponse = await getIdempotentResponse(client, createScope, clientRequestId);
+      if (existingResponse) {
+        return { replay: existingResponse };
+      }
+    }
+
+    await acquireTransactionLock(client, `${createScope}:dedupe:${duplicateKey}`);
+
+    const duplicate = await findDuplicatePerson({
       firstName,
       lastName,
-      titleCaseText(payload.otherNames),
-      payload.dob || null,
       age,
       gender,
-      cleanedText(payload.phone),
-      lowerCaseText(payload.email),
-      addressLine1,
-      titleCaseText(payload.addressLine2),
-      titleCaseText(payload.city),
-      titleCaseText(payload.region),
-      titleCaseText(payload.country) || 'Ghana',
-      titleCaseText(payload.nationality),
-      titleCaseText(payload.idType),
-      cleanedText(payload.idNumber),
-      titleCaseText(payload.emergencyName),
-      cleanedText(payload.emergencyPhone),
-      titleCaseText(payload.registrationSource),
-      titleCaseText(payload.occupation),
-      reasonForComing,
-      programYear,
-      payload.onboardingStatus || 'registered',
-      cleanedText(payload.notes),
-      req.user.id,
-      req.user.id
-    ]
-  );
+      addressLine1
+    }, {}, client);
+    if (duplicate) {
+      return { duplicate: true };
+    }
 
-  if (isNhisReason(reasonForComing)) {
-    await ensureNhisRegistrationFromPerson({
-      firstName,
-      lastName,
-      programYear,
-      userId: req.user.id
-    });
+    const result = await client.query(
+      `INSERT INTO people (
+        first_name, last_name, other_names, dob, age, gender, phone, email,
+        address_line1, address_line2, city, region, country, nationality,
+        id_type, id_number, emergency_name, emergency_phone, registration_source,
+        occupation, reason_for_coming, program_year, onboarding_status, notes, created_by, updated_by
+      )
+      VALUES (
+        $1,$2,$3,$4,$5,$6,$7,$8,
+        $9,$10,$11,$12,$13,$14,
+        $15,$16,$17,$18,$19,
+        $20,$21,$22,$23,$24,$25,$26
+      )
+      RETURNING *`,
+      [
+        firstName,
+        lastName,
+        titleCaseText(payload.otherNames),
+        payload.dob || null,
+        age,
+        gender,
+        cleanedText(payload.phone),
+        lowerCaseText(payload.email),
+        addressLine1,
+        titleCaseText(payload.addressLine2),
+        titleCaseText(payload.city),
+        titleCaseText(payload.region),
+        titleCaseText(payload.country) || 'Ghana',
+        titleCaseText(payload.nationality),
+        titleCaseText(payload.idType),
+        cleanedText(payload.idNumber),
+        titleCaseText(payload.emergencyName),
+        cleanedText(payload.emergencyPhone),
+        titleCaseText(payload.registrationSource),
+        titleCaseText(payload.occupation),
+        reasonForComing,
+        programYear,
+        payload.onboardingStatus || 'registered',
+        cleanedText(payload.notes),
+        req.user.id,
+        req.user.id
+      ]
+    );
+
+    if (isNhisReason(reasonForComing)) {
+      await ensureNhisRegistrationFromPerson({
+        firstName,
+        lastName,
+        programYear,
+        userId: req.user.id
+      }, client);
+    }
+
+    const createdPerson = result.rows[0];
+
+    if (clientRequestId) {
+      await storeIdempotentResponse(client, createScope, clientRequestId, 201, createdPerson);
+    }
+
+    return { created: createdPerson };
+  });
+
+  if (outcome.replay) {
+    return res.status(outcome.replay.status).json(outcome.replay.body);
   }
 
-  return res.status(201).json(result.rows[0]);
+  if (outcome.duplicate) {
+    return res.status(409).json({ message: DUPLICATE_MESSAGE });
+  }
+
+  return res.status(201).json(outcome.created);
 });
 
 router.get('/:id', requirePermission('generalRegistration', 'view'), async (req, res) => {
@@ -754,118 +827,161 @@ router.get('/:id', requirePermission('generalRegistration', 'view'), async (req,
 router.patch('/:id', requirePermission('generalRegistration', 'edit'), async (req, res) => {
   const { id } = req.params;
   const payload = req.body || {};
-
-  const currentRecord = await query(
-    'SELECT id, first_name, last_name, age, gender, address_line1, reason_for_coming, program_year FROM people WHERE id = $1',
-    [id]
-  );
-  if (!currentRecord.rows.length) {
-    return res.status(404).json({ message: 'Person not found' });
-  }
-  const current = currentRecord.rows[0];
-
   const firstNameInput = payload.firstName !== undefined ? titleCaseText(payload.firstName) : null;
   const lastNameInput = payload.lastName !== undefined ? titleCaseText(payload.lastName) : null;
   const ageInput = payload.age !== undefined ? parseAge(payload.age) : null;
   const genderInput = payload.gender !== undefined ? normalizeGender(payload.gender) : null;
   const addressLine1Input = payload.addressLine1 !== undefined ? titleCaseText(payload.addressLine1) : null;
   const reasonForComingInput = payload.reasonForComing !== undefined ? titleCaseText(payload.reasonForComing) : null;
+  const expectedUpdatedAt = payload.expectedUpdatedAt === undefined
+    ? null
+    : normalizeExpectedUpdatedAt(payload.expectedUpdatedAt);
   const hasIdentityFieldUpdate = ['firstName', 'lastName', 'age', 'gender', 'addressLine1']
     .some((field) => payload[field] !== undefined);
+
+  if (payload.expectedUpdatedAt !== undefined && !expectedUpdatedAt) {
+    return res.status(400).json({ message: 'expectedUpdatedAt must be a valid timestamp.' });
+  }
 
   if (payload.age !== undefined && payload.age !== null && String(payload.age).trim() !== '' && ageInput === null) {
     return res.status(400).json({ message: 'Age must be a valid number.' });
   }
 
-  if (hasIdentityFieldUpdate) {
-    const duplicate = await findDuplicatePerson({
-      firstName: firstNameInput ?? current.first_name,
-      lastName: lastNameInput ?? current.last_name,
-      age: ageInput ?? current.age,
-      gender: genderInput ?? current.gender,
-      addressLine1: addressLine1Input ?? current.address_line1
-    }, { excludeId: id });
-    if (duplicate) {
-      return res.status(409).json({ message: DUPLICATE_MESSAGE });
+  const outcome = await withTransaction(async (client) => {
+    const currentRecord = await client.query(
+      `SELECT id, first_name, last_name, age, gender, address_line1,
+              reason_for_coming, program_year, updated_at
+       FROM people
+       WHERE id = $1
+       FOR UPDATE`,
+      [id]
+    );
+
+    if (!currentRecord.rows.length) {
+      return { missing: true };
     }
-  }
 
-  const result = await query(
-    `UPDATE people SET
-      first_name = COALESCE($1, first_name),
-      last_name = COALESCE($2, last_name),
-      other_names = COALESCE($3, other_names),
-      dob = COALESCE($4, dob),
-      age = COALESCE($5, age),
-      gender = COALESCE($6, gender),
-      phone = COALESCE($7, phone),
-      email = COALESCE($8, email),
-      address_line1 = COALESCE($9, address_line1),
-      address_line2 = COALESCE($10, address_line2),
-      city = COALESCE($11, city),
-      region = COALESCE($12, region),
-      country = COALESCE($13, country),
-      nationality = COALESCE($14, nationality),
-      id_type = COALESCE($15, id_type),
-      id_number = COALESCE($16, id_number),
-      emergency_name = COALESCE($17, emergency_name),
-      emergency_phone = COALESCE($18, emergency_phone),
-      registration_source = COALESCE($19, registration_source),
-      occupation = COALESCE($20, occupation),
-      reason_for_coming = COALESCE($21, reason_for_coming),
-      program_year = COALESCE($22, program_year),
-      onboarding_status = COALESCE($23, onboarding_status),
-      onboarding_date = COALESCE($24, onboarding_date),
-      notes = COALESCE($25, notes),
-      updated_by = $26
-     WHERE id = $27
-     RETURNING id, first_name, last_name, onboarding_status, registration_date, program_year`,
-    [
-      firstNameInput,
-      lastNameInput,
-      titleCaseText(payload.otherNames),
-      payload.dob || null,
-      ageInput,
-      genderInput,
-      cleanedText(payload.phone),
-      lowerCaseText(payload.email),
-      addressLine1Input,
-      titleCaseText(payload.addressLine2),
-      titleCaseText(payload.city),
-      titleCaseText(payload.region),
-      titleCaseText(payload.country),
-      titleCaseText(payload.nationality),
-      titleCaseText(payload.idType),
-      cleanedText(payload.idNumber),
-      titleCaseText(payload.emergencyName),
-      cleanedText(payload.emergencyPhone),
-      titleCaseText(payload.registrationSource),
-      titleCaseText(payload.occupation),
-      reasonForComingInput,
-      payload.programYear || null,
-      payload.onboardingStatus || null,
-      payload.onboardingDate || null,
-      cleanedText(payload.notes),
-      req.user.id,
-      id
-    ]
-  );
+    const current = currentRecord.rows[0];
+    const currentUpdatedAt = new Date(current.updated_at).toISOString();
 
-  if (!result.rows.length) {
+    if (expectedUpdatedAt && currentUpdatedAt !== expectedUpdatedAt) {
+      return {
+        stale: true,
+        message: buildStaleRecordMessage('person record')
+      };
+    }
+
+    if (hasIdentityFieldUpdate) {
+      const nextDuplicateKey = buildDuplicateKey({
+        firstName: firstNameInput ?? current.first_name,
+        lastName: lastNameInput ?? current.last_name,
+        age: ageInput ?? current.age,
+        gender: genderInput ?? current.gender,
+        addressLine1: addressLine1Input ?? current.address_line1
+      });
+
+      await acquireTransactionLock(client, `people:update:dedupe:${nextDuplicateKey}`);
+
+      const duplicate = await findDuplicatePerson({
+        firstName: firstNameInput ?? current.first_name,
+        lastName: lastNameInput ?? current.last_name,
+        age: ageInput ?? current.age,
+        gender: genderInput ?? current.gender,
+        addressLine1: addressLine1Input ?? current.address_line1
+      }, { excludeId: id }, client);
+      if (duplicate) {
+        return { duplicate: true };
+      }
+    }
+
+    const result = await client.query(
+      `UPDATE people SET
+        first_name = COALESCE($1, first_name),
+        last_name = COALESCE($2, last_name),
+        other_names = COALESCE($3, other_names),
+        dob = COALESCE($4, dob),
+        age = COALESCE($5, age),
+        gender = COALESCE($6, gender),
+        phone = COALESCE($7, phone),
+        email = COALESCE($8, email),
+        address_line1 = COALESCE($9, address_line1),
+        address_line2 = COALESCE($10, address_line2),
+        city = COALESCE($11, city),
+        region = COALESCE($12, region),
+        country = COALESCE($13, country),
+        nationality = COALESCE($14, nationality),
+        id_type = COALESCE($15, id_type),
+        id_number = COALESCE($16, id_number),
+        emergency_name = COALESCE($17, emergency_name),
+        emergency_phone = COALESCE($18, emergency_phone),
+        registration_source = COALESCE($19, registration_source),
+        occupation = COALESCE($20, occupation),
+        reason_for_coming = COALESCE($21, reason_for_coming),
+        program_year = COALESCE($22, program_year),
+        onboarding_status = COALESCE($23, onboarding_status),
+        onboarding_date = COALESCE($24, onboarding_date),
+        notes = COALESCE($25, notes),
+        updated_by = $26
+       WHERE id = $27
+       RETURNING *`,
+      [
+        firstNameInput,
+        lastNameInput,
+        titleCaseText(payload.otherNames),
+        payload.dob || null,
+        ageInput,
+        genderInput,
+        cleanedText(payload.phone),
+        lowerCaseText(payload.email),
+        addressLine1Input,
+        titleCaseText(payload.addressLine2),
+        titleCaseText(payload.city),
+        titleCaseText(payload.region),
+        titleCaseText(payload.country),
+        titleCaseText(payload.nationality),
+        titleCaseText(payload.idType),
+        cleanedText(payload.idNumber),
+        titleCaseText(payload.emergencyName),
+        cleanedText(payload.emergencyPhone),
+        titleCaseText(payload.registrationSource),
+        titleCaseText(payload.occupation),
+        reasonForComingInput,
+        payload.programYear || null,
+        payload.onboardingStatus || null,
+        payload.onboardingDate || null,
+        cleanedText(payload.notes),
+        req.user.id,
+        id
+      ]
+    );
+
+    const updatedPerson = result.rows[0];
+    const nextReasonForComing = reasonForComingInput ?? current.reason_for_coming;
+    if (isNhisReason(nextReasonForComing)) {
+      await ensureNhisRegistrationFromPerson({
+        firstName: firstNameInput ?? current.first_name,
+        lastName: lastNameInput ?? current.last_name,
+        programYear: payload.programYear || current.program_year,
+        userId: req.user.id
+      }, client);
+    }
+
+    return { updated: updatedPerson };
+  });
+
+  if (outcome.missing) {
     return res.status(404).json({ message: 'Person not found' });
   }
 
-  const nextReasonForComing = reasonForComingInput ?? current.reason_for_coming;
-  if (isNhisReason(nextReasonForComing)) {
-    await ensureNhisRegistrationFromPerson({
-      firstName: firstNameInput ?? current.first_name,
-      lastName: lastNameInput ?? current.last_name,
-      programYear: payload.programYear || current.program_year,
-      userId: req.user.id
-    });
+  if (outcome.stale) {
+    return res.status(409).json({ code: 'stale_record', message: outcome.message });
   }
 
-  return res.json(result.rows[0]);
+  if (outcome.duplicate) {
+    return res.status(409).json({ message: DUPLICATE_MESSAGE });
+  }
+
+  return res.json(outcome.updated);
 });
 
 router.delete('/:id', requirePermission('generalRegistration', 'delete'), async (req, res) => {

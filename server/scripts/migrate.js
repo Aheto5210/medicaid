@@ -7,6 +7,14 @@ ALTER TABLE people ADD COLUMN IF NOT EXISTS age integer;
 ALTER TABLE people ADD COLUMN IF NOT EXISTS occupation text;
 ALTER TABLE people ADD COLUMN IF NOT EXISTS reason_for_coming text;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS permissions jsonb NOT NULL DEFAULT '{}'::jsonb;
+CREATE TABLE IF NOT EXISTS request_idempotency (
+  scope text NOT NULL,
+  client_request_id text NOT NULL,
+  response_status integer NOT NULL,
+  response_body jsonb NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (scope, client_request_id)
+);
 CREATE TABLE IF NOT EXISTS nhis_registrations (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   full_name text NOT NULL,

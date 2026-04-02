@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 
 import config from './config.js';
+import { ensureRuntimeSchema } from './db.js';
 import authRoutes from './routes/auth.js';
 import peopleRoutes from './routes/people.js';
 import nhisRoutes from './routes/nhis.js';
@@ -63,6 +64,16 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Server error' });
 });
 
-app.listen(config.port, () => {
-  console.log(`API listening on ${config.port}`);
-});
+async function startServer() {
+  try {
+    await ensureRuntimeSchema();
+    app.listen(config.port, () => {
+      console.log(`API listening on ${config.port}`);
+    });
+  } catch (error) {
+    console.error('Failed to start API:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
