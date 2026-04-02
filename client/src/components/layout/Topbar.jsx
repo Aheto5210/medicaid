@@ -6,7 +6,8 @@ export default function Topbar({
   onSearch,
   showSearch = true,
   showMenuToggle = false,
-  onMenuToggle
+  onMenuToggle,
+  extraActions = null
 }) {
   return (
     <div className="topbar">
@@ -38,6 +39,7 @@ export default function Topbar({
             />
           </div>
         )}
+        {extraActions}
       </div>
     </div>
   );

@@ -106,6 +106,24 @@ function buildReasonSummary(summary = {}) {
   );
 }
 
+function buildCountShareTable(title, items = [], firstColumnLabel) {
+  const normalizedItems = (items || []).map((item) => ({
+    ...item,
+    value: Number(item.value || 0)
+  }));
+  const total = normalizedItems.reduce((sum, item) => sum + item.value, 0) || 1;
+
+  return buildTable(
+    title,
+    normalizedItems,
+    [
+      { label: firstColumnLabel, render: (item) => item.label || 'Unknown' },
+      { label: 'Count', render: (item) => formatInteger(item.value) },
+      { label: 'Share', render: (item) => formatPercent((item.value / total) * 100) }
+    ]
+  );
+}
+
 export function openAnalyticsReportPrintView({ summary, year, user, logoUrl }) {
   const title = '\u200B';
   const reportHtml = `
@@ -347,6 +365,25 @@ export function openAnalyticsReportPrintView({ summary, year, user, logoUrl }) {
                     { label: 'Age Range', render: (item) => item.label || 'Unknown' },
                     { label: 'Count', render: (item) => formatInteger(item.value) }
                   ]
+                )}
+              </div>
+            `
+          )}
+
+          ${buildSectionGroup(
+            'Community Insights',
+            `
+              <div class="report-grid">
+                ${buildCountShareTable(
+                  'Awareness Sources',
+                  summary.registrationSources || [],
+                  'Source'
+                )}
+
+                ${buildCountShareTable(
+                  'Occupations',
+                  summary.occupations || [],
+                  'Occupation'
                 )}
               </div>
             `

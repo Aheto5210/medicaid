@@ -1,4 +1,5 @@
 import React from 'react';
+import { buildNhisDisplayName } from '../../utils/people.js';
 
 function formatCurrency(amount) {
   const value = Number(amount);
@@ -67,15 +68,15 @@ export default function NhisTable({
           <div key={record.id} className="table-row nhis-row">
             <span className="row-select-cell">
               {canDelete && (
-                <input
-                  type="checkbox"
-                  aria-label={`Select ${record.full_name || 'record'}`}
-                  checked={selectedSet.has(record.id)}
-                  onChange={() => onToggleSelect?.(record.id)}
-                />
-              )}
-            </span>
-            <span>{record.full_name}</span>
+              <input
+                type="checkbox"
+                aria-label={`Select ${buildNhisDisplayName(record) || 'record'}`}
+                checked={selectedSet.has(record.id)}
+                onChange={() => onToggleSelect?.(record.id)}
+              />
+            )}
+          </span>
+            <span>{buildNhisDisplayName(record) || '--'}</span>
             <span>{showNameOnly ? '' : (record.situation_case || '')}</span>
             <span>{showNameOnly ? '' : formatCurrency(record.amount)}</span>
             <span>{showNameOnly ? '' : formatReadableDate(record.registration_date)}</span>

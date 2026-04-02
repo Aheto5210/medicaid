@@ -1,5 +1,6 @@
 import React from 'react';
 import { NHIS_SITUATION_CASE_OPTIONS } from '../../constants/options.js';
+import { buildNhisDisplayName } from '../../utils/people.js';
 
 function formatCurrency(amount) {
   const value = Number(amount);
@@ -57,7 +58,7 @@ export default function NhisDetailsModal({
         {!loading && !error && record && !editing && (
           <>
             <div className="details-grid">
-              <div className="detail-item"><span>Name</span><strong>{record.full_name || '--'}</strong></div>
+              <div className="detail-item"><span>Name</span><strong>{buildNhisDisplayName(record) || '--'}</strong></div>
               <div className="detail-item"><span>Situation/Case</span><strong>{record.situation_case || '--'}</strong></div>
               <div className="detail-item"><span>Amount (GHS)</span><strong>{formatCurrency(record.amount)}</strong></div>
               <div className="detail-item"><span>Program Year</span><strong>{record.program_year || '--'}</strong></div>
@@ -78,11 +79,19 @@ export default function NhisDetailsModal({
           <form onSubmit={onSave} className="form">
             <div className="field-grid">
               <label>
-                Name
+                Surname
                 <input
                   required
-                  value={form.fullName}
-                  onChange={(event) => onFormChange('fullName', event.target.value)}
+                  value={form.surname}
+                  onChange={(event) => onFormChange('surname', event.target.value)}
+                />
+              </label>
+              <label>
+                Other names
+                <input
+                  required
+                  value={form.otherNames}
+                  onChange={(event) => onFormChange('otherNames', event.target.value)}
                 />
               </label>
               <label>

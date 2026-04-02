@@ -13,6 +13,15 @@ import usersRoutes from './routes/users.js';
 const app = express();
 const corsOrigins = config.corsOrigins;
 
+function isLocalDevelopmentOrigin(origin) {
+  try {
+    const url = new URL(origin);
+    return ['localhost', '127.0.0.1'].includes(url.hostname);
+  } catch {
+    return false;
+  }
+}
+
 app.disable('x-powered-by');
 app.set('trust proxy', config.trustProxy);
 app.use(helmet());
@@ -25,7 +34,10 @@ app.use(cors({
     if (corsOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(new Error('Not allowed by CORS'));
+    if (!config.isProduction && isLocalDevelopmentOrigin(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
   },
   credentials: true
 }));

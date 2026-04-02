@@ -7,6 +7,9 @@
   ],
   "permissions": [
     "core:default",
+    "dialog:default",
+    "fs:default",
+    "fs:write-all",
     "sql:default",
     "sql:allow-execute"
   ]

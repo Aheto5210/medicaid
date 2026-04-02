@@ -1,4 +1,6 @@
 import { apiFetch } from '../api.js';
+import { bucketOccupations, bucketRegistrationSources, mapCountsFromPeople } from './dashboardAnalytics.js';
+import { buildFullName, buildPersonDisplayName } from './people.js';
 
 const BROWSER_DB_NAME = 'medicaid-local-data';
 const BROWSER_DB_VERSION = 1;
@@ -395,6 +397,7 @@ function formatPersonRow(payload = {}, id, createdAt = nowIso()) {
     id,
     first_name: payload.firstName || '',
     last_name: payload.lastName || '',
+    other_names: payload.otherNames || payload.firstName || '',
     age: payload.age ?? null,
     gender: payload.gender || '',
     phone: payload.phone || '',
@@ -415,6 +418,7 @@ function formatPersonPatch(current = {}, payload = {}) {
     ...current,
     first_name: payload.firstName ?? current.first_name ?? '',
     last_name: payload.lastName ?? current.last_name ?? '',
+    other_names: payload.otherNames ?? current.other_names ?? payload.firstName ?? current.first_name ?? '',
     age: payload.age ?? current.age ?? null,
     gender: payload.gender ?? current.gender ?? '',
     phone: payload.phone ?? current.phone ?? '',
@@ -465,7 +469,7 @@ function sortNewestFirst(items = []) {
 function matchesPeopleSearch(person, search) {
   if (!search) return true;
   return [
-    `${person.first_name || ''} ${person.last_name || ''}`,
+    buildPersonDisplayName(person),
     person.phone,
     person.address_line1,
     person.reason_for_coming
@@ -899,7 +903,7 @@ function buildDerivedNhisRecordFromPeopleMutation(item, year) {
 
   return {
     id: `derived:${item.id}`,
-    full_name: `${record.first_name || ''} ${record.last_name || ''}`.trim(),
+    full_name: buildFullName(record.first_name || record.other_names || '', record.last_name || ''),
     situation_case: '',
     amount: null,
     program_year: record.program_year,
@@ -1024,6 +1028,8 @@ export function mapPersonSummaryFromList(people = []) {
     totals,
     gender: [...genderCounts.entries()].map(([label, value]) => ({ label, value })),
     reasons: [...reasonCounts.entries()].map(([label, value]) => ({ label, value })),
-    ageRanges: [...ageCounts.entries()].map(([label, value]) => ({ label, value }))
+    ageRanges: [...ageCounts.entries()].map(([label, value]) => ({ label, value })),
+    registrationSources: bucketRegistrationSources(mapCountsFromPeople(people, 'registration_source')),
+    occupations: bucketOccupations(mapCountsFromPeople(people, 'occupation'))
   };
 }

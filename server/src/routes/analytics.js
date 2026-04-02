@@ -3,6 +3,96 @@ import { query } from '../db.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
 
 const router = express.Router();
+const OTHER_LABEL = 'Other';
+const HEARD_ABOUT_ANALYTICS_OPTIONS = [
+  'Radio',
+  'My child told me',
+  'Information van (with megaphones)',
+  'On a whatsapp platform',
+  'Outreach guys with megaphones',
+  'Poster',
+  'Influencer (station master/market queen/assembly man)',
+  'Church/mosque announcement',
+  'Friends/Family (not my child)',
+  'Town crier (announcer)'
+];
+const OCCUPATION_ANALYTICS_OPTIONS = [
+  'Student',
+  'Trader',
+  'Farmer',
+  'Teacher',
+  'Nurse',
+  'Doctor',
+  'Driver',
+  'Hairdresser',
+  'Barber',
+  'Seamstress',
+  'Tailor',
+  'Carpenter',
+  'Mason',
+  'Mechanic',
+  'Electrician',
+  'Plumber',
+  'Security Officer',
+  'Cleaner',
+  'Caterer',
+  'Civil Servant',
+  'Business Owner',
+  'Entrepreneur',
+  'Pastor',
+  'Imam',
+  'Unemployed',
+  'Retired'
+];
+
+function normalizeBucketKey(value = '') {
+  return String(value || '').trim().toLowerCase();
+}
+
+function sortAnalyticsItems(items = []) {
+  return [...items].sort((a, b) => {
+    const valueDifference = Number(b.value || 0) - Number(a.value || 0);
+    if (valueDifference !== 0) return valueDifference;
+    return String(a.label || '').localeCompare(String(b.label || ''));
+  });
+}
+
+function bucketKnownItems(items = [], knownOptions = [], limit = 8) {
+  const lookup = new Map(knownOptions.map((option) => [normalizeBucketKey(option), option]));
+  const counts = new Map(knownOptions.map((option) => [option, 0]));
+  let otherCount = 0;
+
+  for (const item of items) {
+    const value = Number(item?.value || 0);
+    if (value <= 0) continue;
+
+    const normalized = normalizeBucketKey(item?.label);
+    if (!normalized || normalized === 'unknown' || normalized === normalizeBucketKey(OTHER_LABEL)) {
+      otherCount += value;
+      continue;
+    }
+
+    const matchedOption = lookup.get(normalized);
+    if (matchedOption) {
+      counts.set(matchedOption, (counts.get(matchedOption) || 0) + value);
+      continue;
+    }
+
+    otherCount += value;
+  }
+
+  const bucketedItems = sortAnalyticsItems(
+    [...counts.entries()]
+      .map(([label, value]) => ({ label, value }))
+      .filter((item) => item.value > 0)
+  );
+
+  if (otherCount > 0) {
+    bucketedItems.push({ label: OTHER_LABEL, value: otherCount });
+  }
+
+  return sortAnalyticsItems(bucketedItems).slice(0, limit);
+}
 
 router.use(requireAuth);
 
@@ -90,6 +180,20 @@ router.get('/summary', requirePermission('overview', 'view'), async (req, res) =
      WHERE program_year = $1 AND registration_date >= (current_date - interval '7 days')`,
     [year]
   );
+  const registrationSources = await query(
+    `SELECT COALESCE(NULLIF(registration_source, ''), 'Unknown') AS label, COUNT(*)::int AS value
+     FROM people
+     WHERE program_year = $1
+     GROUP BY 1`,
+    [year]
+  );
+  const occupations = await query(
+    `SELECT COALESCE(NULLIF(occupation, ''), 'Unknown') AS label, COUNT(*)::int AS value
+     FROM people
+     WHERE program_year = $1
+     GROUP BY 1`,
+    [year]
+  );
   const reasons = await query(
     `SELECT COALESCE(NULLIF(reason_for_coming, ''), 'Unknown') AS label, COUNT(*)::int AS value
      FROM people
@@ -166,6 +270,12 @@ router.get('/summary', requirePermission('overview', 'view'), async (req, res) =
     },
     trend: trend.rows,
     gender: gender.rows,
+    registrationSources: bucketKnownItems(
+      registrationSources.rows,
+      HEARD_ABOUT_ANALYTICS_OPTIONS,
+      HEARD_ABOUT_ANALYTICS_OPTIONS.length + 1
+    ),
+    occupations: bucketKnownItems(occupations.rows, OCCUPATION_ANALYTICS_OPTIONS),
     regions: regions.rows,
     cities: cities.rows,
     ageRanges: ageRanges.rows,

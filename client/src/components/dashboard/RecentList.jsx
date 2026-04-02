@@ -1,4 +1,5 @@
 import React from 'react';
+import { buildPersonDisplayName } from '../../utils/people.js';
 
 export default function RecentList({ items }) {
   if (!items.length) {
@@ -14,7 +15,7 @@ export default function RecentList({ items }) {
       </div>
       {items.map((person) => (
         <div key={person.id} className="recent-row">
-          <span className="person-name">{person.first_name} {person.last_name}</span>
+          <span className="person-name">{buildPersonDisplayName(person) || '--'}</span>
           <span>{person.phone || '--'}</span>
           <span>{person.address_line1 || '--'}</span>
         </div>

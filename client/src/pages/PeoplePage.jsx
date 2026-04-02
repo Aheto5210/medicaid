@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch, apiUpload } from '../api.js';
 import { GENDER_OPTIONS, MAIN_REASON_OPTIONS } from '../constants/options.js';
 import { deletePersonMutation, updatePersonMutation } from '../utils/offlineData.js';
-import { splitFullName } from '../utils/people.js';
+import { downloadFile } from '../utils/downloads.js';
+import { buildPersonDisplayName } from '../utils/people.js';
 import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
@@ -39,7 +40,8 @@ export default function PeoplePage({
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [editForm, setEditForm] = useState({
-    fullName: '',
+    surname: '',
+    otherNames: '',
     age: '',
     gender: '',
     phone: '',
@@ -88,7 +90,8 @@ export default function PeoplePage({
 
   function hydrateEditForm(person) {
     setEditForm({
-      fullName: `${person.first_name || ''} ${person.last_name || ''}`.trim(),
+      surname: person.last_name || '',
+      otherNames: person.first_name || person.other_names || '',
       age: person.age || '',
       gender: person.gender || '',
       phone: person.phone || '',
@@ -192,10 +195,10 @@ export default function PeoplePage({
     setSaving(true);
     setDetailsError(null);
 
-    const { firstName, lastName } = splitFullName(editForm.fullName);
     const payload = {
-      firstName,
-      lastName,
+      firstName: editForm.otherNames,
+      lastName: editForm.surname,
+      otherNames: editForm.otherNames,
       age: editForm.age ? Number(editForm.age) : null,
       gender: editForm.gender || null,
       phone: editForm.phone || null,
@@ -220,8 +223,9 @@ export default function PeoplePage({
 
     const optimisticDetails = buildPersonDetailFromRow({
       ...personDetails,
-      first_name: firstName,
-      last_name: lastName,
+      first_name: payload.firstName,
+      last_name: payload.lastName,
+      other_names: payload.otherNames,
       age: payload.age,
       gender: payload.gender,
       phone: payload.phone,
@@ -276,7 +280,7 @@ export default function PeoplePage({
 
   const filteredPeople = useMemo(() => {
     return people.filter((person) => {
-      const fullName = `${person.first_name || ''} ${person.last_name || ''}`.trim().toLowerCase();
+      const fullName = buildPersonDisplayName(person).toLowerCase();
       const sex = String(person.gender || '').toLowerCase();
       const location = `${person.address_line1 || ''} ${person.city || ''} ${person.region || ''}`.toLowerCase();
       const reason = String(person.reason_for_coming || '').toLowerCase();
@@ -352,22 +356,14 @@ export default function PeoplePage({
   }
 
   async function downloadBlob(path, filename, successText) {
-    const res = await apiFetch(path);
-    if (!res.ok) {
-      showToast('Download failed. Please try again.', 'error');
-      return;
-    }
-
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    if (successText) {
-      showToast(successText);
+    try {
+      const result = await downloadFile(path, filename);
+      if (result.cancelled) return;
+      if (successText) {
+        showToast(successText);
+      }
+    } catch (error) {
+      showToast(error.message || 'Download failed. Please try again.', 'error');
     }
   }
 
@@ -382,18 +378,19 @@ export default function PeoplePage({
     }
 
     setExporting(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.name) params.set('name', filters.name);
+      if (filters.sex) params.set('gender', filters.sex);
+      if (filters.location) params.set('location', filters.location);
+      if (filters.reason) params.set('reason', filters.reason);
+      if (programYear) params.set('year', programYear);
 
-    const params = new URLSearchParams();
-    if (filters.name) params.set('name', filters.name);
-    if (filters.sex) params.set('gender', filters.sex);
-    if (filters.location) params.set('location', filters.location);
-    if (filters.reason) params.set('reason', filters.reason);
-    if (programYear) params.set('year', programYear);
-
-    const query = params.toString() ? `?${params.toString()}` : '';
-    await downloadBlob(`/api/people/export${query}`, 'ewccomm25-registrations.xlsx', 'Export downloaded.');
-
-    setExporting(false);
+      const query = params.toString() ? `?${params.toString()}` : '';
+      await downloadBlob(`/api/people/export${query}`, 'ewccomm25-registrations.xlsx', 'Export downloaded.');
+    } finally {
+      setExporting(false);
+    }
   }
 
   async function handleImport(event) {
@@ -414,22 +411,25 @@ export default function PeoplePage({
       formData.append('year', programYear);
     }
 
-    const res = await apiUpload('/api/people/import', formData);
+    try {
+      const res = await apiUpload('/api/people/import', formData);
 
-    if (!res.ok) {
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.message || 'Import failed. Please check the sheet format.', 'error');
+        return;
+      }
+
       const data = await res.json().catch(() => ({}));
-      showToast(data.message || 'Import failed. Please check the sheet format.', 'error');
+      const duplicateText = data.duplicates ? `, duplicates ${data.duplicates}` : '';
+      showToast(`Imported ${data.inserted || 0} rows${data.skipped ? `, skipped ${data.skipped}` : ''}${duplicateText}.`);
+      await onRefresh();
+    } catch (error) {
+      showToast(error.message || 'Import failed. Please check your connection and sheet format.', 'error');
+    } finally {
       setImporting(false);
       event.target.value = '';
-      return;
     }
-
-    const data = await res.json().catch(() => ({}));
-    const duplicateText = data.duplicates ? `, duplicates ${data.duplicates}` : '';
-    showToast(`Imported ${data.inserted || 0} rows${data.skipped ? `, skipped ${data.skipped}` : ''}${duplicateText}.`);
-    setImporting(false);
-    event.target.value = '';
-    await onRefresh();
   }
 
   return (
@@ -586,7 +586,7 @@ export default function PeoplePage({
       {showDeleteConfirm && personDetails && canDelete && (
         <ConfirmDialog
           title="Delete Person"
-          message={`Delete ${personDetails.first_name || ''} ${personDetails.last_name || ''} permanently?`}
+          message={`Delete ${buildPersonDisplayName(personDetails) || 'this record'} permanently?`}
           confirmLabel={deleting ? 'Deleting...' : 'Delete'}
           onCancel={() => setShowDeleteConfirm(false)}
           onConfirm={confirmDeletePerson}

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { NHIS_SITUATION_CASE_OPTIONS } from '../../constants/options.js';
 import { createNhisMutation } from '../../utils/offlineData.js';
+import { buildFullName } from '../../utils/people.js';
 
 export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
   const [form, setForm] = useState({
-    fullName: '',
+    surname: '',
+    otherNames: '',
     situationCase: '',
     amount: '',
     programYear
@@ -18,7 +20,7 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
     setError(null);
 
     const payload = {
-      fullName: form.fullName.trim(),
+      fullName: buildFullName(form.otherNames, form.surname),
       situationCase: form.situationCase.trim() || null,
       amount: form.amount,
       programYear: form.programYear
@@ -47,12 +49,21 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
         <form onSubmit={handleSubmit} className="form">
           <div className="field-grid">
             <label>
-              Name
+              Surname
               <input
                 required
-                value={form.fullName}
-                onChange={(event) => setForm({ ...form, fullName: event.target.value })}
-                placeholder="Full name"
+                value={form.surname}
+                onChange={(event) => setForm({ ...form, surname: event.target.value })}
+                placeholder="Surname"
+              />
+            </label>
+            <label>
+              Other names
+              <input
+                required
+                value={form.otherNames}
+                onChange={(event) => setForm({ ...form, otherNames: event.target.value })}
+                placeholder="Other names"
               />
             </label>
             <label>

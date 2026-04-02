@@ -1,4 +1,5 @@
 import React from 'react';
+import { buildPersonDisplayName } from '../../utils/people.js';
 
 export default function PeopleTable({
   people,
@@ -40,13 +41,13 @@ export default function PeopleTable({
             {canDelete && (
               <input
                 type="checkbox"
-                aria-label={`Select ${person.first_name} ${person.last_name}`}
+                aria-label={`Select ${buildPersonDisplayName(person) || 'record'}`}
                 checked={selectedSet.has(person.id)}
                 onChange={() => onToggleSelect?.(person.id)}
               />
             )}
           </span>
-          <span>{person.first_name} {person.last_name}</span>
+          <span>{buildPersonDisplayName(person) || '--'}</span>
           <span>{person.gender || '--'}</span>
           <span>{person.address_line1 || [person.city, person.region].filter(Boolean).join(', ') || '--'}</span>
           <span>{person.reason_for_coming || '--'}</span>

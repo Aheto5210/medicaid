@@ -1,5 +1,6 @@
 import React from 'react';
-import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS } from '../../constants/options.js';
+import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS, OCCUPATION_SUGGESTIONS } from '../../constants/options.js';
+import { buildPersonDisplayName } from '../../utils/people.js';
 
 export default function PeopleDetailsModal({
   person,
@@ -33,7 +34,7 @@ export default function PeopleDetailsModal({
         {!loading && !error && person && !editing && (
           <>
             <div className="details-grid">
-              <div className="detail-item"><span>Name</span><strong>{person.first_name} {person.last_name}</strong></div>
+              <div className="detail-item"><span>Name</span><strong>{buildPersonDisplayName(person) || '--'}</strong></div>
               <div className="detail-item"><span>Age</span><strong>{person.age || '--'}</strong></div>
               <div className="detail-item"><span>Sex</span><strong>{person.gender || '--'}</strong></div>
               <div className="detail-item"><span>Phone No.</span><strong>{person.phone || '--'}</strong></div>
@@ -60,11 +61,19 @@ export default function PeopleDetailsModal({
           <form onSubmit={onSave} className="form">
             <div className="field-grid">
               <label>
-                Name
+                Surname
                 <input
                   required
-                  value={form.fullName}
-                  onChange={(event) => onFormChange('fullName', event.target.value)}
+                  value={form.surname}
+                  onChange={(event) => onFormChange('surname', event.target.value)}
+                />
+              </label>
+              <label>
+                Other names
+                <input
+                  required
+                  value={form.otherNames}
+                  onChange={(event) => onFormChange('otherNames', event.target.value)}
                 />
               </label>
               <label>
@@ -98,9 +107,16 @@ export default function PeopleDetailsModal({
               <label>
                 Occupation
                 <input
+                  list="occupation-suggestions"
                   value={form.occupation}
                   onChange={(event) => onFormChange('occupation', event.target.value)}
+                  placeholder="Type or choose occupation"
                 />
+                <datalist id="occupation-suggestions">
+                  {OCCUPATION_SUGGESTIONS.map((occupation) => (
+                    <option key={occupation} value={occupation} />
+                  ))}
+                </datalist>
               </label>
               <label className="full-span">
                 How did you hear about MEDICAID?

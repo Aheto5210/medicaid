@@ -20,12 +20,42 @@ export const HEARD_ABOUT_OPTIONS = [
   'Town crier (announcer)'
 ];
 
+export const OCCUPATION_SUGGESTIONS = [
+  'Student',
+  'Trader',
+  'Farmer',
+  'Teacher',
+  'Nurse',
+  'Doctor',
+  'Driver',
+  'Hairdresser',
+  'Barber',
+  'Seamstress',
+  'Tailor',
+  'Carpenter',
+  'Mason',
+  'Mechanic',
+  'Electrician',
+  'Plumber',
+  'Security Officer',
+  'Cleaner',
+  'Caterer',
+  'Civil Servant',
+  'Business Owner',
+  'Entrepreneur',
+  'Pastor',
+  'Imam',
+  'Unemployed',
+  'Retired'
+];
+
 export const GENDER_OPTIONS = ['Female', 'Male'];
 
 export const MAIN_REASON_OPTIONS = [
   'NHIS',
   'General Screening',
   'Counseling',
+  'Dental',
   'Other',
   'Eye Screening'
 ];

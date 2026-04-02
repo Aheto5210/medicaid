@@ -40,6 +40,7 @@ const MAIN_REASON_OPTIONS = [
   'NHIS',
   'General Screening',
   'Counseling',
+  'Dental',
   'Other',
   'Eye Screening'
 ];

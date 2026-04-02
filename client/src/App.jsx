@@ -12,8 +12,10 @@ import AuthPage from './pages/AuthPage.jsx';
 import ConfirmDialog from './components/common/ConfirmDialog.jsx';
 import RegisterModal from './components/people/RegisterModal.jsx';
 import NhisRegisterModal from './components/nhis/NhisRegisterModal.jsx';
+import { getRoleLabel } from './utils/roles.js';
 import { hasModulePermission, moduleKeyFromView, normalizePermissions } from './utils/permissions.js';
 import { THEME_MODE, applyTheme, persistThemeMode, subscribeToSystemThemeChange } from './utils/theme.js';
+import { openAnalyticsReportPrintView } from './utils/analyticsReport.js';
 import {
   OFFLINE_SYNC_EVENT,
   applyNhisOfflineMutations,
@@ -49,6 +51,8 @@ export default function App() {
   const [resolvedTheme, setResolvedTheme] = useState(() => applyTheme(THEME_MODE.SYSTEM));
   const [overviewViewKey, setOverviewViewKey] = useState(0);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [reporting, setReporting] = useState(false);
+  const [reportError, setReportError] = useState('');
 
   const yearOptions = useMemo(
     () => Array.from({ length: 5 }, (_, index) => currentYear - index),
@@ -114,7 +118,9 @@ export default function App() {
       },
       gender: derived.gender,
       reasons: derived.reasons,
-      ageRanges: derived.ageRanges
+      ageRanges: derived.ageRanges,
+      registrationSources: derived.registrationSources,
+      occupations: derived.occupations
     };
   }, [summary, effectivePeople, peopleSearch, canViewGeneralRegistration]);
 
@@ -326,6 +332,15 @@ export default function App() {
     await setCachedValue(CACHE_KEY.user, result.user);
   }
 
+  async function refreshCurrentUserProfile() {
+    const res = await apiFetch('/api/auth/me');
+    if (!res.ok) return;
+
+    const data = await res.json();
+    setUser(data);
+    await setCachedValue(CACHE_KEY.user, data);
+  }
+
   function handleLogout() {
     clearTokens();
     setUser(null);
@@ -337,6 +352,46 @@ export default function App() {
       loadSummary(programYear),
       loadPeople(peopleSearch, programYear)
     ]);
+  }
+
+  async function handleGenerateOverviewReport() {
+    setReporting(true);
+    setReportError('');
+
+    try {
+      const res = await apiFetch(`/api/analytics/summary?year=${programYear}`);
+      if (!res.ok) {
+        let nextError = 'Unable to prepare the analytics report right now.';
+
+        try {
+          const data = await res.json();
+          if (data?.message) {
+            nextError = data.message;
+          }
+        } catch {
+          // Ignore non-JSON error payloads.
+        }
+
+        throw new Error(nextError);
+      }
+
+      const reportSummary = await res.json();
+      const logoUrl = new URL('/assets/images/MEDICAID-BLACK.png?v=20260325', window.location.origin).toString();
+
+      openAnalyticsReportPrintView({
+        summary: reportSummary,
+        year: programYear,
+        user: resolvedUser ? {
+          ...resolvedUser,
+          role: getRoleLabel(resolvedUser.role)
+        } : null,
+        logoUrl
+      });
+    } catch (error) {
+      setReportError(error.message || 'Unable to prepare the analytics report right now.');
+    } finally {
+      setReporting(false);
+    }
   }
 
   async function handleViewChange(nextView) {
@@ -393,14 +448,22 @@ export default function App() {
           showSearch={(view === 'people' && canViewGeneralRegistration) || (view === 'nhis' && canViewNhisRegistration)}
           showMenuToggle
           onMenuToggle={() => setMobileSidebarOpen((current) => !current)}
+          extraActions={view === 'overview' && canViewOverview ? (
+            <button className="primary" type="button" onClick={handleGenerateOverviewReport} disabled={reporting}>
+              {reporting ? 'Preparing Report...' : 'Generate Report'}
+            </button>
+          ) : null}
         />
 
         {view === 'overview' && canViewOverview && (
-          <DashboardPage
-            key={overviewViewKey}
-            summary={effectiveSummary}
-            recentPeople={effectiveRecentPeople}
-          />
+          <>
+            {reportError && <div className="error">{reportError}</div>}
+            <DashboardPage
+              key={overviewViewKey}
+              summary={effectiveSummary}
+              recentPeople={effectiveRecentPeople}
+            />
+          </>
         )}
 
         {view === 'people' && canViewGeneralRegistration && (
@@ -431,14 +494,11 @@ export default function App() {
           <SettingsPage
             user={resolvedUser}
             resolvedTheme={resolvedTheme}
-            canExportAnalytics={canViewOverview}
-            defaultReportYear={programYear}
-            yearOptions={yearOptions}
           />
         )}
 
         {view === 'users' && canViewUserManagement && (
-          <UserManagementPage user={resolvedUser} />
+          <UserManagementPage user={resolvedUser} onCurrentUserUpdated={refreshCurrentUserProfile} />
         )}
 
         {!availableNavItems.length && (

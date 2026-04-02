@@ -1,6 +1,8 @@
 import React from 'react';
 import StatCard from '../components/common/StatCard.jsx';
 import RecentList from '../components/dashboard/RecentList.jsx';
+import CompactDonutBreakdown from '../components/charts/CompactDonutBreakdown.jsx';
+import TreemapBreakdown from '../components/charts/TreemapBreakdown.jsx';
 import LocationBarChart from '../components/charts/LocationBarChart.jsx';
 import GenderPieChart from '../components/charts/GenderPieChart.jsx';
 import MainReasonLineChart from '../components/charts/MainReasonLineChart.jsx';
@@ -38,6 +40,8 @@ export default function DashboardPage({ summary, recentPeople }) {
   const ageRangeItems = [...(summary?.ageRanges || [])].sort(
     (a, b) => Number(b.value || 0) - Number(a.value || 0)
   );
+  const registrationSourceItems = summary?.registrationSources || [];
+  const occupationItems = summary?.occupations || [];
   const reasonPieItems = [
     ...focusedReasonItems,
     { label: 'Other', value: reasonBuckets.other }
@@ -107,7 +111,23 @@ export default function DashboardPage({ summary, recentPeople }) {
         </div>
       </div>
 
-      <div className="panel dashboard-reveal" style={revealStyle(440)}>
+      <div className="grid">
+        <div className="panel dashboard-reveal" style={revealStyle(440)}>
+          <div className="panel-header">
+            <h2>Awareness Sources</h2>
+          </div>
+          <CompactDonutBreakdown items={registrationSourceItems} centerLabel="Sources" />
+        </div>
+
+        <div className="panel dashboard-reveal" style={revealStyle(510)}>
+          <div className="panel-header">
+            <h2>Occupations</h2>
+          </div>
+          <TreemapBreakdown items={occupationItems} />
+        </div>
+      </div>
+
+      <div className="panel dashboard-reveal" style={revealStyle(580)}>
         <div className="panel-header">
           <h2>Recently Registered</h2>
           <span className="badge">Last 5</span>

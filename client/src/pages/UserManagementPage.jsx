@@ -177,7 +177,7 @@ function PermissionsEditor({ value, onChange }) {
   );
 }
 
-export default function UserManagementPage({ user }) {
+export default function UserManagementPage({ user, onCurrentUserUpdated }) {
   const isAdmin = user?.role === 'admin';
 
   const [users, setUsers] = useState([]);
@@ -299,9 +299,15 @@ export default function UserManagementPage({ user }) {
       return;
     }
 
+    const updatedCurrentUser = editingUserId === user?.id;
     setEditingUserId(null);
-    setMessage({ type: 'success', text: 'User updated successfully.' });
     await loadUsers();
+
+    if (updatedCurrentUser) {
+      await onCurrentUserUpdated?.();
+    }
+
+    setMessage({ type: 'success', text: 'User updated successfully.' });
   }
 
   return (

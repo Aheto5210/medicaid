@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS } from '../../constants/options.js';
+import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS, OCCUPATION_SUGGESTIONS } from '../../constants/options.js';
 import { createPersonMutation } from '../../utils/offlineData.js';
-import { splitFullName } from '../../utils/people.js';
 
 export default function RegisterModal({ programYear, onClose, onSaved }) {
   const [form, setForm] = useState({
-    fullName: '',
+    surname: '',
+    otherNames: '',
     age: '',
     gender: 'Female',
     phone: '',
@@ -25,10 +25,10 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
     setSaving(true);
     setError(null);
 
-    const { firstName, lastName } = splitFullName(form.fullName);
     const payload = {
-      firstName,
-      lastName,
+      firstName: form.otherNames,
+      lastName: form.surname,
+      otherNames: form.otherNames,
       age: form.age ? Number(form.age) : null,
       gender: form.gender,
       phone: form.phone,
@@ -64,12 +64,21 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
         <form onSubmit={handleSubmit} className="form">
           <div className="field-grid">
             <label>
-              Name
+              Surname
               <input
                 required
-                value={form.fullName}
-                onChange={(event) => setForm({ ...form, fullName: event.target.value })}
-                placeholder="Full name"
+                value={form.surname}
+                onChange={(event) => setForm({ ...form, surname: event.target.value })}
+                placeholder="Surname"
+              />
+            </label>
+            <label>
+              Other names
+              <input
+                required
+                value={form.otherNames}
+                onChange={(event) => setForm({ ...form, otherNames: event.target.value })}
+                placeholder="Other names"
               />
             </label>
             <label>
@@ -102,9 +111,16 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
             <label>
               Occupation
               <input
+                list="occupation-suggestions"
                 value={form.occupation}
                 onChange={(event) => setForm({ ...form, occupation: event.target.value })}
+                placeholder="Type or choose occupation"
               />
+              <datalist id="occupation-suggestions">
+                {OCCUPATION_SUGGESTIONS.map((occupation) => (
+                  <option key={occupation} value={occupation} />
+                ))}
+              </datalist>
             </label>
             <label className="full-span">
               How did you hear about MEDICAID?

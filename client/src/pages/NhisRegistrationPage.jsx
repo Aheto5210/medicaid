@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch, apiUpload } from '../api.js';
 import { NHIS_SITUATION_CASE_OPTIONS } from '../constants/options.js';
 import { deleteNhisMutation, updateNhisMutation } from '../utils/offlineData.js';
+import { downloadFile } from '../utils/downloads.js';
+import { buildFullName, buildNhisDisplayName, splitNameFields } from '../utils/people.js';
 import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
@@ -36,7 +38,8 @@ export default function NhisRegistrationPage({
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [editForm, setEditForm] = useState({
-    fullName: '',
+    surname: '',
+    otherNames: '',
     situationCase: '',
     amount: '',
     programYear
@@ -81,8 +84,10 @@ export default function NhisRegistrationPage({
   }
 
   function hydrateEditForm(record) {
+    const { surname, otherNames } = splitNameFields(record.full_name || '');
     setEditForm({
-      fullName: record.full_name || '',
+      surname,
+      otherNames,
       situationCase: record.situation_case || '',
       amount: record.amount ?? '',
       programYear: record.program_year || programYear
@@ -181,7 +186,7 @@ export default function NhisRegistrationPage({
     setDetailsError(null);
 
     const payload = {
-      fullName: editForm.fullName,
+      fullName: buildFullName(editForm.otherNames, editForm.surname),
       situationCase: editForm.situationCase || null,
       amount: editForm.amount,
       programYear: editForm.programYear ? Number(editForm.programYear) : null
@@ -201,6 +206,8 @@ export default function NhisRegistrationPage({
     const optimisticDetails = buildRecordDetailFromRow({
       ...recordDetails,
       full_name: payload.fullName,
+      surname: editForm.surname,
+      other_names: editForm.otherNames,
       situation_case: payload.situationCase,
       amount: payload.amount,
       program_year: payload.programYear
@@ -249,7 +256,7 @@ export default function NhisRegistrationPage({
 
   const filteredRecords = useMemo(() => {
     return records.filter((record) => {
-      const name = String(record.full_name || '').toLowerCase();
+      const name = buildNhisDisplayName(record).toLowerCase();
       const situation = String(record.situation_case || '').toLowerCase();
 
       const nameMatch = !filters.name || name.includes(filters.name.toLowerCase().trim());
@@ -329,22 +336,14 @@ export default function NhisRegistrationPage({
   }
 
   async function downloadBlob(path, filename, successText) {
-    const res = await apiFetch(path);
-    if (!res.ok) {
-      showToast('Download failed. Please try again.', 'error');
-      return;
-    }
-
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    if (successText) {
-      showToast(successText);
+    try {
+      const result = await downloadFile(path, filename);
+      if (result.cancelled) return;
+      if (successText) {
+        showToast(successText);
+      }
+    } catch (error) {
+      showToast(error.message || 'Download failed. Please try again.', 'error');
     }
   }
 
@@ -359,16 +358,17 @@ export default function NhisRegistrationPage({
     }
 
     setExporting(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.name) params.set('name', filters.name);
+      if (filters.situation) params.set('situation', filters.situation);
+      if (programYear) params.set('year', programYear);
 
-    const params = new URLSearchParams();
-    if (filters.name) params.set('name', filters.name);
-    if (filters.situation) params.set('situation', filters.situation);
-    if (programYear) params.set('year', programYear);
-
-    const query = params.toString() ? `?${params.toString()}` : '';
-    await downloadBlob('/api/nhis/export' + query, 'ewccomm25-nhis-registrations.xlsx', 'Export downloaded.');
-
-    setExporting(false);
+      const query = params.toString() ? `?${params.toString()}` : '';
+      await downloadBlob('/api/nhis/export' + query, 'ewccomm25-nhis-registrations.xlsx', 'Export downloaded.');
+    } finally {
+      setExporting(false);
+    }
   }
 
   async function handleImport(event) {
@@ -389,22 +389,25 @@ export default function NhisRegistrationPage({
       formData.append('year', programYear);
     }
 
-    const res = await apiUpload('/api/nhis/import', formData);
+    try {
+      const res = await apiUpload('/api/nhis/import', formData);
 
-    if (!res.ok) {
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.message || 'Import failed. Please check the sheet format.', 'error');
+        return;
+      }
+
       const data = await res.json().catch(() => ({}));
-      showToast(data.message || 'Import failed. Please check the sheet format.', 'error');
+      const duplicateText = data.duplicates ? `, duplicates ${data.duplicates}` : '';
+      showToast(`Imported ${data.inserted || 0} rows${data.skipped ? `, skipped ${data.skipped}` : ''}${duplicateText}.`);
+      await onRefresh();
+    } catch (error) {
+      showToast(error.message || 'Import failed. Please check your connection and sheet format.', 'error');
+    } finally {
       setImporting(false);
       event.target.value = '';
-      return;
     }
-
-    const data = await res.json().catch(() => ({}));
-    const duplicateText = data.duplicates ? `, duplicates ${data.duplicates}` : '';
-    showToast(`Imported ${data.inserted || 0} rows${data.skipped ? `, skipped ${data.skipped}` : ''}${duplicateText}.`);
-    setImporting(false);
-    event.target.value = '';
-    await onRefresh();
   }
 
   return (
@@ -544,7 +547,7 @@ export default function NhisRegistrationPage({
       {showDeleteConfirm && recordDetails && canDelete && (
         <ConfirmDialog
           title="Delete NHIS Record"
-          message={`Delete ${recordDetails.full_name || ''} permanently?`}
+          message={`Delete ${buildNhisDisplayName(recordDetails) || 'this record'} permanently?`}
           confirmLabel={deleting ? 'Deleting...' : 'Delete'}
           onCancel={() => setShowDeleteConfirm(false)}
           onConfirm={confirmDeleteRecord}
