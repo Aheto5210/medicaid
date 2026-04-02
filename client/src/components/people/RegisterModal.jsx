@@ -1,7 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS, OCCUPATION_SUGGESTIONS } from '../../constants/options.js';
+import {
+  GENDER_OPTIONS,
+  HEARD_ABOUT_OPTIONS,
+  LOCATION_SUGGESTIONS,
+  MAIN_REASON_OPTIONS,
+  OCCUPATION_SUGGESTIONS
+} from '../../constants/options.js';
 import { createPersonMutation } from '../../utils/offlineData.js';
 import usePersistedDraft from '../../hooks/usePersistedDraft.js';
+import CustomDropdown from '../common/CustomDropdown.jsx';
 
 const PEOPLE_DRAFT_KEY = 'draft:general-registration:create';
 
@@ -121,14 +128,11 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
             </label>
             <label>
               Sex
-              <select
+              <CustomDropdown
+                options={GENDER_OPTIONS}
                 value={form.gender}
-                onChange={(event) => setForm((prev) => ({ ...prev, gender: event.target.value }))}
-              >
-                {GENDER_OPTIONS.map((gender) => (
-                  <option key={gender} value={gender}>{gender}</option>
-                ))}
-              </select>
+                onChange={(nextValue) => setForm((prev) => ({ ...prev, gender: nextValue }))}
+              />
             </label>
             <label>
               Phone No.
@@ -139,47 +143,40 @@ export default function RegisterModal({ programYear, onClose, onSaved }) {
             </label>
             <label>
               Occupation
-              <input
-                list="occupation-suggestions"
+              <CustomDropdown
+                options={OCCUPATION_SUGGESTIONS}
                 value={form.occupation}
-                onChange={(event) => setForm((prev) => ({ ...prev, occupation: event.target.value }))}
+                onChange={(nextValue) => setForm((prev) => ({ ...prev, occupation: nextValue }))}
                 placeholder="Type or choose occupation"
+                allowCustom
               />
-              <datalist id="occupation-suggestions">
-                {OCCUPATION_SUGGESTIONS.map((occupation) => (
-                  <option key={occupation} value={occupation} />
-                ))}
-              </datalist>
             </label>
             <label className="full-span">
               How did you hear about MEDICAID?
-              <select
+              <CustomDropdown
+                options={HEARD_ABOUT_OPTIONS}
                 value={form.registrationSource}
-                onChange={(event) => setForm((prev) => ({ ...prev, registrationSource: event.target.value }))}
-              >
-                <option value="">Select option</option>
-                {HEARD_ABOUT_OPTIONS.map((option) => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
+                onChange={(nextValue) => setForm((prev) => ({ ...prev, registrationSource: nextValue }))}
+                placeholder="Select option"
+              />
             </label>
             <label className="full-span">
               Main Reason for Coming
-              <select
+              <CustomDropdown
+                options={MAIN_REASON_OPTIONS}
                 value={form.reasonForComing}
-                onChange={(event) => setForm((prev) => ({ ...prev, reasonForComing: event.target.value }))}
-              >
-                <option value="">Select option</option>
-                {MAIN_REASON_OPTIONS.map((reason) => (
-                  <option key={reason} value={reason}>{reason}</option>
-                ))}
-              </select>
+                onChange={(nextValue) => setForm((prev) => ({ ...prev, reasonForComing: nextValue }))}
+                placeholder="Select option"
+              />
             </label>
             <label>
-              House No./Address
-              <input
+              Location
+              <CustomDropdown
+                options={LOCATION_SUGGESTIONS}
                 value={form.addressLine1}
-                onChange={(event) => setForm((prev) => ({ ...prev, addressLine1: event.target.value }))}
+                onChange={(nextValue) => setForm((prev) => ({ ...prev, addressLine1: nextValue }))}
+                placeholder="Type or choose town / community"
+                allowCustom
               />
             </label>
             <label>

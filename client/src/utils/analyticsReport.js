@@ -185,7 +185,7 @@ function buildVisualPanel(title, content, className = '') {
   `;
 }
 
-function buildDonutVisual(items = [], { centerLabel = 'Total', maxItems = 5 } = {}) {
+function buildDonutVisual(items = [], { centerLabel = 'Total', maxItems = 5, showLegend = false } = {}) {
   const chartItems = groupVisibleItems(items, { maxItems, sortByValue: true, groupOverflow: true });
 
   if (!chartItems.length) {
@@ -209,14 +209,29 @@ function buildDonutVisual(items = [], { centerLabel = 'Total', maxItems = 5 } = 
   });
 
   return buildVisualFrame(`
-    <div class="report-donut-wrap">
-      <svg class="report-donut-svg" viewBox="0 0 200 200" aria-hidden="true">
-        ${slices.map((slice) => `<path d="${slice.path}" fill="${slice.color}"></path>`).join('')}
-      </svg>
-      <div class="report-donut-center">
-        <strong>${escapeHtml(formatInteger(total))}</strong>
-        <span>${escapeHtml(centerLabel)}</span>
+    <div class="report-donut-shell">
+      <div class="report-donut-wrap">
+        <svg class="report-donut-svg" viewBox="0 0 200 200" aria-hidden="true">
+          ${slices.map((slice) => `<path d="${slice.path}" fill="${slice.color}"></path>`).join('')}
+        </svg>
+        <div class="report-donut-center">
+          <strong>${escapeHtml(formatInteger(total))}</strong>
+          <span>${escapeHtml(centerLabel)}</span>
+        </div>
       </div>
+      ${showLegend ? `
+        <div class="report-donut-legend">
+          ${slices.map((slice) => `
+            <div class="report-donut-legend-item">
+              <span class="report-donut-legend-label">
+                <span class="report-donut-legend-dot" style="background:${slice.color}"></span>
+                ${escapeHtml(shortenLabel(slice.label, 22))}
+              </span>
+              <strong>${escapeHtml(formatInteger(slice.value))}</strong>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
     </div>
   `, 'report-donut');
 }
@@ -339,6 +354,30 @@ function buildSummaryCards(summary = {}) {
   `).join('');
 }
 
+function buildUnitsSnapshot(summary = {}) {
+  const units = normalizeChartItems(summary.reasons || [], { sortByValue: true });
+
+  if (!units.length) {
+    return '';
+  }
+
+  return `
+    <section class="report-units-overview">
+      <div class="report-units-heading">
+        <h2>Main Units</h2>
+      </div>
+      <div class="report-units-list">
+        ${units.map((item) => `
+          <div class="report-unit-pill">
+            <span>${escapeHtml(item.label || 'Unknown')}</span>
+            <strong>${escapeHtml(formatInteger(item.value))}</strong>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+  `;
+}
+
 function buildTableRows(items = [], columns = []) {
   if (!items.length) {
     return `<tr><td colspan="${columns.length}" class="empty-cell">No data available.</td></tr>`;
@@ -442,7 +481,7 @@ function buildVisualSummary(summary = {}) {
 
         ${buildVisualPanel(
           'Main Units',
-          buildDonutVisual(summary.reasons || [], { centerLabel: 'Units' })
+          buildDonutVisual(summary.reasons || [], { centerLabel: 'Units', showLegend: true })
         )}
 
         ${buildVisualPanel(
@@ -540,27 +579,81 @@ export function openAnalyticsReportPrintView({ summary, year, user, logoUrl }) {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 12px;
-            margin: 20px 0 24px;
+            margin: 20px 0 0;
           }
 
           .metric-card {
             background: var(--surface-soft);
             border-radius: 14px;
-            padding: 13px 15px;
+            padding: 11px 13px;
           }
 
           .metric-label {
             color: var(--muted);
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
             letter-spacing: 0.06em;
           }
 
           .metric-value {
-            margin-top: 6px;
-            font-size: 1.42rem;
-            font-weight: 800;
+            margin-top: 5px;
+            font-size: 1.24rem;
+            font-weight: 700;
             letter-spacing: -0.02em;
+          }
+
+          .report-summary-stack {
+            display: grid;
+            gap: 14px;
+            margin: 20px 0 24px;
+          }
+
+          .report-units-overview {
+            background: var(--surface-soft);
+            border-radius: 16px;
+            padding: 14px 15px 15px;
+          }
+
+          .report-units-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+          }
+
+          .report-units-heading h2 {
+            margin: 0;
+            font-size: 0.92rem;
+            font-weight: 650;
+            letter-spacing: -0.02em;
+          }
+
+          .report-units-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 11px;
+          }
+
+          .report-unit-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 8px 11px;
+            border-radius: 999px;
+            background: rgba(11, 143, 129, 0.08);
+            color: var(--text);
+            font-size: 0.8rem;
+          }
+
+          .report-unit-pill span {
+            min-width: 0;
+          }
+
+          .report-unit-pill strong {
+            font-size: 0.8rem;
+            white-space: nowrap;
           }
 
           .report-grid {
@@ -672,10 +765,15 @@ export function openAnalyticsReportPrintView({ summary, year, user, logoUrl }) {
             min-height: 176px;
           }
 
+          .report-donut-shell {
+            width: 100%;
+          }
+
           .report-donut-wrap {
             position: relative;
             width: 166px;
             height: 166px;
+            margin: 0 auto;
           }
 
           .report-donut-svg {
@@ -702,6 +800,39 @@ export function openAnalyticsReportPrintView({ summary, year, user, logoUrl }) {
           .report-donut-center span {
             color: var(--muted);
             font-size: 0.78rem;
+          }
+
+          .report-donut-legend {
+            margin-top: 14px;
+            display: grid;
+            gap: 8px;
+          }
+
+          .report-donut-legend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 0.82rem;
+          }
+
+          .report-donut-legend-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+          }
+
+          .report-donut-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            flex-shrink: 0;
+          }
+
+          .report-donut-legend-item strong {
+            font-size: 0.82rem;
+            white-space: nowrap;
           }
 
           .report-bars-shell {
@@ -815,8 +946,11 @@ export function openAnalyticsReportPrintView({ summary, year, user, logoUrl }) {
             </div>
           </header>
 
-          <section class="metrics-grid">
-            ${buildSummaryCards(summary)}
+          <section class="report-summary-stack">
+            <div class="metrics-grid">
+              ${buildSummaryCards(summary)}
+            </div>
+            ${buildUnitsSnapshot(summary)}
           </section>
 
           ${buildSectionGroup(

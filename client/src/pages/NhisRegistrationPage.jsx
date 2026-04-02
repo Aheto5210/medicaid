@@ -7,6 +7,7 @@ import { buildFullName, buildNhisDisplayName, splitNameFields } from '../utils/p
 import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
+import CustomDropdown from '../components/common/CustomDropdown.jsx';
 import NhisTable from '../components/nhis/NhisTable.jsx';
 import NhisDetailsModal from '../components/nhis/NhisDetailsModal.jsx';
 
@@ -477,14 +478,11 @@ export default function NhisRegistrationPage({
         <div className="filter-grid">
           <label>
             Year
-            <select
+            <CustomDropdown
+              options={yearOptions.map((year) => ({ label: String(year), value: year }))}
               value={programYear}
-              onChange={(event) => onYearChange(Number(event.target.value))}
-            >
-              {yearOptions.map((year) => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
+              onChange={(nextValue) => onYearChange(Number(nextValue))}
+            />
           </label>
           <label>
             Name
@@ -496,15 +494,11 @@ export default function NhisRegistrationPage({
           </label>
           <label>
             Situation/Case
-            <select
+            <CustomDropdown
+              options={[{ label: 'All situations/cases', value: '' }, ...NHIS_SITUATION_CASE_OPTIONS]}
               value={filters.situation}
-              onChange={(event) => updateFilter('situation', event.target.value)}
-            >
-              <option value="">All situations/cases</option>
-              {NHIS_SITUATION_CASE_OPTIONS.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
+              onChange={(nextValue) => updateFilter('situation', nextValue)}
+            />
           </label>
         </div>
 

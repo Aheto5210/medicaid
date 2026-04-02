@@ -3,6 +3,7 @@ import { NHIS_SITUATION_CASE_OPTIONS } from '../../constants/options.js';
 import { createNhisMutation } from '../../utils/offlineData.js';
 import { buildFullName } from '../../utils/people.js';
 import usePersistedDraft from '../../hooks/usePersistedDraft.js';
+import CustomDropdown from '../common/CustomDropdown.jsx';
 
 const NHIS_DRAFT_KEY = 'draft:nhis-registration:create';
 
@@ -96,15 +97,12 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
             </label>
             <label>
               Situation/Case
-              <select
+              <CustomDropdown
+                options={NHIS_SITUATION_CASE_OPTIONS}
                 value={form.situationCase}
-                onChange={(event) => setForm((prev) => ({ ...prev, situationCase: event.target.value }))}
-              >
-                <option value="">Select situation/case</option>
-                {NHIS_SITUATION_CASE_OPTIONS.map((option) => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
+                onChange={(nextValue) => setForm((prev) => ({ ...prev, situationCase: nextValue }))}
+                placeholder="Select situation/case"
+              />
             </label>
             <label>
               Amount (GHS)

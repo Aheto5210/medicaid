@@ -14,7 +14,7 @@ import RegisterModal from './components/people/RegisterModal.jsx';
 import NhisRegisterModal from './components/nhis/NhisRegisterModal.jsx';
 import { getRoleLabel } from './utils/roles.js';
 import { hasModulePermission, moduleKeyFromView, normalizePermissions } from './utils/permissions.js';
-import { THEME_MODE, applyTheme, persistThemeMode, subscribeToSystemThemeChange } from './utils/theme.js';
+import { THEME_MODE, applyTheme, getStoredThemeMode, persistThemeMode, subscribeToSystemThemeChange } from './utils/theme.js';
 import { openAnalyticsReportPrintView } from './utils/analyticsReport.js';
 import {
   OFFLINE_SYNC_EVENT,
@@ -47,8 +47,8 @@ export default function App() {
 
   const currentYear = new Date().getFullYear();
   const [programYear, setProgramYear] = useState(currentYear);
-  const [themeMode] = useState(THEME_MODE.SYSTEM);
-  const [resolvedTheme, setResolvedTheme] = useState(() => applyTheme(THEME_MODE.SYSTEM));
+  const [themeMode, setThemeMode] = useState(() => getStoredThemeMode());
+  const [resolvedTheme, setResolvedTheme] = useState(() => applyTheme(getStoredThemeMode()));
   const [overviewViewKey, setOverviewViewKey] = useState(0);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [reporting, setReporting] = useState(false);
@@ -347,6 +347,16 @@ export default function App() {
     void removeCachedValue(CACHE_KEY.user);
   }
 
+  function handleOverviewThemeToggle() {
+    setThemeMode((currentMode) => {
+      if (currentMode === THEME_MODE.SYSTEM) {
+        return resolvedTheme === THEME_MODE.DARK ? THEME_MODE.LIGHT : THEME_MODE.DARK;
+      }
+
+      return THEME_MODE.SYSTEM;
+    });
+  }
+
   async function refreshOverviewData() {
     await Promise.all([
       loadSummary(programYear),
@@ -405,6 +415,46 @@ export default function App() {
   }
 
   const effectiveRecentPeople = useMemo(() => effectivePeople.slice(0, 5), [effectivePeople]);
+  const overviewTopbarActions = view === 'overview' && canViewOverview ? (
+    <div className="overview-topbar-actions">
+      <button
+        className="ghost icon-button theme-toggle"
+        type="button"
+        onClick={handleOverviewThemeToggle}
+        aria-label={
+          themeMode === THEME_MODE.SYSTEM
+            ? `Switch to ${resolvedTheme === THEME_MODE.DARK ? 'light' : 'dark'} mode`
+            : 'Return to system theme'
+        }
+        title={
+          themeMode === THEME_MODE.SYSTEM
+            ? `System theme active: ${resolvedTheme === THEME_MODE.DARK ? 'Dark' : 'Light'}`
+            : `Manual ${themeMode === THEME_MODE.DARK ? 'Dark' : 'Light'} mode active`
+        }
+      >
+        {resolvedTheme === THEME_MODE.DARK ? (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 15.5A7.5 7.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.5" />
+            <path d="M12 2.5V5" />
+            <path d="M12 19v2.5" />
+            <path d="M4.5 12H2" />
+            <path d="M22 12h-2.5" />
+            <path d="M5.8 5.8 7.5 7.5" />
+            <path d="m16.5 16.5 1.7 1.7" />
+            <path d="m18.2 5.8-1.7 1.7" />
+            <path d="m7.5 16.5-1.7 1.7" />
+          </svg>
+        )}
+      </button>
+      <button className="primary" type="button" onClick={handleGenerateOverviewReport} disabled={reporting}>
+        {reporting ? 'Preparing Report...' : 'Generate Report'}
+      </button>
+    </div>
+  ) : null;
 
   if (loading) {
     return <div className="app-shell">Loading...</div>;
@@ -448,11 +498,7 @@ export default function App() {
           showSearch={(view === 'people' && canViewGeneralRegistration) || (view === 'nhis' && canViewNhisRegistration)}
           showMenuToggle
           onMenuToggle={() => setMobileSidebarOpen((current) => !current)}
-          extraActions={view === 'overview' && canViewOverview ? (
-            <button className="primary" type="button" onClick={handleGenerateOverviewReport} disabled={reporting}>
-              {reporting ? 'Preparing Report...' : 'Generate Report'}
-            </button>
-          ) : null}
+          extraActions={overviewTopbarActions}
         />
 
         {view === 'overview' && canViewOverview && (
@@ -494,6 +540,7 @@ export default function App() {
           <SettingsPage
             user={resolvedUser}
             resolvedTheme={resolvedTheme}
+            themeMode={themeMode}
           />
         )}
 

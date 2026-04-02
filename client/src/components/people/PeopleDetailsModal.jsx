@@ -1,6 +1,13 @@
 import React from 'react';
-import { GENDER_OPTIONS, HEARD_ABOUT_OPTIONS, MAIN_REASON_OPTIONS, OCCUPATION_SUGGESTIONS } from '../../constants/options.js';
+import {
+  GENDER_OPTIONS,
+  HEARD_ABOUT_OPTIONS,
+  LOCATION_SUGGESTIONS,
+  MAIN_REASON_OPTIONS,
+  OCCUPATION_SUGGESTIONS
+} from '../../constants/options.js';
 import { buildPersonDisplayName } from '../../utils/people.js';
+import CustomDropdown from '../common/CustomDropdown.jsx';
 
 export default function PeopleDetailsModal({
   person,
@@ -41,7 +48,7 @@ export default function PeopleDetailsModal({
               <div className="detail-item"><span>Occupation</span><strong>{person.occupation || '--'}</strong></div>
               <div className="detail-item"><span>How did you hear?</span><strong>{person.registration_source || '--'}</strong></div>
               <div className="detail-item"><span>Main Reason</span><strong>{person.reason_for_coming || '--'}</strong></div>
-              <div className="detail-item"><span>House No./Address</span><strong>{person.address_line1 || '--'}</strong></div>
+              <div className="detail-item"><span>Location</span><strong>{person.address_line1 || '--'}</strong></div>
               <div className="detail-item"><span>E-mail</span><strong>{person.email || '--'}</strong></div>
               <div className="detail-item"><span>Program Year</span><strong>{person.program_year || '--'}</strong></div>
               <div className="detail-item"><span>Registered On</span><strong>{person.registration_date || '--'}</strong></div>
@@ -87,15 +94,11 @@ export default function PeopleDetailsModal({
               </label>
               <label>
                 Sex
-                <select
+                <CustomDropdown
+                  options={[{ label: '--', value: '' }, ...GENDER_OPTIONS]}
                   value={form.gender}
-                  onChange={(event) => onFormChange('gender', event.target.value)}
-                >
-                  <option value="">--</option>
-                  {GENDER_OPTIONS.map((gender) => (
-                    <option key={gender} value={gender}>{gender}</option>
-                  ))}
-                </select>
+                  onChange={(nextValue) => onFormChange('gender', nextValue)}
+                />
               </label>
               <label>
                 Phone No.
@@ -106,47 +109,40 @@ export default function PeopleDetailsModal({
               </label>
               <label>
                 Occupation
-                <input
-                  list="occupation-suggestions"
+                <CustomDropdown
+                  options={OCCUPATION_SUGGESTIONS}
                   value={form.occupation}
-                  onChange={(event) => onFormChange('occupation', event.target.value)}
+                  onChange={(nextValue) => onFormChange('occupation', nextValue)}
                   placeholder="Type or choose occupation"
+                  allowCustom
                 />
-                <datalist id="occupation-suggestions">
-                  {OCCUPATION_SUGGESTIONS.map((occupation) => (
-                    <option key={occupation} value={occupation} />
-                  ))}
-                </datalist>
               </label>
               <label className="full-span">
                 How did you hear about MEDICAID?
-                <select
+                <CustomDropdown
+                  options={HEARD_ABOUT_OPTIONS}
                   value={form.registrationSource}
-                  onChange={(event) => onFormChange('registrationSource', event.target.value)}
-                >
-                  <option value="">Select option</option>
-                  {HEARD_ABOUT_OPTIONS.map((option) => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
+                  onChange={(nextValue) => onFormChange('registrationSource', nextValue)}
+                  placeholder="Select option"
+                />
               </label>
               <label className="full-span">
                 Main Reason for Coming
-                <select
+                <CustomDropdown
+                  options={MAIN_REASON_OPTIONS}
                   value={form.reasonForComing}
-                  onChange={(event) => onFormChange('reasonForComing', event.target.value)}
-                >
-                  <option value="">Select option</option>
-                  {MAIN_REASON_OPTIONS.map((reason) => (
-                    <option key={reason} value={reason}>{reason}</option>
-                  ))}
-                </select>
+                  onChange={(nextValue) => onFormChange('reasonForComing', nextValue)}
+                  placeholder="Select option"
+                />
               </label>
               <label>
-                House No./Address
-                <input
+                Location
+                <CustomDropdown
+                  options={LOCATION_SUGGESTIONS}
                   value={form.addressLine1}
-                  onChange={(event) => onFormChange('addressLine1', event.target.value)}
+                  onChange={(nextValue) => onFormChange('addressLine1', nextValue)}
+                  placeholder="Type or choose town / community"
+                  allowCustom
                 />
               </label>
               <label>
@@ -159,14 +155,11 @@ export default function PeopleDetailsModal({
               </label>
               <label>
                 Program Year
-                <select
+                <CustomDropdown
+                  options={yearOptions.map((year) => ({ label: String(year), value: year }))}
                   value={form.programYear}
-                  onChange={(event) => onFormChange('programYear', Number(event.target.value))}
-                >
-                  {yearOptions.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
+                  onChange={(nextValue) => onFormChange('programYear', Number(nextValue))}
+                />
               </label>
             </div>
             <div className="modal-actions">

@@ -1,6 +1,7 @@
 import React from 'react';
 import { NHIS_SITUATION_CASE_OPTIONS } from '../../constants/options.js';
 import { buildNhisDisplayName } from '../../utils/people.js';
+import CustomDropdown from '../common/CustomDropdown.jsx';
 
 function formatCurrency(amount) {
   const value = Number(amount);
@@ -96,15 +97,11 @@ export default function NhisDetailsModal({
               </label>
               <label>
                 Situation/Case
-                <select
+                <CustomDropdown
+                  options={[{ label: 'Select situation/case', value: '' }, ...situationCaseOptions]}
                   value={form.situationCase}
-                  onChange={(event) => onFormChange('situationCase', event.target.value)}
-                >
-                  <option value="">Select situation/case</option>
-                  {situationCaseOptions.map((option) => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
+                  onChange={(nextValue) => onFormChange('situationCase', nextValue)}
+                />
               </label>
               <label>
                 Amount (GHS)
@@ -118,14 +115,11 @@ export default function NhisDetailsModal({
               </label>
               <label>
                 Program Year
-                <select
+                <CustomDropdown
+                  options={yearOptions.map((year) => ({ label: String(year), value: year }))}
                   value={form.programYear}
-                  onChange={(event) => onFormChange('programYear', Number(event.target.value))}
-                >
-                  {yearOptions.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
+                  onChange={(nextValue) => onFormChange('programYear', Number(nextValue))}
+                />
               </label>
             </div>
             <div className="modal-actions">

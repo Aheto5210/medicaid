@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch, apiUpload } from '../api.js';
-import { GENDER_OPTIONS, MAIN_REASON_OPTIONS } from '../constants/options.js';
+import { GENDER_OPTIONS, LOCATION_SUGGESTIONS, MAIN_REASON_OPTIONS } from '../constants/options.js';
 import { deletePersonMutation, updatePersonMutation } from '../utils/offlineData.js';
 import { downloadFile } from '../utils/downloads.js';
 import { buildPersonDisplayName } from '../utils/people.js';
 import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
+import CustomDropdown from '../components/common/CustomDropdown.jsx';
 import PeopleTable from '../components/people/PeopleTable.jsx';
 import PeopleDetailsModal from '../components/people/PeopleDetailsModal.jsx';
 
@@ -496,14 +497,11 @@ export default function PeoplePage({
         <div className="filter-grid">
           <label>
             Year
-            <select
+            <CustomDropdown
+              options={yearOptions.map((year) => ({ label: String(year), value: year }))}
               value={programYear}
-              onChange={(event) => onYearChange(Number(event.target.value))}
-            >
-              {yearOptions.map((year) => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
+              onChange={(nextValue) => onYearChange(Number(nextValue))}
+            />
           </label>
           <label>
             Name
@@ -515,35 +513,29 @@ export default function PeoplePage({
           </label>
           <label>
             Sex
-            <select
+            <CustomDropdown
+              options={[{ label: 'All', value: '' }, ...GENDER_OPTIONS]}
               value={filters.sex}
-              onChange={(event) => updateFilter('sex', event.target.value)}
-            >
-              <option value="">All</option>
-              {GENDER_OPTIONS.map((gender) => (
-                <option key={gender} value={gender}>{gender}</option>
-              ))}
-            </select>
+              onChange={(nextValue) => updateFilter('sex', nextValue)}
+            />
           </label>
           <label>
-            Location / Address
-            <input
+            Location
+            <CustomDropdown
+              options={LOCATION_SUGGESTIONS}
               value={filters.location}
-              onChange={(event) => updateFilter('location', event.target.value)}
-              placeholder="Search location"
+              onChange={(nextValue) => updateFilter('location', nextValue)}
+              placeholder="Type or choose location"
+              allowCustom
             />
           </label>
           <label>
             Main Reason
-            <select
+            <CustomDropdown
+              options={[{ label: 'All', value: '' }, ...MAIN_REASON_OPTIONS]}
               value={filters.reason}
-              onChange={(event) => updateFilter('reason', event.target.value)}
-            >
-              <option value="">All</option>
-              {MAIN_REASON_OPTIONS.map((reason) => (
-                <option key={reason} value={reason}>{reason}</option>
-              ))}
-            </select>
+              onChange={(nextValue) => updateFilter('reason', nextValue)}
+            />
           </label>
         </div>
 

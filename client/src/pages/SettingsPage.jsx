@@ -1,10 +1,18 @@
 import React from 'react';
 import { getRoleLabel } from '../utils/roles.js';
+import { THEME_MODE } from '../utils/theme.js';
 
 export default function SettingsPage({
   user,
-  resolvedTheme = 'light'
+  resolvedTheme = 'light',
+  themeMode = THEME_MODE.SYSTEM
 }) {
+  const themeModeLabel = themeMode === THEME_MODE.SYSTEM
+    ? 'System Default'
+    : themeMode === THEME_MODE.DARK
+      ? 'Manual Dark'
+      : 'Manual Light';
+
   return (
     <section className="page">
       <div className="panel">
@@ -28,9 +36,9 @@ export default function SettingsPage({
           </div>
           <div>
             <div className="label">Theme</div>
-            <div className="value">System Default</div>
+            <div className="value">{themeModeLabel}</div>
             <div className="label theme-note">
-              Follows device theme automatically. Active: {resolvedTheme === 'dark' ? 'Dark' : 'Light'}
+              {themeMode === THEME_MODE.SYSTEM ? 'Follows device theme automatically.' : 'Changed from Overview theme icon.'} Active: {resolvedTheme === 'dark' ? 'Dark' : 'Light'}
             </div>
           </div>
         </div>
