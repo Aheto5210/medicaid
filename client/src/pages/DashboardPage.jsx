@@ -35,7 +35,7 @@ export default function DashboardPage({ summary, recentPeople }) {
   const focusedReasonItems = [
     { label: 'General Screening', value: reasonBuckets.generalScreening },
     { label: 'Eye Screening', value: reasonBuckets.eyeScreening },
-    { label: 'NHIS', value: reasonBuckets.nhis }
+    { label: 'NHIS', value: totals.nhis || 0 }
   ];
   const ageRangeItems = [...(summary?.ageRanges || [])].sort(
     (a, b) => Number(b.value || 0) - Number(a.value || 0)
@@ -69,7 +69,7 @@ export default function DashboardPage({ summary, recentPeople }) {
           </div>
           <div className="cards group-cards">
             <StatCard label="General Screening" value={reasonBuckets.generalScreening} />
-            <StatCard label="NHIS" value={reasonBuckets.nhis} />
+            <StatCard label="NHIS" value={totals.nhis || 0} />
             <StatCard label="Eye Screening" value={reasonBuckets.eyeScreening} />
           </div>
         </div>
