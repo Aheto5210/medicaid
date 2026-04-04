@@ -1,0 +1,177 @@
+- generic [ref=e13]:
+  - complementary [ref=e14]:
+    - img "MEDICAID logo" [ref=e16]
+    - navigation [ref=e17]:
+      - button "Overview" [ref=e18] [cursor=pointer]
+      - button "General Registration" [ref=e19] [cursor=pointer]
+      - button "NHIS Registration" [ref=e20] [cursor=pointer]
+      - button "User Management" [ref=e21] [cursor=pointer]
+      - button "Settings" [ref=e22] [cursor=pointer]
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e26]: A
+        - generic [ref=e27]:
+          - generic [ref=e28]: Admin
+          - generic [ref=e29]: admin
+      - button "Log out" [ref=e30] [cursor=pointer]
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - heading "Overview" [level=1] [ref=e34]
+      - generic [ref=e36]:
+        - button "Switch to dark mode" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+        - button "Generate Report" [ref=e44] [cursor=pointer]
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - heading "Registration" [level=2] [ref=e49]
+            - generic [ref=e50]: Total / Female / Male
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e54]: Total
+              - generic [ref=e55]: "6"
+            - generic [ref=e56]:
+              - generic [ref=e58]: Female
+              - generic [ref=e59]: "2"
+            - generic [ref=e60]:
+              - generic [ref=e62]: Male
+              - generic [ref=e63]: "4"
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - heading "Units" [level=2] [ref=e66]
+            - generic [ref=e67]: General / NHIS / Eye
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - generic [ref=e71]: General Screening
+              - generic [ref=e72]: "4"
+            - generic [ref=e73]:
+              - generic [ref=e75]: NHIS
+              - generic [ref=e76]: "0"
+            - generic [ref=e77]:
+              - generic [ref=e79]: Eye Screening
+              - generic [ref=e80]: "0"
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - heading "Units Trend" [level=2] [ref=e84]
+            - generic [ref=e85]: General / Eye / NHIS
+          - generic [ref=e86]:
+            - img [ref=e87]:
+              - 'button "General Screening: 4" [ref=e90]'
+              - 'button "Eye Screening: 0" [ref=e93]'
+              - 'button "NHIS: 0" [ref=e96]'
+            - generic [ref=e99]:
+              - button "General Screening" [ref=e100] [cursor=pointer]
+              - button "Eye Screening" [ref=e101] [cursor=pointer]
+              - button "NHIS" [ref=e102] [cursor=pointer]
+        - generic [ref=e103]:
+          - generic [ref=e104]:
+            - heading "Main Units" [level=2] [ref=e105]
+            - generic [ref=e106]: General / Eye / NHIS
+          - generic [ref=e107]:
+            - img "Units chart" [ref=e109]:
+              - 'button "General Screening: 4" [ref=e110] [cursor=pointer]'
+              - 'button "Other: 2" [ref=e111] [cursor=pointer]'
+            - generic [ref=e112]:
+              - button "General 4" [ref=e113] [cursor=pointer]:
+                - generic [ref=e115]: General
+                - generic [ref=e116]: "4"
+              - button "Other 2" [ref=e117] [cursor=pointer]:
+                - generic [ref=e119]: Other
+                - generic [ref=e120]: "2"
+      - generic [ref=e121]:
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - heading "Age Range" [level=2] [ref=e124]
+            - generic [ref=e125]: Standard Ranges
+          - generic [ref=e126]:
+            - button "0-17 2 33%" [ref=e127] [cursor=pointer]:
+              - generic "0-17" [ref=e128]
+              - generic [ref=e131]:
+                - generic [ref=e132]: "2"
+                - generic [ref=e133]: 33%
+            - button "25-34 2 33%" [ref=e134] [cursor=pointer]:
+              - generic "25-34" [ref=e135]
+              - generic [ref=e138]:
+                - generic [ref=e139]: "2"
+                - generic [ref=e140]: 33%
+            - button "18-24 1 17%" [ref=e141] [cursor=pointer]:
+              - generic "18-24" [ref=e142]
+              - generic [ref=e145]:
+                - generic [ref=e146]: "1"
+                - generic [ref=e147]: 17%
+            - button "45-54 1 17%" [ref=e148] [cursor=pointer]:
+              - generic "45-54" [ref=e149]
+              - generic [ref=e152]:
+                - generic [ref=e153]: "1"
+                - generic [ref=e154]: 17%
+        - generic [ref=e155]:
+          - generic [ref=e156]:
+            - heading "Gender" [level=2] [ref=e157]
+            - generic [ref=e158]: Breakdown
+          - generic [ref=e159]:
+            - img "People chart" [ref=e161]:
+              - 'button "Female: 2" [ref=e162] [cursor=pointer]'
+              - 'button "Male: 4" [ref=e163] [cursor=pointer]'
+            - generic [ref=e164]:
+              - button "Female 2" [ref=e165] [cursor=pointer]:
+                - generic [ref=e167]: Female
+                - generic [ref=e168]: "2"
+              - button "Male 4" [ref=e169] [cursor=pointer]:
+                - generic [ref=e171]: Male
+                - generic [ref=e172]: "4"
+      - generic [ref=e173]:
+        - generic [ref=e174]:
+          - heading "Awareness Sources" [level=2] [ref=e176]
+          - generic [ref=e177]:
+            - generic [ref=e178]:
+              - img "Sources breakdown" [ref=e179]
+              - generic:
+                - strong: "6"
+                - generic: Sources
+            - generic [ref=e183]:
+              - generic [ref=e186]: My child told me
+              - generic [ref=e189]: Information van (with megaphones)
+              - generic [ref=e192]: Influencer (station master/market queen/assembly man)
+        - generic [ref=e193]:
+          - heading "Occupations" [level=2] [ref=e195]
+          - img "Occupation treemap" [ref=e197]:
+            - 'generic "Student: 3" [ref=e198]':
+              - generic [ref=e200]: Student
+              - generic [ref=e201]: "3"
+            - 'generic "Farmer: 2" [ref=e202]':
+              - generic [ref=e204]: Farmer
+              - generic [ref=e205]: "2"
+            - 'generic "Other: 1" [ref=e206]':
+              - generic [ref=e208]: Other
+              - generic [ref=e209]: "1"
+      - generic [ref=e210]:
+        - generic [ref=e211]:
+          - heading "Recently Registered" [level=2] [ref=e212]
+          - generic [ref=e213]: Last 5
+        - generic [ref=e214]:
+          - generic [ref=e215]:
+            - generic [ref=e216]: Full name
+            - generic [ref=e217]: Phone
+            - generic [ref=e218]: House/Address
+          - generic [ref=e219]:
+            - generic [ref=e220]: Ama Asante
+            - generic [ref=e221]: "0545534284"
+            - generic [ref=e222]: Kpone Kokompe
+          - generic [ref=e223]:
+            - generic [ref=e224]: Kojo Manu
+            - generic [ref=e225]: "0555000269"
+            - generic [ref=e226]: Savannah Junction
+          - generic [ref=e227]:
+            - generic [ref=e228]: Kwame Luca
+            - generic [ref=e229]: "0246642164"
+            - generic [ref=e230]: Tema Community 3
+          - generic [ref=e231]:
+            - generic [ref=e232]: Kumah John
+            - generic [ref=e233]: "0548907789"
+            - generic [ref=e234]: Tema Community 3
+          - generic [ref=e235]:
+            - generic [ref=e236]: Laura Allotey
+            - generic [ref=e237]: "034556678"
+            - generic [ref=e238]: Ningo

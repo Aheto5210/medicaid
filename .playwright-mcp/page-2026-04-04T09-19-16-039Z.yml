@@ -1,0 +1,79 @@
+- generic [ref=e13]:
+  - complementary [ref=e14]:
+    - img "MEDICAID logo" [ref=e16]
+    - navigation [ref=e17]:
+      - button "Overview" [ref=e18] [cursor=pointer]
+      - button "General Registration" [ref=e19] [cursor=pointer]
+      - button "NHIS Registration" [active] [ref=e20] [cursor=pointer]
+      - button "User Management" [ref=e21] [cursor=pointer]
+      - button "Settings" [ref=e22] [cursor=pointer]
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e26]: A
+        - generic [ref=e27]:
+          - generic [ref=e28]: Admin
+          - generic [ref=e29]: admin
+      - button "Log out" [ref=e30] [cursor=pointer]
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - heading "NHIS Registration" [level=1] [ref=e388]
+      - textbox "Search registrations..." [ref=e241]
+    - generic [ref=e390]:
+      - generic [ref=e391]:
+        - generic [ref=e392]:
+          - button "New NHIS Registration" [ref=e393] [cursor=pointer]
+          - generic "Total amount for the current NHIS view" [ref=e394]: GH₵90.00
+        - generic [ref=e396]:
+          - button "Download Template" [ref=e397] [cursor=pointer]
+          - button "Import Sheet" [ref=e398] [cursor=pointer]
+          - button "Export" [ref=e399] [cursor=pointer]
+      - generic [ref=e400]:
+        - generic [ref=e401]:
+          - text: Year
+          - generic [ref=e403]:
+            - textbox "Year Open options" [ref=e404]:
+              - /placeholder: Select option
+              - text: "2026"
+            - button "Open options" [ref=e405] [cursor=pointer]:
+              - img [ref=e406]
+        - generic [ref=e408]:
+          - text: Name
+          - textbox "Name" [ref=e409]:
+            - /placeholder: Filter by name
+        - generic [ref=e410]:
+          - text: Situation/Case
+          - generic [ref=e412]:
+            - textbox "Situation/Case Open options" [ref=e413]:
+              - /placeholder: Select option
+              - text: All situations/cases
+            - button "Open options" [ref=e414] [cursor=pointer]:
+              - img [ref=e415]
+      - generic [ref=e417]:
+        - generic [ref=e418]:
+          - checkbox "Select all NHIS records" [ref=e420] [cursor=pointer]
+          - generic [ref=e421]: Name
+          - generic [ref=e422]: Situation/Case
+          - generic [ref=e423]: Amount (GHS)
+          - generic [ref=e424]: Date
+          - generic [ref=e425]: Actions
+        - generic [ref=e426]:
+          - checkbox "Select Ama Governor" [ref=e428] [cursor=pointer]
+          - generic [ref=e429]: Ama Governor
+          - generic [ref=e430]: New Registration For Adults (18yrs And Above)
+          - generic [ref=e431]: "30.00"
+          - generic [ref=e432]: 04 Apr 2026
+          - button "View" [ref=e434] [cursor=pointer]
+        - generic [ref=e435]:
+          - checkbox "Select Laura Allotey" [ref=e437] [cursor=pointer]
+          - generic [ref=e438]: Laura Allotey
+          - generic [ref=e439]: New Registration For Adults (18yrs And Below)
+          - generic [ref=e440]: "30.00"
+          - generic [ref=e441]: 04 Apr 2026
+          - button "View" [ref=e443] [cursor=pointer]
+        - generic [ref=e444]:
+          - checkbox "Select John Doe" [ref=e446] [cursor=pointer]
+          - generic [ref=e447]: John Doe
+          - generic [ref=e448]: Renewal For Adults
+          - generic [ref=e449]: "30.00"
+          - generic [ref=e450]: 03 Apr 2026
+          - button "View" [ref=e452] [cursor=pointer]

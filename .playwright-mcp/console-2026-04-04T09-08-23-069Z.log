@@ -1,0 +1,3 @@
+[    2093ms] Error: Missing VITE_API_URL for a production client build.
+    at Eh (https://medicaid.live/assets/index-C9G7PVnh.js:41:57959)
+    at https://medicaid.live/assets/index-C9G7PVnh.js:41:58155

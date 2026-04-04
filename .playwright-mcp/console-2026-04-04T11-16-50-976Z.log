@@ -1,0 +1,1325 @@
+[     114ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=70c78d63:21550
+[     757ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=70c78d63:520
+[     758ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=70c78d63:520
+[     765ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[     768ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=70c78d63:520
+[     769ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=70c78d63:520
+[     782ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[     783ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=70c78d63:14031
+[     785ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[   21425ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:5173/@vite/client:559
+[   21427ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:5173/:0
+[   22431ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:5173/:0
+[   23435ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:5173/:0
+[   24438ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:5173/:0
+[   25442ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:5173/:0
+[   26446ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:5173/:0
+[   28323ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[   28798ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   28798ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   28819ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[   28810ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   28810ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   28822ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:58:30
+    at Array.reduce (<anonymous>)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:58:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[   28820ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[   28823ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[   47814ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[   48193ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   48193ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   48200ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[   48204ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   48204ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   48218ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[   48219ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[   48220ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[   49291ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[   50745ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[   50907ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[   51092ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[   62010ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5173/:0
+[   64355ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   64355ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   64361ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+[   64364ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   64365ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   64374ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+[   64373ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[   64374ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+[   71503ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[   72325ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   72326ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   72332ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+[   72336ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   72337ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[   72345ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+[   72345ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[   72346ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:1:1)
+[  114545ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[  117292ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  117292ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  117299ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  117303ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  117303ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  117317ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  117317ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[  117319ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  119616ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[  120013ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  120013ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  120021ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  120025ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  120025ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  120040ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  120041ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[  120042ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:58:30
+    at Array.reduce (<anonymous>)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:58:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  122010ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[  126910ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  126910ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  126917ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  126921ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  126921ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  126934ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  126935ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[  126937ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  128690ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[  128904ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  128904ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  128911ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  128915ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  128915ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  128928ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  128929ms] [ERROR] The above error occurred in the <TreemapBreakdown> component:
+
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:76:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:14031
+[  128931ms] RangeError: Maximum call stack size exceeded
+    at http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:30
+    at Array.reduce (<anonymous>)
+    at splitBalanced (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:45:23)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:60:37)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+    at layoutTreemap (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx:66:10)
+[  175139ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175140ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175141ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175178ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175178ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175179ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175345ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175345ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175345ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175539ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175539ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175539ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175544ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175544ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  175545ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  179057ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  179058ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  179058ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  182955ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:21550
+[  184073ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184073ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184074ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184259ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184260ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184260ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184263ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184263ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184263ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184337ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184337ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184337ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184447ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184447ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  184447ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  197968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  197968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  197968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  212968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  212968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  212968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  227968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  227968ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at div
+    at div
+    at CompactDonutBreakdown (http://localhost:5173/src/components/charts/CompactDonutBreakdown.jsx:60:3)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520
+[  227969ms] [ERROR] Warning: Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.%s Other 
+    at svg
+    at div
+    at TreemapBreakdown (http://localhost:5173/src/components/charts/TreemapBreakdown.jsx?t=1775301574968:85:44)
+    at div
+    at div
+    at section
+    at DashboardPage (http://localhost:5173/src/pages/DashboardPage.jsx?t=1775301574968:25:41)
+    at main
+    at div
+    at App (http://localhost:5173/src/App.jsx?t=1775301574968:52:27) @ http://localhost:5173/node_modules/.vite/deps/chunk-NGODP64W.js?v=91f231ea:520

@@ -1,0 +1,2 @@
+[  102749ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.medicaid.live/api/people/d141e184-a94b-4c78-926c-76917a957fee:0
+[  127916ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://medicaid.live/:0

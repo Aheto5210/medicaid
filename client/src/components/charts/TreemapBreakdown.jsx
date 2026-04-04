@@ -57,13 +57,24 @@ function layoutTreemap(items, x, y, width, height) {
   if (!items.length) return [];
   if (items.length === 1) return [{ ...items[0], x, y, width, height }];
 
-  const total = items.reduce((sum, item) => sum + Number(item.value || 0), 0) || 1;
+  const total = items.reduce((sum, item) => sum + Number(item.value || 0), 0);
+  // Guard against infinite recursion when all items have value 0 or dimensions become 0
+  if (total === 0 || width < 1 || height < 1) return [];
+
   const [firstGroup, secondGroup] = splitBalanced(items);
   const firstTotal = firstGroup.reduce((sum, item) => sum + Number(item.value || 0), 0);
   const ratio = firstTotal / total;
 
+  // Prevent zero-size recursive calls that cause infinite loops
+  if (ratio <= 0 || ratio >= 1) {
+    return items.map((item) => ({ ...item, x, y, width, height }));
+  }
+
   if (width >= height) {
     const firstWidth = width * ratio;
+    if (firstWidth < 1) {
+      return items.map((item) => ({ ...item, x, y, width, height }));
+    }
     return [
       ...layoutTreemap(firstGroup, x, y, firstWidth, height),
       ...layoutTreemap(secondGroup, x + firstWidth, y, width - firstWidth, height)
@@ -71,6 +82,9 @@ function layoutTreemap(items, x, y, width, height) {
   }
 
   const firstHeight = height * ratio;
+  if (firstHeight < 1) {
+    return items.map((item) => ({ ...item, x, y, width, height }));
+  }
   return [
     ...layoutTreemap(firstGroup, x, y, width, firstHeight),
     ...layoutTreemap(secondGroup, x, y + firstHeight, width, height - firstHeight)

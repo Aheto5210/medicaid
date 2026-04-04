@@ -1,0 +1,179 @@
+- generic [ref=e13]:
+  - complementary [ref=e14]:
+    - img "MEDICAID logo" [ref=e16]
+    - navigation [ref=e17]:
+      - button "Overview" [ref=e18] [cursor=pointer]
+      - button "General Registration" [ref=e19] [cursor=pointer]
+      - button "NHIS Registration" [ref=e20] [cursor=pointer]
+      - button "User Management" [active] [ref=e21] [cursor=pointer]
+      - button "Settings" [ref=e22] [cursor=pointer]
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e26]: A
+        - generic [ref=e27]:
+          - generic [ref=e28]: Admin
+          - generic [ref=e29]: admin
+      - button "Log out" [ref=e30] [cursor=pointer]
+  - main [ref=e31]:
+    - heading "User Management" [level=1] [ref=e453]
+    - generic [ref=e454]:
+      - generic [ref=e455]:
+        - generic [ref=e456]:
+          - heading "User Overview" [level=2] [ref=e457]
+          - generic [ref=e458]: Admin tools
+        - generic [ref=e459]:
+          - generic [ref=e460]:
+            - generic [ref=e461]: Total Users
+            - strong [ref=e462]: "5"
+          - generic [ref=e463]:
+            - generic [ref=e464]: Active Users
+            - strong [ref=e465]: "5"
+          - generic [ref=e466]:
+            - generic [ref=e467]: General Records
+            - strong [ref=e468]: "0"
+          - generic [ref=e469]:
+            - generic [ref=e470]: NHIS Records
+            - strong [ref=e471]: "0"
+      - generic [ref=e472]:
+        - generic [ref=e473]:
+          - heading "Create User" [level=2] [ref=e474]
+          - generic [ref=e475]: Admin
+        - generic [ref=e476]:
+          - generic [ref=e477]:
+            - generic [ref=e478]:
+              - heading "User Details" [level=3] [ref=e479]
+              - generic [ref=e480]:
+                - generic [ref=e481]:
+                  - text: Full Name
+                  - textbox "Full Name" [ref=e482]
+                - generic [ref=e483]:
+                  - text: Email
+                  - textbox "Email" [ref=e484]: admin@gmail.com
+                - generic [ref=e485]:
+                  - text: Password
+                  - textbox "Password" [ref=e486]: admin
+                - generic [ref=e487]:
+                  - text: Role
+                  - combobox "Role" [ref=e488]:
+                    - option "admin"
+                    - option "church worker" [selected]
+                    - option "volunteer"
+                    - option "Pastor"
+                - generic [ref=e489] [cursor=pointer]:
+                  - checkbox "Active account" [checked]
+                  - generic [ref=e490]: Active account
+            - generic [ref=e491]:
+              - heading "Access Control" [level=3] [ref=e492]
+              - paragraph [ref=e493]: Choose modules and actions this user can access.
+              - generic [ref=e494]:
+                - generic [ref=e495]:
+                  - generic [ref=e496]:
+                    - heading "Overview" [level=4] [ref=e497]
+                    - paragraph [ref=e498]: Dashboard visibility
+                  - generic [ref=e500] [cursor=pointer]:
+                    - checkbox "View" [checked]
+                    - generic [ref=e501]: View
+                - generic [ref=e502]:
+                  - generic [ref=e503]:
+                    - heading "General Registration" [level=4] [ref=e504]
+                    - paragraph [ref=e505]: Module + action access
+                  - generic [ref=e506]:
+                    - generic [ref=e507] [cursor=pointer]:
+                      - checkbox "View" [checked]
+                      - generic [ref=e508]: View
+                    - generic [ref=e509] [cursor=pointer]:
+                      - checkbox "Create" [checked]
+                      - generic [ref=e510]: Create
+                    - generic [ref=e511] [cursor=pointer]:
+                      - checkbox "Edit" [checked]
+                      - generic [ref=e512]: Edit
+                    - generic [ref=e513] [cursor=pointer]:
+                      - checkbox "Delete"
+                      - generic [ref=e514]: Delete
+                    - generic [ref=e515] [cursor=pointer]:
+                      - checkbox "Import" [checked]
+                      - generic [ref=e516]: Import
+                    - generic [ref=e517] [cursor=pointer]:
+                      - checkbox "Export" [checked]
+                      - generic [ref=e518]: Export
+                - generic [ref=e519]:
+                  - generic [ref=e520]:
+                    - heading "NHIS Registration" [level=4] [ref=e521]
+                    - paragraph [ref=e522]: Module + action access
+                  - generic [ref=e523]:
+                    - generic [ref=e524] [cursor=pointer]:
+                      - checkbox "View" [checked]
+                      - generic [ref=e525]: View
+                    - generic [ref=e526] [cursor=pointer]:
+                      - checkbox "Create" [checked]
+                      - generic [ref=e527]: Create
+                    - generic [ref=e528] [cursor=pointer]:
+                      - checkbox "Edit" [checked]
+                      - generic [ref=e529]: Edit
+                    - generic [ref=e530] [cursor=pointer]:
+                      - checkbox "Delete"
+                      - generic [ref=e531]: Delete
+                    - generic [ref=e532] [cursor=pointer]:
+                      - checkbox "Import" [checked]
+                      - generic [ref=e533]: Import
+                    - generic [ref=e534] [cursor=pointer]:
+                      - checkbox "Export" [checked]
+                      - generic [ref=e535]: Export
+                - generic [ref=e536]:
+                  - generic [ref=e537]:
+                    - heading "User Management" [level=4] [ref=e538]
+                    - paragraph [ref=e539]: Admin-only section
+                  - generic [ref=e541] [cursor=pointer]:
+                    - checkbox "Access"
+                    - generic [ref=e542]: Access
+          - button "Create User" [ref=e544] [cursor=pointer]
+      - generic [ref=e545]:
+        - generic [ref=e546]:
+          - heading "Manage Users" [level=2] [ref=e547]
+          - generic [ref=e548]: 5 users
+        - generic [ref=e549]:
+          - generic [ref=e551]:
+            - generic [ref=e552]:
+              - strong [ref=e553]: Afrakuma Bosompim
+              - generic [ref=e554]: afrakaybos@gmail.com
+            - generic [ref=e555]:
+              - generic [ref=e556]: church worker
+              - generic [ref=e557]: Active
+              - button "Open actions for Afrakuma Bosompim" [ref=e559] [cursor=pointer]:
+                - img [ref=e560]
+          - generic [ref=e565]:
+            - generic [ref=e566]:
+              - strong [ref=e567]: Amanda Allotey
+              - generic [ref=e568]: aallotey.umc@gmail.com
+            - generic [ref=e569]:
+              - generic [ref=e570]: church worker
+              - generic [ref=e571]: Active
+              - button "Open actions for Amanda Allotey" [ref=e573] [cursor=pointer]:
+                - img [ref=e574]
+          - generic [ref=e579]:
+            - generic [ref=e580]:
+              - strong [ref=e581]: Laura Allotey
+              - generic [ref=e582]: laurendaallotey44@gmail.com
+            - generic [ref=e583]:
+              - generic [ref=e584]: church worker
+              - generic [ref=e585]: Active
+              - button "Open actions for Laura Allotey" [ref=e587] [cursor=pointer]:
+                - img [ref=e588]
+          - generic [ref=e593]:
+            - generic [ref=e594]:
+              - strong [ref=e595]: Isaac
+              - generic [ref=e596]: isaac@gmail.com
+            - generic [ref=e597]:
+              - generic [ref=e598]: volunteer
+              - generic [ref=e599]: Active
+              - button "Open actions for Isaac" [ref=e601] [cursor=pointer]:
+                - img [ref=e602]
+          - generic [ref=e607]:
+            - generic [ref=e608]:
+              - strong [ref=e609]: Admin
+              - generic [ref=e610]: admin@gmail.com
+            - generic [ref=e611]:
+              - generic [ref=e612]: admin
+              - generic [ref=e613]: Active
+              - button "Open actions for Admin" [ref=e615] [cursor=pointer]:
+                - img [ref=e616]

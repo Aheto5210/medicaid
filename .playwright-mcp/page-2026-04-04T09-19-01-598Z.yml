@@ -1,0 +1,155 @@
+- generic [ref=e13]:
+  - complementary [ref=e14]:
+    - img "MEDICAID logo" [ref=e16]
+    - navigation [ref=e17]:
+      - button "Overview" [ref=e18] [cursor=pointer]
+      - button "General Registration" [ref=e19] [cursor=pointer]
+      - button "NHIS Registration" [ref=e20] [cursor=pointer]
+      - button "User Management" [ref=e21] [cursor=pointer]
+      - button "Settings" [ref=e22] [cursor=pointer]
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e26]: A
+        - generic [ref=e27]:
+          - generic [ref=e28]: Admin
+          - generic [ref=e29]: admin
+      - button "Log out" [ref=e30] [cursor=pointer]
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - heading "General Registration" [level=1] [ref=e239]
+      - textbox "Search registrations..." [ref=e241]
+    - generic [ref=e242]:
+      - generic [ref=e243]:
+        - generic [ref=e244]:
+          - button "New General Registration" [ref=e246] [cursor=pointer]
+          - generic [ref=e248]:
+            - button "Download Template" [ref=e249] [cursor=pointer]
+            - button "Import Sheet" [ref=e250] [cursor=pointer]
+            - button "Export" [ref=e251] [cursor=pointer]
+        - generic [ref=e252]:
+          - generic [ref=e253]:
+            - text: Year
+            - generic [ref=e255]:
+              - textbox "Year Open options" [ref=e256]:
+                - /placeholder: Select option
+                - text: "2026"
+              - button "Open options" [ref=e257] [cursor=pointer]:
+                - img [ref=e258]
+          - generic [ref=e260]:
+            - text: Name
+            - textbox "Name" [ref=e261]:
+              - /placeholder: Filter by name
+          - generic [ref=e262]:
+            - text: Sex
+            - generic [ref=e264]:
+              - textbox "Sex Open options" [ref=e265]:
+                - /placeholder: Select option
+                - text: All
+              - button "Open options" [ref=e266] [cursor=pointer]:
+                - img [ref=e267]
+          - generic [ref=e269]:
+            - text: Location
+            - generic [ref=e271]:
+              - textbox "Location Open options" [ref=e272]:
+                - /placeholder: Type or choose location
+              - button "Open options" [ref=e273] [cursor=pointer]:
+                - img [ref=e274]
+          - generic [ref=e276]:
+            - text: Main Reason
+            - generic [ref=e278]:
+              - textbox "Main Reason Open options" [ref=e279]:
+                - /placeholder: Select option
+                - text: All
+              - button "Open options" [ref=e280] [cursor=pointer]:
+                - img [ref=e281]
+        - generic [ref=e283]:
+          - generic [ref=e284]:
+            - checkbox "Select all records" [ref=e286] [cursor=pointer]
+            - generic [ref=e287]: Name
+            - generic [ref=e288]: Sex
+            - generic [ref=e289]: Location
+            - generic [ref=e290]: Main Reason
+            - generic [ref=e291]: Actions
+          - generic [ref=e292]:
+            - checkbox "Select Ama Asante" [ref=e294] [cursor=pointer]
+            - generic [ref=e295]: Ama Asante
+            - generic [ref=e296]: Female
+            - generic [ref=e297]: Kpone Kokompe
+            - generic [ref=e298]: General Screening
+            - button "View" [active] [ref=e300] [cursor=pointer]
+          - generic [ref=e301]:
+            - checkbox "Select Kojo Manu" [ref=e303] [cursor=pointer]
+            - generic [ref=e304]: Kojo Manu
+            - generic [ref=e305]: Male
+            - generic [ref=e306]: Savannah Junction
+            - generic [ref=e307]: General Screening
+            - button "View" [ref=e309] [cursor=pointer]
+          - generic [ref=e310]:
+            - checkbox "Select Kwame Luca" [ref=e312] [cursor=pointer]
+            - generic [ref=e313]: Kwame Luca
+            - generic [ref=e314]: Male
+            - generic [ref=e315]: Tema Community 3
+            - generic [ref=e316]: General Screening
+            - button "View" [ref=e318] [cursor=pointer]
+          - generic [ref=e319]:
+            - checkbox "Select Kumah John" [ref=e321] [cursor=pointer]
+            - generic [ref=e322]: Kumah John
+            - generic [ref=e323]: Male
+            - generic [ref=e324]: Tema Community 3
+            - generic [ref=e325]: General Screening
+            - button "View" [ref=e327] [cursor=pointer]
+          - generic [ref=e328]:
+            - checkbox "Select Laura Allotey" [ref=e330] [cursor=pointer]
+            - generic [ref=e331]: Laura Allotey
+            - generic [ref=e332]: Female
+            - generic [ref=e333]: Ningo
+            - generic [ref=e334]: Counseling
+            - button "View" [ref=e336] [cursor=pointer]
+          - generic [ref=e337]:
+            - checkbox "Select Francis Okunade" [ref=e339] [cursor=pointer]
+            - generic [ref=e340]: Francis Okunade
+            - generic [ref=e341]: Male
+            - generic [ref=e342]: Co-A-130, Laluepko - Savanna Junction - Community 25
+            - generic [ref=e343]: Counseling
+            - button "View" [ref=e345] [cursor=pointer]
+      - generic [ref=e347]:
+        - generic [ref=e348]:
+          - heading "Person Details" [level=2] [ref=e349]
+          - button "Close" [ref=e350] [cursor=pointer]
+        - generic [ref=e351]:
+          - generic [ref=e352]:
+            - generic [ref=e353]: Name
+            - strong [ref=e354]: Ama Asante
+          - generic [ref=e355]:
+            - generic [ref=e356]: Age
+            - strong [ref=e357]: "24"
+          - generic [ref=e358]:
+            - generic [ref=e359]: Sex
+            - strong [ref=e360]: Female
+          - generic [ref=e361]:
+            - generic [ref=e362]: Phone No.
+            - strong [ref=e363]: "0545534284"
+          - generic [ref=e364]:
+            - generic [ref=e365]: Occupation
+            - strong [ref=e366]: Student
+          - generic [ref=e367]:
+            - generic [ref=e368]: How did you hear?
+            - strong [ref=e369]: Information Van (With Megaphones)
+          - generic [ref=e370]:
+            - generic [ref=e371]: Main Reason
+            - strong [ref=e372]: General Screening
+          - generic [ref=e373]:
+            - generic [ref=e374]: Location
+            - strong [ref=e375]: Kpone Kokompe
+          - generic [ref=e376]:
+            - generic [ref=e377]: E-mail
+            - strong [ref=e378]: aasante@gmail.com
+          - generic [ref=e379]:
+            - generic [ref=e380]: Program Year
+            - strong [ref=e381]: "2026"
+          - generic [ref=e382]:
+            - generic [ref=e383]: Registered On
+            - strong [ref=e384]: 2026-04-04T00:00:00.000Z
+        - generic [ref=e385]:
+          - button "Delete" [ref=e386] [cursor=pointer]
+          - button "Edit" [ref=e387] [cursor=pointer]
