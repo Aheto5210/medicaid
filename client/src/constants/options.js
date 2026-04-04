@@ -201,13 +201,35 @@ export const MAIN_REASON_OPTIONS = [
   'Eye Screening'
 ];
 
-export const NHIS_SITUATION_CASE_OPTIONS = [
-  'New Registration for Adults (18yrs and above)',
-  'Renewal for Adults',
-  'New Registration for Adults (18yrs and below)',
-  'Renewal for below 18yrs',
-  'New Registration (with SNNIT ID)',
-  'Renewal (with SNNIT ID)',
-  'Aged (above 70yrs)',
-  'Evidence of pregnancy'
+export const NHIS_SITUATION_CASE_PRICING = [
+  { label: 'New Registration for Adults (18 Years and Above)', amount: 30 },
+  { label: 'Renewal for Adults (18 Years and Above)', amount: 27 },
+  { label: 'New Registration for 18 Years and Below', amount: 8 },
+  { label: 'Renewal for 18 Years and Below', amount: 5 },
+  { label: 'New Registration for Disabled Person', amount: 0 },
+  { label: 'Renewal for Disabled Person', amount: 0 },
+  { label: 'New Registration for Pregnant Woman', amount: 0 },
+  { label: 'Renewal for Pregnant Woman', amount: 0 }
 ];
+
+export const NHIS_SITUATION_CASE_OPTIONS = NHIS_SITUATION_CASE_PRICING.map(({ label }) => label);
+
+function normalizeNhisSituationCase(value = '') {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+const NHIS_DEFAULT_AMOUNT_LOOKUP = new Map(
+  NHIS_SITUATION_CASE_PRICING.map(({ label, amount }) => [normalizeNhisSituationCase(label), amount])
+);
+
+export function getNhisDefaultAmount(situationCase) {
+  const normalized = normalizeNhisSituationCase(situationCase);
+  if (!normalized) {
+    return null;
+  }
+
+  return NHIS_DEFAULT_AMOUNT_LOOKUP.get(normalized) ?? null;
+}
