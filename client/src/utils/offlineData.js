@@ -369,6 +369,22 @@ function isLikelyNetworkError(error) {
     || /fetch|network|failed|load|offline/i.test(message);
 }
 
+async function updateMutationsWithServerId(localId, serverId) {
+  if (!localId || !serverId) return;
+  const items = await loadPendingMutations();
+  for (const item of items) {
+    if (item.entityId === localId) {
+      const updated = { ...item, entityId: serverId };
+      if (item.scope === 'people') {
+        updated.path = `/api/people/${serverId}`;
+      } else if (item.scope === 'nhis') {
+        updated.path = `/api/nhis/${serverId}`;
+      }
+      await writeOne(MUTATION_STORE, updated);
+    }
+  }
+}
+
 function isNhisReason(value) {
   return normalizeKeyText(value) === 'nhis';
 }
@@ -548,12 +564,36 @@ async function flushQueuedMutations() {
         const response = await apiFetch(item.path, buildFetchOptions(item));
 
         if (isExpectedQueuedSuccess(response, item)) {
+          // For CREATE mutations, capture the server's actual ID and update any pending mutations
+          if ((item.scope === 'people' || item.scope === 'nhis') && item.action === 'create' && response.ok) {
+            try {
+              const clone = response.clone();
+              const data = await clone.json();
+              const serverId = data?.id;
+              if (serverId && item.entityId !== serverId) {
+                await updateMutationsWithServerId(item.entityId, serverId);
+              }
+            } catch {
+              // Ignore parse errors - proceed with delete
+            }
+          }
           await deleteOne(MUTATION_STORE, item.id);
           emitSyncComplete(item);
           continue;
         }
 
         const data = await response.json().catch(() => ({}));
+        // If mutation fails with 400 and entityId is a local ID, it can never succeed
+        // (server doesn't know about local IDs like "local-person:xxx" or "derived:xxx")
+        // Delete it to stop retrying forever
+        if (response.status === 400 && item.entityId && (
+          String(item.entityId).startsWith('local-') ||
+          String(item.entityId).startsWith('derived:')
+        )) {
+          await deleteOne(MUTATION_STORE, item.id);
+          emitSyncComplete(item);
+          continue;
+        }
         await writeOne(MUTATION_STORE, {
           ...item,
           lastError: data.message || `HTTP ${response.status}`,
@@ -750,6 +790,19 @@ async function performMutationOrQueue(item) {
   try {
     const response = await apiFetch(queuedItem.path, buildFetchOptions(queuedItem));
     if (response.ok) {
+      // For CREATE mutations, capture the server's actual ID and update any pending mutations
+      if ((item.scope === 'people' || item.scope === 'nhis') && item.action === 'create') {
+        try {
+          const clone = response.clone();
+          const data = await clone.json();
+          const serverId = data?.id;
+          if (serverId && item.entityId !== serverId) {
+            await updateMutationsWithServerId(item.entityId, serverId);
+          }
+        } catch {
+          // Ignore parse errors - proceed with return
+        }
+      }
       return { ok: true, queued: false, response };
     }
     return { ok: false, queued: false, response };

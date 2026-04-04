@@ -1,0 +1,414 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - img "MEDICAID logo" [ref=e6]
+    - navigation [ref=e7]:
+      - button "Overview" [ref=e8] [cursor=pointer]
+      - button "General Registration" [ref=e9] [cursor=pointer]
+      - button "NHIS Registration" [active] [ref=e10] [cursor=pointer]
+      - button "User Management" [ref=e11] [cursor=pointer]
+      - button "Settings" [ref=e12] [cursor=pointer]
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]: T
+        - generic [ref=e17]:
+          - generic [ref=e18]: Test User
+          - generic [ref=e19]: admin
+      - button "Log out" [ref=e20] [cursor=pointer]
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - heading "NHIS Registration" [level=1] [ref=e24]
+      - textbox "Search registrations..." [ref=e27]
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - button "New NHIS Registration" [ref=e32] [cursor=pointer]
+          - generic "Total amount for the current NHIS view" [ref=e33]: GH₵2,273.06
+        - generic [ref=e35]:
+          - button "Download Template" [ref=e36] [cursor=pointer]
+          - button "Import Sheet" [ref=e37] [cursor=pointer]
+          - button "Export" [ref=e38] [cursor=pointer]
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - text: Year
+          - generic [ref=e42]:
+            - textbox "Year Open options" [ref=e43]:
+              - /placeholder: Select option
+              - text: "2026"
+            - button "Open options" [ref=e44] [cursor=pointer]:
+              - img [ref=e45]
+        - generic [ref=e47]:
+          - text: Name
+          - textbox "Name" [ref=e48]:
+            - /placeholder: Filter by name
+        - generic [ref=e49]:
+          - text: Situation/Case
+          - generic [ref=e51]:
+            - textbox "Situation/Case Open options" [ref=e52]:
+              - /placeholder: Select option
+              - text: All situations/cases
+            - button "Open options" [ref=e53] [cursor=pointer]:
+              - img [ref=e54]
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - checkbox "Select all NHIS records" [ref=e59] [cursor=pointer]
+          - generic [ref=e60]: Name
+          - generic [ref=e61]: Situation/Case
+          - generic [ref=e62]: Amount (GHS)
+          - generic [ref=e63]: Date
+          - generic [ref=e64]: Actions
+        - generic [ref=e65]:
+          - checkbox "Select Dr. Jaunita Nienow" [ref=e67] [cursor=pointer]
+          - generic [ref=e68]: Dr. Jaunita Nienow
+          - generic [ref=e69]: Expired
+          - generic [ref=e70]: "56.14"
+          - generic [ref=e71]: 03 Apr 2026
+          - button "View" [ref=e73] [cursor=pointer]
+        - generic [ref=e74]:
+          - checkbox "Select Miss Gayle Aufderhar" [ref=e76] [cursor=pointer]
+          - generic [ref=e77]: Miss Gayle Aufderhar
+          - generic [ref=e78]: Expired
+          - generic [ref=e79]: "65.58"
+          - generic [ref=e80]: 01 Apr 2026
+          - button "View" [ref=e82] [cursor=pointer]
+        - generic [ref=e83]:
+          - checkbox "Select Haylie Ernser-Hettinger III" [ref=e85] [cursor=pointer]
+          - generic [ref=e86]: Haylie Ernser-Hettinger III
+          - generic [ref=e87]: Expired
+          - generic [ref=e88]: "45.40"
+          - generic [ref=e89]: 29 Mar 2026
+          - button "View" [ref=e91] [cursor=pointer]
+        - generic [ref=e92]:
+          - checkbox "Select Kiara O'Keefe" [ref=e94] [cursor=pointer]
+          - generic [ref=e95]: Kiara O'Keefe
+          - generic [ref=e96]: Expired
+          - generic [ref=e97]: "53.94"
+          - generic [ref=e98]: 29 Mar 2026
+          - button "View" [ref=e100] [cursor=pointer]
+        - generic [ref=e101]:
+          - checkbox "Select Jill Hilpert" [ref=e103] [cursor=pointer]
+          - generic [ref=e104]: Jill Hilpert
+          - generic [ref=e105]: Pending
+          - generic [ref=e106]: "77.09"
+          - generic [ref=e107]: 28 Mar 2026
+          - button "View" [ref=e109] [cursor=pointer]
+        - generic [ref=e110]:
+          - checkbox "Select Cora Klocko" [ref=e112] [cursor=pointer]
+          - generic [ref=e113]: Cora Klocko
+          - generic [ref=e114]: Pending
+          - generic [ref=e115]: "9.47"
+          - generic [ref=e116]: 25 Mar 2026
+          - button "View" [ref=e118] [cursor=pointer]
+        - generic [ref=e119]:
+          - checkbox "Select Eleonore Nolan" [ref=e121] [cursor=pointer]
+          - generic [ref=e122]: Eleonore Nolan
+          - generic [ref=e123]: Suspended
+          - generic [ref=e124]: "16.74"
+          - generic [ref=e125]: 25 Mar 2026
+          - button "View" [ref=e127] [cursor=pointer]
+        - generic [ref=e128]:
+          - checkbox "Select Mikel D'Amore" [ref=e130] [cursor=pointer]
+          - generic [ref=e131]: Mikel D'Amore
+          - generic [ref=e132]: Suspended
+          - generic [ref=e133]: "7.73"
+          - generic [ref=e134]: 22 Mar 2026
+          - button "View" [ref=e136] [cursor=pointer]
+        - generic [ref=e137]:
+          - checkbox "Select Garrick Stoltenberg" [ref=e139] [cursor=pointer]
+          - generic [ref=e140]: Garrick Stoltenberg
+          - generic [ref=e141]: Pending
+          - generic [ref=e142]: "0.65"
+          - generic [ref=e143]: 20 Mar 2026
+          - button "View" [ref=e145] [cursor=pointer]
+        - generic [ref=e146]:
+          - checkbox "Select Ms. Kyla Yundt" [ref=e148] [cursor=pointer]
+          - generic [ref=e149]: Ms. Kyla Yundt
+          - generic [ref=e150]: Suspended
+          - generic [ref=e151]: "52.62"
+          - generic [ref=e152]: 20 Mar 2026
+          - button "View" [ref=e154] [cursor=pointer]
+        - generic [ref=e155]:
+          - checkbox "Select Laverne Orn" [ref=e157] [cursor=pointer]
+          - generic [ref=e158]: Laverne Orn
+          - generic [ref=e159]: Pending
+          - generic [ref=e160]: "44.63"
+          - generic [ref=e161]: 20 Mar 2026
+          - button "View" [ref=e163] [cursor=pointer]
+        - generic [ref=e164]:
+          - checkbox "Select Unique Bergnaum PhD" [ref=e166] [cursor=pointer]
+          - generic [ref=e167]: Unique Bergnaum PhD
+          - generic [ref=e168]: Active
+          - generic [ref=e169]: "66.34"
+          - generic [ref=e170]: 19 Mar 2026
+          - button "View" [ref=e172] [cursor=pointer]
+        - generic [ref=e173]:
+          - checkbox "Select Roger Rohan" [ref=e175] [cursor=pointer]
+          - generic [ref=e176]: Roger Rohan
+          - generic [ref=e177]: Expired
+          - generic [ref=e178]: "2.62"
+          - generic [ref=e179]: 19 Mar 2026
+          - button "View" [ref=e181] [cursor=pointer]
+        - generic [ref=e182]:
+          - checkbox "Select Mr. Rebeka Murray" [ref=e184] [cursor=pointer]
+          - generic [ref=e185]: Mr. Rebeka Murray
+          - generic [ref=e186]: Pending
+          - generic [ref=e187]: "51.24"
+          - generic [ref=e188]: 17 Mar 2026
+          - button "View" [ref=e190] [cursor=pointer]
+        - generic [ref=e191]:
+          - checkbox "Select Opal Streich PhD" [ref=e193] [cursor=pointer]
+          - generic [ref=e194]: Opal Streich PhD
+          - generic [ref=e195]: Suspended
+          - generic [ref=e196]: "50.14"
+          - generic [ref=e197]: 16 Mar 2026
+          - button "View" [ref=e199] [cursor=pointer]
+        - generic [ref=e200]:
+          - checkbox "Select Delilah Champlin" [ref=e202] [cursor=pointer]
+          - generic [ref=e203]: Delilah Champlin
+          - generic [ref=e204]: Active
+          - generic [ref=e205]: "26.15"
+          - generic [ref=e206]: 16 Mar 2026
+          - button "View" [ref=e208] [cursor=pointer]
+        - generic [ref=e209]:
+          - checkbox "Select Jerrod Barrows" [ref=e211] [cursor=pointer]
+          - generic [ref=e212]: Jerrod Barrows
+          - generic [ref=e213]: Pending
+          - generic [ref=e214]: "61.60"
+          - generic [ref=e215]: 14 Mar 2026
+          - button "View" [ref=e217] [cursor=pointer]
+        - generic [ref=e218]:
+          - checkbox "Select Llewellyn Windler-Roob" [ref=e220] [cursor=pointer]
+          - generic [ref=e221]: Llewellyn Windler-Roob
+          - generic [ref=e222]: Active
+          - generic [ref=e223]: "32.95"
+          - generic [ref=e224]: 11 Mar 2026
+          - button "View" [ref=e226] [cursor=pointer]
+        - generic [ref=e227]:
+          - checkbox "Select Everett Predovic" [ref=e229] [cursor=pointer]
+          - generic [ref=e230]: Everett Predovic
+          - generic [ref=e231]: Active
+          - generic [ref=e232]: "97.42"
+          - generic [ref=e233]: 10 Mar 2026
+          - button "View" [ref=e235] [cursor=pointer]
+        - generic [ref=e236]:
+          - checkbox "Select Kyra Kub IV" [ref=e238] [cursor=pointer]
+          - generic [ref=e239]: Kyra Kub IV
+          - generic [ref=e240]: Active
+          - generic [ref=e241]: "55.03"
+          - generic [ref=e242]: 10 Mar 2026
+          - button "View" [ref=e244] [cursor=pointer]
+        - generic [ref=e245]:
+          - checkbox "Select Floyd Lind" [ref=e247] [cursor=pointer]
+          - generic [ref=e248]: Floyd Lind
+          - generic [ref=e249]: Suspended
+          - generic [ref=e250]: "18.31"
+          - generic [ref=e251]: 04 Mar 2026
+          - button "View" [ref=e253] [cursor=pointer]
+        - generic [ref=e254]:
+          - checkbox "Select Rosamond King" [ref=e256] [cursor=pointer]
+          - generic [ref=e257]: Rosamond King
+          - generic [ref=e258]: Pending
+          - generic [ref=e259]: "86.82"
+          - generic [ref=e260]: 03 Mar 2026
+          - button "View" [ref=e262] [cursor=pointer]
+        - generic [ref=e263]:
+          - checkbox "Select Lew Lemke" [ref=e265] [cursor=pointer]
+          - generic [ref=e266]: Lew Lemke
+          - generic [ref=e267]: Suspended
+          - generic [ref=e268]: "8.35"
+          - generic [ref=e269]: 03 Mar 2026
+          - button "View" [ref=e271] [cursor=pointer]
+        - generic [ref=e272]:
+          - checkbox "Select Rosa Berge" [ref=e274] [cursor=pointer]
+          - generic [ref=e275]: Rosa Berge
+          - generic [ref=e276]: Active
+          - generic [ref=e277]: "9.46"
+          - generic [ref=e278]: 03 Mar 2026
+          - button "View" [ref=e280] [cursor=pointer]
+        - generic [ref=e281]:
+          - checkbox "Select Mrs. Eula Jones" [ref=e283] [cursor=pointer]
+          - generic [ref=e284]: Mrs. Eula Jones
+          - generic [ref=e285]: Suspended
+          - generic [ref=e286]: "27.39"
+          - generic [ref=e287]: 02 Mar 2026
+          - button "View" [ref=e289] [cursor=pointer]
+        - generic [ref=e290]:
+          - checkbox "Select Rodolfo Christiansen" [ref=e292] [cursor=pointer]
+          - generic [ref=e293]: Rodolfo Christiansen
+          - generic [ref=e294]: Pending
+          - generic [ref=e295]: "27.67"
+          - generic [ref=e296]: 02 Mar 2026
+          - button "View" [ref=e298] [cursor=pointer]
+        - generic [ref=e299]:
+          - checkbox "Select Baylee Schinner" [ref=e301] [cursor=pointer]
+          - generic [ref=e302]: Baylee Schinner
+          - generic [ref=e303]: Pending
+          - generic [ref=e304]: "65.68"
+          - generic [ref=e305]: 02 Mar 2026
+          - button "View" [ref=e307] [cursor=pointer]
+        - generic [ref=e308]:
+          - checkbox "Select Bryan Satterfield" [ref=e310] [cursor=pointer]
+          - generic [ref=e311]: Bryan Satterfield
+          - generic [ref=e312]: Active
+          - generic [ref=e313]: "19.13"
+          - generic [ref=e314]: 02 Mar 2026
+          - button "View" [ref=e316] [cursor=pointer]
+        - generic [ref=e317]:
+          - checkbox "Select Jerrell Hayes" [ref=e319] [cursor=pointer]
+          - generic [ref=e320]: Jerrell Hayes
+          - generic [ref=e321]: Expired
+          - generic [ref=e322]: "5.79"
+          - generic [ref=e323]: 01 Mar 2026
+          - button "View" [ref=e325] [cursor=pointer]
+        - generic [ref=e326]:
+          - checkbox "Select Henrietta Crooks" [ref=e328] [cursor=pointer]
+          - generic [ref=e329]: Henrietta Crooks
+          - generic [ref=e330]: Expired
+          - generic [ref=e331]: "4.92"
+          - generic [ref=e332]: 01 Mar 2026
+          - button "View" [ref=e334] [cursor=pointer]
+        - generic [ref=e335]:
+          - checkbox "Select Germaine Hettinger-Oberbrunner" [ref=e337] [cursor=pointer]
+          - generic [ref=e338]: Germaine Hettinger-Oberbrunner
+          - generic [ref=e339]: Active
+          - generic [ref=e340]: "32.97"
+          - generic [ref=e341]: 28 Feb 2026
+          - button "View" [ref=e343] [cursor=pointer]
+        - generic [ref=e344]:
+          - checkbox "Select Mrs. Darla Balistreri" [ref=e346] [cursor=pointer]
+          - generic [ref=e347]: Mrs. Darla Balistreri
+          - generic [ref=e348]: Pending
+          - generic [ref=e349]: "85.81"
+          - generic [ref=e350]: 27 Feb 2026
+          - button "View" [ref=e352] [cursor=pointer]
+        - generic [ref=e353]:
+          - checkbox "Select Audrey Kerluke" [ref=e355] [cursor=pointer]
+          - generic [ref=e356]: Audrey Kerluke
+          - generic [ref=e357]: Active
+          - generic [ref=e358]: "62.85"
+          - generic [ref=e359]: 26 Feb 2026
+          - button "View" [ref=e361] [cursor=pointer]
+        - generic [ref=e362]:
+          - checkbox "Select Iris Jacobi MD" [ref=e364] [cursor=pointer]
+          - generic [ref=e365]: Iris Jacobi MD
+          - generic [ref=e366]: Expired
+          - generic [ref=e367]: "95.97"
+          - generic [ref=e368]: 23 Feb 2026
+          - button "View" [ref=e370] [cursor=pointer]
+        - generic [ref=e371]:
+          - checkbox "Select Dr. Ken Bradtke" [ref=e373] [cursor=pointer]
+          - generic [ref=e374]: Dr. Ken Bradtke
+          - generic [ref=e375]: Active
+          - generic [ref=e376]: "98.91"
+          - generic [ref=e377]: 21 Feb 2026
+          - button "View" [ref=e379] [cursor=pointer]
+        - generic [ref=e380]:
+          - checkbox "Select Vera Cronin-Lebsack" [ref=e382] [cursor=pointer]
+          - generic [ref=e383]: Vera Cronin-Lebsack
+          - generic [ref=e384]: Pending
+          - generic [ref=e385]: "44.81"
+          - generic [ref=e386]: 21 Feb 2026
+          - button "View" [ref=e388] [cursor=pointer]
+        - generic [ref=e389]:
+          - checkbox "Select Josh Kuphal" [ref=e391] [cursor=pointer]
+          - generic [ref=e392]: Josh Kuphal
+          - generic [ref=e393]: Active
+          - generic [ref=e394]: "36.40"
+          - generic [ref=e395]: 12 Feb 2026
+          - button "View" [ref=e397] [cursor=pointer]
+        - generic [ref=e398]:
+          - checkbox "Select Edmund Wilkinson" [ref=e400] [cursor=pointer]
+          - generic [ref=e401]: Edmund Wilkinson
+          - generic [ref=e402]: Expired
+          - generic [ref=e403]: "6.76"
+          - generic [ref=e404]: 31 Jan 2026
+          - button "View" [ref=e406] [cursor=pointer]
+        - generic [ref=e407]:
+          - checkbox "Select Mr. Tyler Lynch" [ref=e409] [cursor=pointer]
+          - generic [ref=e410]: Mr. Tyler Lynch
+          - generic [ref=e411]: Pending
+          - generic [ref=e412]: "42.18"
+          - generic [ref=e413]: 30 Jan 2026
+          - button "View" [ref=e415] [cursor=pointer]
+        - generic [ref=e416]:
+          - checkbox "Select Mr. Kylee Collins" [ref=e418] [cursor=pointer]
+          - generic [ref=e419]: Mr. Kylee Collins
+          - generic [ref=e420]: Expired
+          - generic [ref=e421]: "30.25"
+          - generic [ref=e422]: 30 Jan 2026
+          - button "View" [ref=e424] [cursor=pointer]
+        - generic [ref=e425]:
+          - checkbox "Select Benton Lakin" [ref=e427] [cursor=pointer]
+          - generic [ref=e428]: Benton Lakin
+          - generic [ref=e429]: Active
+          - generic [ref=e430]: "31.84"
+          - generic [ref=e431]: 27 Jan 2026
+          - button "View" [ref=e433] [cursor=pointer]
+        - generic [ref=e434]:
+          - checkbox "Select Miss Esther Friesen" [ref=e436] [cursor=pointer]
+          - generic [ref=e437]: Miss Esther Friesen
+          - generic [ref=e438]: Active
+          - generic [ref=e439]: "37.99"
+          - generic [ref=e440]: 26 Jan 2026
+          - button "View" [ref=e442] [cursor=pointer]
+        - generic [ref=e443]:
+          - checkbox "Select Sue Wolff" [ref=e445] [cursor=pointer]
+          - generic [ref=e446]: Sue Wolff
+          - generic [ref=e447]: Suspended
+          - generic [ref=e448]: "74.39"
+          - generic [ref=e449]: 22 Jan 2026
+          - button "View" [ref=e451] [cursor=pointer]
+        - generic [ref=e452]:
+          - checkbox "Select Samanta Adams" [ref=e454] [cursor=pointer]
+          - generic [ref=e455]: Samanta Adams
+          - generic [ref=e456]: Expired
+          - generic [ref=e457]: "74.70"
+          - generic [ref=e458]: 20 Jan 2026
+          - button "View" [ref=e460] [cursor=pointer]
+        - generic [ref=e461]:
+          - checkbox "Select Teresa Jenkins" [ref=e463] [cursor=pointer]
+          - generic [ref=e464]: Teresa Jenkins
+          - generic [ref=e465]: Active
+          - generic [ref=e466]: "45.32"
+          - generic [ref=e467]: 18 Jan 2026
+          - button "View" [ref=e469] [cursor=pointer]
+        - generic [ref=e470]:
+          - checkbox "Select Dr. Olive Oberbrunner" [ref=e472] [cursor=pointer]
+          - generic [ref=e473]: Dr. Olive Oberbrunner
+          - generic [ref=e474]: Active
+          - generic [ref=e475]: "47.12"
+          - generic [ref=e476]: 16 Jan 2026
+          - button "View" [ref=e478] [cursor=pointer]
+        - generic [ref=e479]:
+          - checkbox "Select Rhiannon Will" [ref=e481] [cursor=pointer]
+          - generic [ref=e482]: Rhiannon Will
+          - generic [ref=e483]: Suspended
+          - generic [ref=e484]: "22.48"
+          - generic [ref=e485]: 09 Jan 2026
+          - button "View" [ref=e487] [cursor=pointer]
+        - generic [ref=e488]:
+          - checkbox "Select Gwen Fadel" [ref=e490] [cursor=pointer]
+          - generic [ref=e491]: Gwen Fadel
+          - generic [ref=e492]: Active
+          - generic [ref=e493]: "67.68"
+          - generic [ref=e494]: 08 Jan 2026
+          - button "View" [ref=e496] [cursor=pointer]
+        - generic [ref=e497]:
+          - checkbox "Select Edison Schmidt" [ref=e499] [cursor=pointer]
+          - generic [ref=e500]: Edison Schmidt
+          - generic [ref=e501]: Expired
+          - generic [ref=e502]: "99.69"
+          - generic [ref=e503]: 04 Jan 2026
+          - button "View" [ref=e505] [cursor=pointer]
+        - generic [ref=e506]:
+          - checkbox "Select Caroline Green" [ref=e508] [cursor=pointer]
+          - generic [ref=e509]: Caroline Green
+          - generic [ref=e510]: Active
+          - generic [ref=e511]: "87.94"
+          - generic [ref=e512]: 03 Jan 2026
+          - button "View" [ref=e514] [cursor=pointer]
+      - generic [ref=e515]:
+        - generic [ref=e516]: Showing 1–50 of 1000
+        - generic [ref=e517]:
+          - button "Previous" [disabled] [ref=e518]
+          - generic [ref=e519]: Page 1 of 20
+          - button "Next" [ref=e520] [cursor=pointer]

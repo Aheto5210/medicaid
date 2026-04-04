@@ -8,17 +8,20 @@ import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
 import CustomDropdown from '../components/common/CustomDropdown.jsx';
+import Pagination from '../components/common/Pagination.jsx';
 import PeopleTable from '../components/people/PeopleTable.jsx';
 import PeopleDetailsModal from '../components/people/PeopleDetailsModal.jsx';
 
 export default function PeoplePage({
   people,
+  pagination,
   onRefresh,
   programYear,
   yearOptions,
   onYearChange,
   onNew,
-  permissions
+  permissions,
+  onPageChange
 }) {
   const [filters, setFilters] = useState({
     name: '',
@@ -551,6 +554,14 @@ export default function PeoplePage({
           selectedIds={selectedPeopleIds}
           onToggleSelect={toggleSelectPerson}
           onToggleSelectAll={toggleSelectAllPeople}
+        />
+
+        <Pagination
+          page={pagination?.page}
+          pageSize={pagination?.pageSize}
+          total={pagination?.total}
+          totalPages={pagination?.totalPages}
+          onPageChange={onPageChange}
         />
       </div>
 

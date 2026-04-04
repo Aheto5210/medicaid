@@ -8,17 +8,20 @@ import { normalizePermissions } from '../utils/permissions.js';
 import ToastStack from '../components/common/ToastStack.jsx';
 import ConfirmDialog from '../components/common/ConfirmDialog.jsx';
 import CustomDropdown from '../components/common/CustomDropdown.jsx';
+import Pagination from '../components/common/Pagination.jsx';
 import NhisTable from '../components/nhis/NhisTable.jsx';
 import NhisDetailsModal from '../components/nhis/NhisDetailsModal.jsx';
 
 export default function NhisRegistrationPage({
   records,
+  pagination,
   onRefresh,
   programYear,
   yearOptions,
   onYearChange,
   onNew,
-  permissions
+  permissions,
+  onPageChange
 }) {
   const [filters, setFilters] = useState({
     name: '',
@@ -528,6 +531,14 @@ export default function NhisRegistrationPage({
           selectedIds={selectedRecordIds}
           onToggleSelect={toggleSelectRecord}
           onToggleSelectAll={toggleSelectAllRecords}
+        />
+
+        <Pagination
+          page={pagination?.page}
+          pageSize={pagination?.pageSize}
+          total={pagination?.total}
+          totalPages={pagination?.totalPages}
+          onPageChange={onPageChange}
         />
       </div>
 

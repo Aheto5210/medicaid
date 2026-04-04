@@ -3,7 +3,7 @@ import multer from 'multer';
 import * as xlsx from 'xlsx';
 import { query, withTransaction } from '../db.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
-import { peopleUpdateSchema, peopleCreateSchema, validateBody } from '../validation/schemas.js';
+import { peopleUpdateSchema, peopleCreateSchema, validateBody, validatePagination } from '../validation/schemas.js';
 import {
   acquireTransactionLock,
   buildStaleRecordMessage,
@@ -416,11 +416,14 @@ async function buildWorkbookBuffer({ dataRows = [], prefillCount = 0 }) {
 
 router.use(requireAuth);
 
-router.get('/', requirePermission('generalRegistration', 'view'), async (req, res) => {
-  const { search, status, year } = req.query || {};
+router.get('/', requirePermission('generalRegistration', 'view'), validatePagination, async (req, res) => {
+  const { search, status, year, page, pageSize } = req.query || {};
   const params = [];
   const where = [];
   const programYear = Number.parseInt(year, 10) || new Date().getFullYear();
+  const pageNum = Math.max(1, Number.parseInt(page, 10) || 1);
+  const size = Math.max(1, Number.parseInt(pageSize, 10) || 50);
+  const offset = (pageNum - 1) * size;
 
   if (search) {
     params.push(`%${search}%`);
@@ -437,17 +440,29 @@ router.get('/', requirePermission('generalRegistration', 'view'), async (req, re
 
   const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
 
+  const countResult = await query(
+    `SELECT COUNT(*)::int AS count FROM people ${whereClause}`,
+    params
+  );
+  const total = countResult.rows[0].count;
+
   const result = await query(
     `SELECT id, first_name, last_name, gender, age, phone, email, occupation, registration_source,
             reason_for_coming, address_line1, city, region, onboarding_status, registration_date, program_year
      FROM people
      ${whereClause}
      ORDER BY created_at DESC
-     LIMIT 200`,
+     LIMIT ${size} OFFSET ${offset}`,
     params
   );
 
-  return res.json(result.rows);
+  return res.json({
+    data: result.rows,
+    total,
+    page: pageNum,
+    pageSize: size,
+    totalPages: Math.ceil(total / size)
+  });
 });
 
 router.get('/template', requirePermission('generalRegistration', 'view'), async (req, res) => {

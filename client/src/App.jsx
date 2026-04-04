@@ -38,6 +38,8 @@ export default function App() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [people, setPeople] = useState([]);
   const [nhisRecords, setNhisRecords] = useState([]);
+  const [peoplePagination, setPeoplePagination] = useState({ page: 1, pageSize: 50, total: 0, totalPages: 0 });
+  const [nhisPagination, setNhisPagination] = useState({ page: 1, pageSize: 50, total: 0, totalPages: 0 });
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pendingMutations, setPendingMutations] = useState([]);
@@ -112,15 +114,7 @@ export default function App() {
 
     return {
       ...summary,
-      totals: {
-        ...summary.totals,
-        ...derived.totals
-      },
-      gender: derived.gender,
-      reasons: derived.reasons,
-      ageRanges: derived.ageRanges,
-      registrationSources: derived.registrationSources,
-      occupations: derived.occupations
+      totals: summary.totals
     };
   }, [summary, effectivePeople, peopleSearch, canViewGeneralRegistration]);
 
@@ -278,50 +272,62 @@ export default function App() {
     }
   }
 
-  async function loadPeople(query = '', year = programYear) {
+  async function loadPeople(query = '', year = programYear, page = 1, pageSize = 50) {
     const params = new URLSearchParams();
     if (query) params.set('search', query);
     params.set('year', year);
+    params.set('page', page);
+    params.set('pageSize', pageSize);
 
     const queryString = params.toString() ? `?${params.toString()}` : '';
-    const cacheKey = `people:${year}:${query.trim().toLowerCase()}`;
+    const cacheKey = `people:${year}:${query.trim().toLowerCase()}:${page}:${pageSize}`;
 
     try {
       const res = await apiFetch(`/api/people${queryString}`);
 
       if (res.ok) {
         const data = await res.json();
-        setPeople(data);
-        await setCachedValue(cacheKey, data);
+        const payload = data.data ? data : { data, page: 1, pageSize: 50, total: data.length, totalPages: 1 };
+        setPeople(payload.data);
+        setPeoplePagination({ page: payload.page, pageSize: payload.pageSize, total: payload.total, totalPages: payload.totalPages });
+        await setCachedValue(cacheKey, payload);
       }
     } catch {
       const cached = await getCachedValue(cacheKey);
       if (cached) {
-        setPeople(cached);
+        const payload = cached.data ? cached : { data: cached, page: 1, pageSize: 50, total: cached.length, totalPages: 1 };
+        setPeople(payload.data);
+        setPeoplePagination({ page: payload.page, pageSize: payload.pageSize, total: payload.total, totalPages: payload.totalPages });
       }
     }
   }
 
-  async function loadNhis(searchValue = '', year = programYear) {
+  async function loadNhis(searchValue = '', year = programYear, page = 1, pageSize = 50) {
     const params = new URLSearchParams();
     if (searchValue) params.set('search', searchValue);
     params.set('year', year);
+    params.set('page', page);
+    params.set('pageSize', pageSize);
 
     const queryString = params.toString() ? `?${params.toString()}` : '';
-    const cacheKey = `nhis:${year}:${searchValue.trim().toLowerCase()}`;
+    const cacheKey = `nhis:${year}:${searchValue.trim().toLowerCase()}:${page}:${pageSize}`;
 
     try {
       const res = await apiFetch(`/api/nhis${queryString}`);
 
       if (res.ok) {
         const data = await res.json();
-        setNhisRecords(data);
-        await setCachedValue(cacheKey, data);
+        const payload = data.data ? data : { data, page: 1, pageSize: 50, total: data.length, totalPages: 1 };
+        setNhisRecords(payload.data);
+        setNhisPagination({ page: payload.page, pageSize: payload.pageSize, total: payload.total, totalPages: payload.totalPages });
+        await setCachedValue(cacheKey, payload);
       }
     } catch {
       const cached = await getCachedValue(cacheKey);
       if (cached) {
-        setNhisRecords(cached);
+        const payload = cached.data ? cached : { data: cached, page: 1, pageSize: 50, total: cached.length, totalPages: 1 };
+        setNhisRecords(payload.data);
+        setNhisPagination({ page: payload.page, pageSize: payload.pageSize, total: payload.total, totalPages: payload.totalPages });
       }
     }
   }
@@ -516,24 +522,28 @@ export default function App() {
         {view === 'people' && canViewGeneralRegistration && (
           <PeoplePage
             people={effectivePeople}
+            pagination={peoplePagination}
             programYear={programYear}
             yearOptions={yearOptions}
             onYearChange={setProgramYear}
             onRefresh={() => loadPeople(peopleSearch, programYear)}
             onNew={() => setRegisterContext('people')}
             permissions={resolvedUser?.permissions}
+            onPageChange={(page) => loadPeople(peopleSearch, programYear, page)}
           />
         )}
 
         {view === 'nhis' && canViewNhisRegistration && (
           <NhisRegistrationPage
             records={effectiveNhisRecords}
+            pagination={nhisPagination}
             programYear={programYear}
             yearOptions={yearOptions}
             onYearChange={setProgramYear}
             onRefresh={() => loadNhis(nhisSearch, programYear)}
             onNew={() => setRegisterContext('nhis')}
             permissions={resolvedUser?.permissions}
+            onPageChange={(page) => loadNhis(nhisSearch, programYear, page)}
           />
         )}
 

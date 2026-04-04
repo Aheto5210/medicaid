@@ -23,6 +23,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@types/multer": "^2.1.0",
     "nodemon": "^3.1.0"
   }

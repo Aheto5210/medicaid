@@ -1,0 +1,7 @@
+[    3856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/people?year=2026:0
+[    3858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/me:0
+[    3859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/analytics/summary?year=2026:0
+[    3860ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/nhis?year=2026:0
+[    4295ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/refresh:0
+[    4296ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/refresh:0
+[    4297ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/refresh:0

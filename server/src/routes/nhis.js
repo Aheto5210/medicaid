@@ -3,7 +3,7 @@ import multer from 'multer';
 import * as xlsx from 'xlsx';
 import { query, withTransaction } from '../db.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
-import { nhisUpdateSchema, nhisCreateSchema, validateBody } from '../validation/schemas.js';
+import { nhisUpdateSchema, nhisCreateSchema, validateBody, validatePagination } from '../validation/schemas.js';
 import {
   acquireTransactionLock,
   buildStaleRecordMessage,
@@ -311,11 +311,14 @@ async function buildWorkbookBuffer({ dataRows = [], prefillCount = 0, showOption
 
 router.use(requireAuth);
 
-router.get('/', requirePermission('nhisRegistration', 'view'), asyncHandler(async (req, res) => {
-  const { search, year } = req.query || {};
+router.get('/', requirePermission('nhisRegistration', 'view'), validatePagination, asyncHandler(async (req, res) => {
+  const { search, year, page, pageSize } = req.query || {};
   const params = [];
   const where = [];
   const programYear = parseProgramYear(year);
+  const pageNum = Math.max(1, Number.parseInt(page, 10) || 1);
+  const size = Math.max(1, Number.parseInt(pageSize, 10) || 50);
+  const offset = (pageNum - 1) * size;
 
   if (search) {
     params.push(`%${search}%`);
@@ -325,16 +328,30 @@ router.get('/', requirePermission('nhisRegistration', 'view'), asyncHandler(asyn
   params.push(programYear);
   where.push(`program_year = $${params.length}`);
 
+  const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+  const countResult = await query(
+    `SELECT COUNT(*)::int AS count FROM nhis_registrations ${whereClause}`,
+    params
+  );
+  const total = countResult.rows[0].count;
+
   const result = await query(
     `SELECT id, full_name, situation_case, amount::double precision AS amount, program_year, registration_date
      FROM nhis_registrations
      WHERE ${where.join(' AND ')}
      ORDER BY created_at DESC
-     LIMIT 300`,
+     LIMIT ${size} OFFSET ${offset}`,
     params
   );
 
-  return res.json(result.rows);
+  return res.json({
+    data: result.rows,
+    total,
+    page: pageNum,
+    pageSize: size,
+    totalPages: Math.ceil(total / size)
+  });
 }));
 
 router.get('/template', requirePermission('nhisRegistration', 'view'), asyncHandler(async (req, res) => {

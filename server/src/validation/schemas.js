@@ -1,5 +1,19 @@
 import { z } from 'zod';
 
+const paginationSchema = z.object({
+  page: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().int().positive()).optional(),
+  pageSize: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().int().positive()).optional()
+});
+
+export function validatePagination(req, res, next) {
+  const result = paginationSchema.safeParse(req.query);
+  if (!result.success) {
+    return res.status(400).json({ message: 'Invalid pagination parameters', errors: result.error.errors });
+  }
+  req.query = { ...req.query, ...result.data };
+  next();
+}
+
 export const nhisUpdateSchema = z.object({
   fullName: z.string().trim().optional(),
   situationCase: z.string().trim().optional().nullable(),
