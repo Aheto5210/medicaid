@@ -969,6 +969,10 @@ router.patch('/:id', requirePermission('generalRegistration', 'edit'), async (re
     return { updated: updatedPerson };
   });
 
+  if (outcome.error) {
+    return res.status(outcome.status || 500).json({ message: outcome.message });
+  }
+
   if (outcome.missing) {
     return res.status(404).json({ message: 'Person not found' });
   }

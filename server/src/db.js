@@ -45,7 +45,13 @@ export async function withTransaction(callback) {
     } catch {
       // Ignore rollback failures and surface the original error.
     }
-    throw error;
+    // Return structured error instead of throwing to prevent server crashes
+    // Caller should check if result has error property
+    if (error.code && error.code.startsWith('22')) {
+      // PostgreSQL error codes starting with 22 are data integrity errors (e.g., 22P02 invalid uuid)
+      return { error: true, message: 'Invalid input data.', status: 400 };
+    }
+    return { error: true, message: error.message || 'Database error.', status: 500 };
   } finally {
     client.release();
   }
