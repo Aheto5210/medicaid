@@ -41,9 +41,15 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=accept-new "$SSH_USER@$SSH_HOST" << 'EOF'
             cd ~/medicaid
+            # Preserve .env before git clean removes it
+            cp .env .env.backup 2>/dev/null || true
+
             git fetch --prune origin main
             git reset --hard origin/main
             git clean -fd
+
+            # Restore .env after git clean
+            cp .env.backup .env 2>/dev/null || true
 
             # Start backend services (docker compose handles BE + DB)
             docker compose up -d --build
