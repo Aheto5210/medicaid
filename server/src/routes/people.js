@@ -3,6 +3,7 @@ import multer from 'multer';
 import * as xlsx from 'xlsx';
 import { query, withTransaction } from '../db.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
+import { peopleUpdateSchema, peopleCreateSchema, validateBody } from '../validation/schemas.js';
 import {
   acquireTransactionLock,
   buildStaleRecordMessage,
@@ -677,20 +678,14 @@ router.get('/export', requirePermission('generalRegistration', 'export'), async 
   return res.send(buffer);
 });
 
-router.post('/', requirePermission('generalRegistration', 'create'), async (req, res) => {
-  const payload = req.body || {};
+router.post('/', requirePermission('generalRegistration', 'create'), validateBody(peopleCreateSchema), async (req, res) => {
+  const payload = req.body;
   const firstName = titleCaseText(payload.firstName);
   const lastName = titleCaseText(payload.lastName);
   const age = parseAge(payload.age);
   const gender = normalizeGender(payload.gender);
   const addressLine1 = titleCaseText(payload.addressLine1);
   const reasonForComing = titleCaseText(payload.reasonForComing);
-  const missing = [];
-  if (!firstName) missing.push('firstName');
-  if (!lastName) missing.push('lastName');
-  if (missing.length) {
-    return res.status(400).json({ message: `Missing fields: ${missing.join(', ')}` });
-  }
 
   if (payload.age !== undefined && payload.age !== null && String(payload.age).trim() !== '' && age === null) {
     return res.status(400).json({ message: 'Age must be a valid number.' });
@@ -824,9 +819,9 @@ router.get('/:id', requirePermission('generalRegistration', 'view'), async (req,
   return res.json(result.rows[0]);
 });
 
-router.patch('/:id', requirePermission('generalRegistration', 'edit'), async (req, res) => {
+router.patch('/:id', requirePermission('generalRegistration', 'edit'), validateBody(peopleUpdateSchema), async (req, res) => {
   const { id } = req.params;
-  const payload = req.body || {};
+  const payload = req.body;
   const firstNameInput = payload.firstName !== undefined ? titleCaseText(payload.firstName) : null;
   const lastNameInput = payload.lastName !== undefined ? titleCaseText(payload.lastName) : null;
   const ageInput = payload.age !== undefined ? parseAge(payload.age) : null;

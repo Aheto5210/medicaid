@@ -3,6 +3,7 @@ import multer from 'multer';
 import * as xlsx from 'xlsx';
 import { query, withTransaction } from '../db.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
+import { nhisUpdateSchema, nhisCreateSchema, validateBody } from '../validation/schemas.js';
 import {
   acquireTransactionLock,
   buildStaleRecordMessage,
@@ -521,8 +522,8 @@ router.get('/export', requirePermission('nhisRegistration', 'export'), asyncHand
   return res.send(buffer);
 }));
 
-router.post('/', requirePermission('nhisRegistration', 'create'), asyncHandler(async (req, res) => {
-  const payload = req.body || {};
+router.post('/', requirePermission('nhisRegistration', 'create'), validateBody(nhisCreateSchema), asyncHandler(async (req, res) => {
+  const payload = req.body;
   const fullName = titleCaseText(payload.fullName);
   const situationCase = titleCaseText(payload.situationCase);
   const parsedAmount = parseAmount(payload.amount);
@@ -536,10 +537,6 @@ router.post('/', requirePermission('nhisRegistration', 'create'), asyncHandler(a
   const amount = hasAmountInput
     ? parsedAmount
     : getDefaultAmountForSituationCase(situationCase || payload.situationCase);
-
-  if (!fullName) {
-    return res.status(400).json({ message: 'fullName is required.' });
-  }
 
   if (hasAmountInput && parsedAmount === null) {
     return res.status(400).json({ message: 'Amount must be a valid number.' });
@@ -616,9 +613,9 @@ router.get('/:id', requirePermission('nhisRegistration', 'view'), asyncHandler(a
   return res.json(result.rows[0]);
 }));
 
-router.patch('/:id', requirePermission('nhisRegistration', 'edit'), asyncHandler(async (req, res) => {
+router.patch('/:id', requirePermission('nhisRegistration', 'edit'), validateBody(nhisUpdateSchema), asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const payload = req.body || {};
+  const payload = req.body;
   const updates = [];
   const values = [];
   let fullNameInput = null;
@@ -634,9 +631,6 @@ router.patch('/:id', requirePermission('nhisRegistration', 'edit'), asyncHandler
 
   if (payload.fullName !== undefined) {
     const fullName = titleCaseText(payload.fullName);
-    if (!fullName) {
-      return res.status(400).json({ message: 'fullName cannot be empty.' });
-    }
     fullNameInput = fullName;
     values.push(fullName);
     updates.push(`full_name = $${values.length}`);
@@ -674,7 +668,7 @@ router.patch('/:id', requirePermission('nhisRegistration', 'edit'), asyncHandler
     updates.push(`program_year = $${values.length}`);
   }
 
-  if (!updates.length) {
+  if (!updates.length && payload.expectedUpdatedAt === undefined) {
     return res.status(400).json({ message: 'No valid fields provided for update.' });
   }
 
