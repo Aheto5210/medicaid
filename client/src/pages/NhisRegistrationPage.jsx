@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch, apiUpload } from '../api.js';
-import { NHIS_SITUATION_CASE_OPTIONS } from '../constants/options.js';
+import { NHIS_SITUATION_CASE_OPTIONS, getNhisDefaultAmount } from '../constants/options.js';
 import { deleteNhisMutation, updateNhisMutation } from '../utils/offlineData.js';
 import { downloadFile } from '../utils/downloads.js';
 import { buildFullName, buildNhisDisplayName, splitNameFields } from '../utils/people.js';
@@ -266,6 +266,20 @@ export default function NhisRegistrationPage({
     setFilters((prev) => ({ ...prev, [key]: value }));
   }
 
+  function updateEditForm(key, value) {
+    if (key === 'situationCase') {
+      const defaultAmount = getNhisDefaultAmount(value);
+      setEditForm((prev) => ({
+        ...prev,
+        situationCase: value,
+        amount: value ? String(defaultAmount ?? prev.amount ?? '') : ''
+      }));
+      return;
+    }
+
+    setEditForm((prev) => ({ ...prev, [key]: value }));
+  }
+
   const filteredRecords = useMemo(() => {
     return records.filter((record) => {
       const name = buildNhisDisplayName(record).toLowerCase();
@@ -502,7 +516,7 @@ export default function NhisRegistrationPage({
               value={filters.situation}
               onChange={(nextValue) => updateFilter('situation', nextValue)}
               searchable
-              panelMinWidth={420}
+              panelMinWidth={460}
             />
           </label>
         </div>
@@ -530,7 +544,7 @@ export default function NhisRegistrationPage({
           editing={editing}
           form={editForm}
           yearOptions={yearOptions}
-          onFormChange={(key, value) => setEditForm((prev) => ({ ...prev, [key]: value }))}
+          onFormChange={updateEditForm}
           onStartEdit={() => {
             if (!canEdit) return;
             if (recordDetails) hydrateEditForm(recordDetails);
