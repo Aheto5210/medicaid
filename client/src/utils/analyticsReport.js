@@ -1064,7 +1064,40 @@ export function openAnalyticsReportPrintView({ summary, year, user, logoUrl }) {
   frameWindow.document.close();
   frameWindow.document.title = title;
 
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
   frame.onload = () => {
+    if (isMobile) {
+      // On mobile, Web Share API opens the system share sheet which can include "Print"
+      if (navigator.share && frame.contentWindow) {
+        const blob = new Blob([reportHtml], { type: 'text/html' });
+        const file = new File([blob], 'medicaid-report.html', { type: 'text/html' });
+        navigator.share({
+          files: [file],
+          title: 'MEDICAID Report',
+          text: `MEDICAID Analytics Report - ${year}`
+        }).catch(() => {
+          // Fallback: open in new tab
+          const tabWindow = window.open('', '_blank');
+          if (tabWindow) {
+            tabWindow.document.write(reportHtml);
+            tabWindow.document.close();
+          }
+        }).finally(() => {
+          cleanup();
+        });
+        return;
+      }
+      // Fallback for mobile without Web Share
+      const tabWindow = window.open('', '_blank');
+      if (tabWindow) {
+        tabWindow.document.write(reportHtml);
+        tabWindow.document.close();
+        cleanup();
+      }
+      return;
+    }
+
     frameWindow.focus();
     frameWindow.print();
     cleanup();
