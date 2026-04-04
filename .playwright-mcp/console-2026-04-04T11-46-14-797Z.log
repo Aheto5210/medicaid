@@ -1,3 +1,0 @@
-[   11121ms] [ERROR] Failed to load resource: the server responded with a status of 502 () @ https://api.medicaid.live/:0
-[   11613ms] [ERROR] Failed to load resource: the server responded with a status of 502 () @ https://api.medicaid.live/favicon.ico:0
-[ 1834790ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://api.medicaid.live/:0
