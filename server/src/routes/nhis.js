@@ -331,10 +331,11 @@ router.get('/', requirePermission('nhisRegistration', 'view'), validatePaginatio
   const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
 
   const countResult = await query(
-    `SELECT COUNT(*)::int AS count FROM nhis_registrations ${whereClause}`,
+    `SELECT COUNT(*)::int AS count, COALESCE(SUM(amount), 0)::double precision AS total_amount FROM nhis_registrations ${whereClause}`,
     params
   );
   const total = countResult.rows[0].count;
+  const totalAmount = countResult.rows[0].total_amount;
 
   const result = await query(
     `SELECT id, full_name, situation_case, amount::double precision AS amount, program_year, registration_date
@@ -348,6 +349,7 @@ router.get('/', requirePermission('nhisRegistration', 'view'), validatePaginatio
   return res.json({
     data: result.rows,
     total,
+    totalAmount,
     page: pageNum,
     pageSize: size,
     totalPages: Math.ceil(total / size)

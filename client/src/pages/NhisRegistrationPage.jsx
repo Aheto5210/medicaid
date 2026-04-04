@@ -15,6 +15,7 @@ import NhisDetailsModal from '../components/nhis/NhisDetailsModal.jsx';
 export default function NhisRegistrationPage({
   records,
   pagination,
+  totalAmount,
   onRefresh,
   programYear,
   yearOptions,
@@ -295,13 +296,13 @@ export default function NhisRegistrationPage({
     });
   }, [records, filters]);
 
-  const totalAmount = useMemo(
-    () => filteredRecords.reduce((sum, record) => {
-      const amount = Number(record.amount);
-      return Number.isFinite(amount) ? sum + amount : sum;
-    }, 0),
-    [filteredRecords]
-  );
+  const hasLocalFilters = filters.name || filters.situation;
+  const displayTotalAmount = hasLocalFilters
+    ? filteredRecords.reduce((sum, record) => {
+        const amount = Number(record.amount);
+        return Number.isFinite(amount) ? sum + amount : sum;
+      }, 0)
+    : totalAmount;
 
   useEffect(() => {
     const visibleIds = new Set(filteredRecords.map((record) => record.id));
@@ -450,7 +451,7 @@ export default function NhisRegistrationPage({
               </button>
             )}
             <div className="page-total-pill" title="Total amount for the current NHIS view">
-              {formatCurrency(totalAmount)}
+              {formatCurrency(displayTotalAmount)}
             </div>
           </div>
           <div className="panel-actions record-panel-actions">

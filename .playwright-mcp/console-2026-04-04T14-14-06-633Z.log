@@ -1,0 +1,9 @@
+[    7762ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/nhis?year=2026:0
+[    7763ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/people?year=2026:0
+[    7763ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/me:0
+[    7763ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/analytics/summary?year=2026:0
+[    9490ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/refresh:0
+[    9639ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/refresh:0
+[    9639ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.medicaid.live/api/auth/refresh:0
+[  150841ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://medicaid.live/:0
+[  162420ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://medicaid.live/:0

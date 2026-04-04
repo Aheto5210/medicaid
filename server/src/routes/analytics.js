@@ -100,6 +100,7 @@ router.get('/summary', requirePermission('overview', 'view'), async (req, res) =
   const year = Number.parseInt(req.query.year, 10) || new Date().getFullYear();
 
   const totalPeople = await query('SELECT COUNT(*)::int AS count FROM people WHERE program_year = $1', [year]);
+  const totalNhis = await query('SELECT COUNT(*)::int AS count FROM nhis_registrations WHERE program_year = $1', [year]);
   const onboarded = await query(
     "SELECT COUNT(*)::int AS count FROM people WHERE program_year = $1 AND onboarding_status = 'onboarded'",
     [year]
@@ -205,8 +206,7 @@ router.get('/summary', requirePermission('overview', 'view'), async (req, res) =
   const mainReasonHighlights = await query(
     `SELECT
       COUNT(*) FILTER (WHERE LOWER(TRIM(COALESCE(reason_for_coming, ''))) = 'general screening')::int AS "generalScreening",
-      COUNT(*) FILTER (WHERE LOWER(TRIM(COALESCE(reason_for_coming, ''))) = 'eye screening')::int AS "eyeScreening",
-      COUNT(*) FILTER (WHERE LOWER(TRIM(COALESCE(reason_for_coming, ''))) = 'nhis')::int AS "nhis"
+      COUNT(*) FILTER (WHERE LOWER(TRIM(COALESCE(reason_for_coming, ''))) = 'eye screening')::int AS "eyeScreening"
      FROM people
      WHERE program_year = $1`,
     [year]
@@ -263,10 +263,11 @@ router.get('/summary', requirePermission('overview', 'view'), async (req, res) =
 
   return res.json({
     totals: {
-      people: totalPeople.rows[0].count,
+      people: totalPeople.rows[0].count + totalNhis.rows[0].count,
       onboarded: onboarded.rows[0].count,
       inReview: inReview.rows[0].count,
-      newThisWeek: thisWeek.rows[0].count
+      newThisWeek: thisWeek.rows[0].count,
+      nhis: totalNhis.rows[0].count
     },
     trend: trend.rows,
     gender: gender.rows,
@@ -280,7 +281,10 @@ router.get('/summary', requirePermission('overview', 'view'), async (req, res) =
     cities: cities.rows,
     ageRanges: ageRanges.rows,
     reasons: reasons.rows,
-    mainReasonHighlights: mainReasonHighlights.rows[0],
+    mainReasonHighlights: {
+      ...mainReasonHighlights.rows[0],
+      nhis: totalNhis.rows[0].count
+    },
     reasonTrend: reasonTrend.rows
   });
 });

@@ -1,0 +1,206 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - img "MEDICAID logo" [ref=e6]
+    - navigation [ref=e7]:
+      - button "Overview" [ref=e8] [cursor=pointer]
+      - button "General Registration" [ref=e9] [cursor=pointer]
+      - button "NHIS Registration" [ref=e10] [cursor=pointer]
+      - button "User Management" [ref=e11] [cursor=pointer]
+      - button "Settings" [ref=e12] [cursor=pointer]
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]: T
+        - generic [ref=e17]:
+          - generic [ref=e18]: Test User
+          - generic [ref=e19]: admin
+      - button "Log out" [ref=e20] [cursor=pointer]
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - heading "Overview" [level=1] [ref=e24]
+      - generic [ref=e26]:
+        - button "Return to system theme" [ref=e27] [cursor=pointer]:
+          - img [ref=e28]
+        - button "Generate Report" [ref=e34] [cursor=pointer]
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - heading "Registration" [level=2] [ref=e39]
+            - generic [ref=e40]: Total / Female / Male
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - generic [ref=e44]: Total
+              - generic [ref=e45]: "2000"
+            - generic [ref=e46]:
+              - generic [ref=e48]: Female
+              - generic [ref=e49]: "509"
+            - generic [ref=e50]:
+              - generic [ref=e52]: Male
+              - generic [ref=e53]: "491"
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - heading "Units" [level=2] [ref=e56]
+            - generic [ref=e57]: General / NHIS / Eye
+          - generic [ref=e58]:
+            - generic [ref=e59]:
+              - generic [ref=e61]: General Screening
+              - generic [ref=e62]: "163"
+            - generic [ref=e63]:
+              - generic [ref=e65]: NHIS
+              - generic [ref=e66]: "189"
+            - generic [ref=e67]:
+              - generic [ref=e69]: Eye Screening
+              - generic [ref=e70]: "201"
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - heading "Units Trend" [level=2] [ref=e74]
+            - generic [ref=e75]: General / Eye / NHIS
+          - generic [ref=e76]:
+            - img [ref=e77]:
+              - 'button "General Screening: 163" [ref=e80]'
+              - 'button "Eye Screening: 201" [ref=e83]'
+              - 'button "NHIS: 189" [ref=e86]'
+            - generic [ref=e89]:
+              - button "General Screening" [ref=e90] [cursor=pointer]
+              - button "Eye Screening" [ref=e91] [cursor=pointer]
+              - button "NHIS" [ref=e92] [cursor=pointer]
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - heading "Main Units" [level=2] [ref=e95]
+            - generic [ref=e96]: General / Eye / NHIS
+          - generic [ref=e97]:
+            - img "Units chart" [ref=e99]:
+              - 'button "General Screening: 163" [ref=e100] [cursor=pointer]'
+              - 'button "Eye Screening: 201" [ref=e101] [cursor=pointer]'
+              - 'button "NHIS: 189" [ref=e102] [cursor=pointer]'
+              - 'button "Other: 447" [ref=e103] [cursor=pointer]'
+            - generic [ref=e104]:
+              - button "General 163" [ref=e105] [cursor=pointer]:
+                - generic [ref=e107]: General
+                - generic [ref=e108]: "163"
+              - button "Eye 201" [ref=e109] [cursor=pointer]:
+                - generic [ref=e111]: Eye
+                - generic [ref=e112]: "201"
+              - button "NHIS 189" [ref=e113] [cursor=pointer]:
+                - generic [ref=e115]: NHIS
+                - generic [ref=e116]: "189"
+              - button "Other 447" [ref=e117] [cursor=pointer]:
+                - generic [ref=e119]: Other
+                - generic [ref=e120]: "447"
+      - generic [ref=e121]:
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - heading "Age Range" [level=2] [ref=e124]
+            - generic [ref=e125]: Standard Ranges
+          - generic [ref=e126]:
+            - button "65+ 246 25%" [ref=e127] [cursor=pointer]:
+              - generic "65+" [ref=e128]
+              - generic [ref=e131]:
+                - generic [ref=e132]: "246"
+                - generic [ref=e133]: 25%
+            - button "45-54 167 17%" [ref=e134] [cursor=pointer]:
+              - generic "45-54" [ref=e135]
+              - generic [ref=e138]:
+                - generic [ref=e139]: "167"
+                - generic [ref=e140]: 17%
+            - button "55-64 166 17%" [ref=e141] [cursor=pointer]:
+              - generic "55-64" [ref=e142]
+              - generic [ref=e145]:
+                - generic [ref=e146]: "166"
+                - generic [ref=e147]: 17%
+            - button "25-34 160 16%" [ref=e148] [cursor=pointer]:
+              - generic "25-34" [ref=e149]
+              - generic [ref=e152]:
+                - generic [ref=e153]: "160"
+                - generic [ref=e154]: 16%
+            - button "35-44 141 14%" [ref=e155] [cursor=pointer]:
+              - generic "35-44" [ref=e156]
+              - generic [ref=e159]:
+                - generic [ref=e160]: "141"
+                - generic [ref=e161]: 14%
+            - button "18-24 120 12%" [ref=e162] [cursor=pointer]:
+              - generic "18-24" [ref=e163]
+              - generic [ref=e166]:
+                - generic [ref=e167]: "120"
+                - generic [ref=e168]: 12%
+        - generic [ref=e169]:
+          - generic [ref=e170]:
+            - heading "Gender" [level=2] [ref=e171]
+            - generic [ref=e172]: Breakdown
+          - generic [ref=e173]:
+            - img "People chart" [ref=e175]:
+              - 'button "Female: 509" [ref=e176] [cursor=pointer]'
+              - 'button "Male: 491" [ref=e177] [cursor=pointer]'
+            - generic [ref=e178]:
+              - button "Female 509" [ref=e179] [cursor=pointer]:
+                - generic [ref=e181]: Female
+                - generic [ref=e182]: "509"
+              - button "Male 491" [ref=e183] [cursor=pointer]:
+                - generic [ref=e185]: Male
+                - generic [ref=e186]: "491"
+      - generic [ref=e187]:
+        - generic [ref=e188]:
+          - heading "Awareness Sources" [level=2] [ref=e190]
+          - generic [ref=e191]:
+            - generic [ref=e192]:
+              - img "Sources breakdown" [ref=e193]
+              - generic:
+                - strong: "1000"
+                - generic: Sources
+            - generic [ref=e199]:
+              - generic [ref=e202]: Town crier (announcer)
+              - generic [ref=e205]: Outreach guys with megaphones
+              - generic [ref=e208]: Information van (with megaphones)
+              - generic [ref=e211]: My child told me
+              - generic [ref=e214]: Other
+        - generic [ref=e215]:
+          - heading "Occupations" [level=2] [ref=e217]
+          - img "Occupation treemap" [ref=e219]:
+            - 'generic "Driver: 85" [ref=e220]':
+              - generic [ref=e222]: Driver
+              - generic [ref=e223]: "85"
+            - 'generic "Nurse: 82" [ref=e224]':
+              - generic [ref=e226]: Nurse
+              - generic [ref=e227]: "82"
+            - 'generic "Seamstress: 81" [ref=e228]':
+              - generic [ref=e230]: Seamstress
+              - generic [ref=e231]: "81"
+            - 'generic "Carpenter: 77" [ref=e232]':
+              - generic [ref=e234]: Carpenter
+              - generic [ref=e235]: "77"
+            - 'generic "Hairdresser: 77" [ref=e236]':
+              - generic [ref=e238]: Hairdresser
+              - generic [ref=e239]: "77"
+            - 'generic "Other: 221" [ref=e240]':
+              - generic [ref=e242]: Other
+              - generic [ref=e243]: "221"
+      - generic [ref=e244]:
+        - generic [ref=e245]:
+          - heading "Recently Registered" [level=2] [ref=e246]
+          - generic [ref=e247]: Last 5
+        - generic [ref=e248]:
+          - generic [ref=e249]:
+            - generic [ref=e250]: Full name
+            - generic [ref=e251]: Phone
+            - generic [ref=e252]: House/Address
+          - generic [ref=e253]:
+            - generic [ref=e254]: Patience Langworth
+            - generic [ref=e255]: 247-931-9609 x18880
+            - generic [ref=e256]: 677 Maryjane Forest
+          - generic [ref=e257]:
+            - generic [ref=e258]: Antonette Herzog
+            - generic [ref=e259]: 590-283-6035 x0707
+            - generic [ref=e260]: 6859 Alma Trail
+          - generic [ref=e261]:
+            - generic [ref=e262]: Raina Beer
+            - generic [ref=e263]: (324) 601-6245 x239
+            - generic [ref=e264]: 95149 The Paddock
+          - generic [ref=e265]:
+            - generic [ref=e266]: Beatrice Schiller
+            - generic [ref=e267]: (661) 290-2567 x95742
+            - generic [ref=e268]: 27225 Jeffery Vista
+          - generic [ref=e269]:
+            - generic [ref=e270]: Jeanne Ortiz
+            - generic [ref=e271]: (379) 530-4209 x4161
+            - generic [ref=e272]: 6308 Railroad Avenue

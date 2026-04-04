@@ -40,6 +40,7 @@ export default function App() {
   const [nhisRecords, setNhisRecords] = useState([]);
   const [peoplePagination, setPeoplePagination] = useState({ page: 1, pageSize: 50, total: 0, totalPages: 0 });
   const [nhisPagination, setNhisPagination] = useState({ page: 1, pageSize: 50, total: 0, totalPages: 0 });
+  const [nhisTotalAmount, setNhisTotalAmount] = useState(0);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pendingMutations, setPendingMutations] = useState([]);
@@ -317,17 +318,19 @@ export default function App() {
 
       if (res.ok) {
         const data = await res.json();
-        const payload = data.data ? data : { data, page: 1, pageSize: 50, total: data.length, totalPages: 1 };
+        const payload = data.data ? data : { data, page: 1, pageSize: 50, total: data.length, totalPages: 1, totalAmount: data.totalAmount || 0 };
         setNhisRecords(payload.data);
         setNhisPagination({ page: payload.page, pageSize: payload.pageSize, total: payload.total, totalPages: payload.totalPages });
+        setNhisTotalAmount(payload.totalAmount || 0);
         await setCachedValue(cacheKey, payload);
       }
     } catch {
       const cached = await getCachedValue(cacheKey);
       if (cached) {
-        const payload = cached.data ? cached : { data: cached, page: 1, pageSize: 50, total: cached.length, totalPages: 1 };
+        const payload = cached.data ? cached : { data: cached, page: 1, pageSize: 50, total: cached.length, totalPages: 1, totalAmount: cached.totalAmount || 0 };
         setNhisRecords(payload.data);
         setNhisPagination({ page: payload.page, pageSize: payload.pageSize, total: payload.total, totalPages: payload.totalPages });
+        setNhisTotalAmount(payload.totalAmount || 0);
       }
     }
   }
@@ -537,6 +540,7 @@ export default function App() {
           <NhisRegistrationPage
             records={effectiveNhisRecords}
             pagination={nhisPagination}
+            totalAmount={nhisTotalAmount}
             programYear={programYear}
             yearOptions={yearOptions}
             onYearChange={setProgramYear}
