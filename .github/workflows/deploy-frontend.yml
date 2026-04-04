@@ -27,11 +27,12 @@ jobs:
             cd ~/medicaid/client
             git pull --ff-only origin main
             npm install
-            npm run build
+            VITE_API_URL="$VITE_API_URL" npm run build
           EOF
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Verify frontend
         run: |
