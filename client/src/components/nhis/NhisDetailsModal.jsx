@@ -98,13 +98,13 @@ export default function NhisDetailsModal({
               <label>
                 Situation/Case
                 <CustomDropdown
-                options={[{ label: 'Select situation/case', value: '' }, ...situationCaseOptions]}
-                value={form.situationCase}
-                onChange={(nextValue) => onFormChange('situationCase', nextValue)}
-                searchable
-                panelMinWidth={460}
-              />
-            </label>
+                  options={[{ label: 'Select situation/case', value: '' }, ...situationCaseOptions]}
+                  value={form.situationCase}
+                  onChange={(nextValue) => onFormChange('situationCase', nextValue)}
+                  searchable
+                  panelMinWidth={420}
+                />
+              </label>
               <label>
                 Amount (GHS)
                 <input

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { NHIS_SITUATION_CASE_OPTIONS, getNhisDefaultAmount } from '../../constants/options.js';
+import { NHIS_SITUATION_CASE_OPTIONS } from '../../constants/options.js';
 import { createNhisMutation } from '../../utils/offlineData.js';
 import { buildFullName } from '../../utils/people.js';
 import usePersistedDraft from '../../hooks/usePersistedDraft.js';
@@ -34,15 +34,6 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-
-  function handleSituationCaseChange(nextValue) {
-    const defaultAmount = getNhisDefaultAmount(nextValue);
-    setForm((prev) => ({
-      ...prev,
-      situationCase: nextValue,
-      amount: nextValue ? String(defaultAmount ?? prev.amount ?? '') : ''
-    }));
-  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -102,10 +93,10 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
               <CustomDropdown
                 options={NHIS_SITUATION_CASE_OPTIONS}
                 value={form.situationCase}
-                onChange={handleSituationCaseChange}
+                onChange={(nextValue) => setForm((prev) => ({ ...prev, situationCase: nextValue }))}
                 placeholder="Select situation/case"
                 searchable
-                panelMinWidth={460}
+                panelMinWidth={420}
               />
             </label>
             <label>
@@ -116,7 +107,6 @@ export default function NhisRegisterModal({ programYear, onClose, onSaved }) {
                 min="0"
                 value={form.amount}
                 onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))}
-                placeholder="Auto-filled from situation/case"
               />
             </label>
           </div>
