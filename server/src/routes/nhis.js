@@ -20,20 +20,21 @@ const asyncHandler = (handler) => (req, res, next) => Promise.resolve(handler(re
 const TEMPLATE_TITLE = 'NHIS REGISTRATION';
 const TEMPLATE_SUBTITLE = 'EWC COMMUNITY 25 CAMPUS';
 const TEMPLATE_HEADERS = ['', 'No.', 'Name', 'Situation/Case', 'Amount (GHS)'];
-const TEMPLATE_COLUMN_WIDTHS = [4, 8, 34, 38, 18];
+const TEMPLATE_COLUMN_WIDTHS = [4, 8, 34, 46, 18];
 const HEADER_START_ROW = 6;
 const DATA_START_ROW = 8;
 const NHIS_DUPLICATE_MESSAGE = 'This NHIS data already exists (same name and amount).';
-const NHIS_SITUATION_CASE_OPTIONS = [
-  'New Registration for Adults (18yrs and above)',
-  'Renewal for Adults',
-  'New Registration for Adults (18yrs and below)',
-  'Renewal for below 18yrs',
-  'New Registration (with SNNIT ID)',
-  'Renewal (with SNNIT ID)',
-  'Aged (above 70yrs)',
-  'Evidence of pregnancy'
+const NHIS_SITUATION_CASE_PRICING = [
+  { label: 'New Registration for Adults (18 Years and Above)', amount: 30 },
+  { label: 'Renewal for Adults (18 Years and Above)', amount: 27 },
+  { label: 'New Registration for 18 Years and Below', amount: 8 },
+  { label: 'Renewal for 18 Years and Below', amount: 5 },
+  { label: 'New Registration for Disabled Person', amount: 0 },
+  { label: 'Renewal for Disabled Person', amount: 0 },
+  { label: 'New Registration for Pregnant Woman', amount: 0 },
+  { label: 'Renewal for Pregnant Woman', amount: 0 }
 ];
+const NHIS_SITUATION_CASE_OPTIONS = NHIS_SITUATION_CASE_PRICING.map(({ label }) => label);
 
 const NORMALIZED_HEADER_MAP = {
   no: 'no',
@@ -71,6 +72,26 @@ function parseAmount(value) {
   const cleaned = String(value).replace(/[^0-9.-]+/g, '');
   const parsed = Number.parseFloat(cleaned);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function normalizeSituationCaseKey(value = '') {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+const NHIS_DEFAULT_AMOUNT_LOOKUP = new Map(
+  NHIS_SITUATION_CASE_PRICING.map(({ label, amount }) => [normalizeSituationCaseKey(label), amount])
+);
+
+function getDefaultAmountForSituationCase(value) {
+  const normalized = normalizeSituationCaseKey(value);
+  if (!normalized) {
+    return null;
+  }
+
+  return NHIS_DEFAULT_AMOUNT_LOOKUP.get(normalized) ?? null;
 }
 
 function formatAmountForSheet(value) {
@@ -363,16 +384,30 @@ router.post('/import', requirePermission('nhisRegistration', 'import'), upload.s
   for (let i = headerIndex + 1; i < rows.length; i += 1) {
     const row = rows[i];
     const fullName = titleCaseText(row[columnIndex.name]);
+    const situationCase = titleCaseText(row[columnIndex.situation]);
 
     if (!fullName) {
       skipped += 1;
       continue;
     }
 
+    const rawAmount = row[columnIndex.amount];
+    const hasAmountInput = !(
+      rawAmount === undefined
+      || rawAmount === null
+      || String(rawAmount).trim() === ''
+    );
+    const parsedAmount = parseAmount(rawAmount);
+
+    if (hasAmountInput && parsedAmount === null) {
+      skipped += 1;
+      continue;
+    }
+
     records.push({
       fullName,
-      situationCase: titleCaseText(row[columnIndex.situation]),
-      amount: parseAmount(row[columnIndex.amount])
+      situationCase,
+      amount: hasAmountInput ? parsedAmount : getDefaultAmountForSituationCase(situationCase)
     });
   }
 
@@ -489,7 +524,8 @@ router.get('/export', requirePermission('nhisRegistration', 'export'), asyncHand
 router.post('/', requirePermission('nhisRegistration', 'create'), asyncHandler(async (req, res) => {
   const payload = req.body || {};
   const fullName = titleCaseText(payload.fullName);
-  const amount = parseAmount(payload.amount);
+  const situationCase = titleCaseText(payload.situationCase);
+  const parsedAmount = parseAmount(payload.amount);
   const programYear = parseProgramYear(payload.programYear);
   const clientRequestId = normalizeClientRequestId(payload.clientRequestId);
   const hasAmountInput = !(
@@ -497,12 +533,15 @@ router.post('/', requirePermission('nhisRegistration', 'create'), asyncHandler(a
     || payload.amount === null
     || String(payload.amount).trim() === ''
   );
+  const amount = hasAmountInput
+    ? parsedAmount
+    : getDefaultAmountForSituationCase(situationCase || payload.situationCase);
 
   if (!fullName) {
     return res.status(400).json({ message: 'fullName is required.' });
   }
 
-  if (hasAmountInput && amount === null) {
+  if (hasAmountInput && parsedAmount === null) {
     return res.status(400).json({ message: 'Amount must be a valid number.' });
   }
 
@@ -533,7 +572,7 @@ router.post('/', requirePermission('nhisRegistration', 'create'), asyncHandler(a
                 program_year, registration_date, created_at, updated_at`,
       [
         fullName,
-        titleCaseText(payload.situationCase),
+        situationCase,
         amount,
         programYear,
         req.user.id,
@@ -583,6 +622,7 @@ router.patch('/:id', requirePermission('nhisRegistration', 'edit'), asyncHandler
   const updates = [];
   const values = [];
   let fullNameInput = null;
+  let situationCaseInput = undefined;
   let amountInput = null;
   const expectedUpdatedAt = payload.expectedUpdatedAt === undefined
     ? null
@@ -603,23 +643,25 @@ router.patch('/:id', requirePermission('nhisRegistration', 'edit'), asyncHandler
   }
 
   if (payload.situationCase !== undefined) {
-    const situationCase = titleCaseText(payload.situationCase);
-    values.push(situationCase || null);
+    situationCaseInput = titleCaseText(payload.situationCase) || null;
+    values.push(situationCaseInput);
     updates.push(`situation_case = $${values.length}`);
   }
 
   if (payload.amount !== undefined) {
-    const amount = parseAmount(payload.amount);
+    const parsedAmount = parseAmount(payload.amount);
     const hasAmountInput = !(
       payload.amount === undefined
       || payload.amount === null
       || String(payload.amount).trim() === ''
     );
-    if (hasAmountInput && amount === null) {
+    if (hasAmountInput && parsedAmount === null) {
       return res.status(400).json({ message: 'Amount must be a valid number.' });
     }
-    amountInput = amount;
-    values.push(amount);
+    amountInput = hasAmountInput
+      ? parsedAmount
+      : getDefaultAmountForSituationCase(situationCaseInput || payload.situationCase);
+    values.push(amountInput);
     updates.push(`amount = $${values.length}`);
   }
 
